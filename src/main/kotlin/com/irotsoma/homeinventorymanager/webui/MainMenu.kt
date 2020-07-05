@@ -18,7 +18,7 @@ import java.util.*
  * @author Justin Zak
  */
 @Component
-@ConfigurationProperties(prefix="filecontroller.webui.menus")
+@ConfigurationProperties(prefix="webui.menus")
 class MainMenu {
 
     @Autowired

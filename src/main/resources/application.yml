@@ -5,7 +5,7 @@ management.endpoints.web:
   expose: "*"
 
 # Main menu items
-filecontroller.webui.menus:
+webui.menus:
   menuLayout:
     - nameProperty: home.label
       path: /
