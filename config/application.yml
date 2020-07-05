@@ -1,0 +1,22 @@
+#spring.content.fs:
+#  filesystemRoot: D:\temp
+spring.datasource:
+  url: jdbc:mariadb://localhost/homeinventory
+  username: homeinventory
+  password: insecurepassword
+server:
+  port: 9091
+spring.data.mongodb:
+  host: localhost
+  port: 27017
+  database: homeinventory
+spring.servlet.multipart:
+  max-file-size: 256MB
+  max-request-size: 256MB
+  enabled: true
+spring.jpa:
+  show-sql: true
+  properties.hibernate.format_sql: true
+
+
+

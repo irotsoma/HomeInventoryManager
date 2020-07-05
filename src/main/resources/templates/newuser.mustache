@@ -1,0 +1,47 @@
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}
+    <script>
+        //enable tooltips
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <div class="container form-group">
+        <form id="new-user-form" method="POST" action="/newuser">
+            {{#formError}}
+                <div class="form-group alert alert-danger alert-dismissible fade show">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    {{.}}
+                </div>
+            {{/formError}}
+            <div  class="form-group">
+                <label for="username">{{usernameLabel}}</label>
+                <input type="text" id="username" name="username" class="form-control{{#usernameError}} is-invalid{{/usernameError}}" {{#username}}value="{{.}}"{{/username}} required />
+                {{#usernameError}}<div class="invalid-feedback">{{{.}}}</div>{{/usernameError}}
+            </div>
+            <div  class="form-group">
+                <label for="password">{{passwordLabel}}</label>
+                <input type="password" id="password" name="password" class="form-control{{#passwordError}} is-invalid{{/passwordError}}" required />
+                {{#passwordError}}<div class="invalid-feedback">{{{.}}}</div>{{/passwordError}}
+            </div>
+            <div  class="form-group">
+                <label for="passwordConfirm">{{passwordConfirmLabel}}</label>
+                <input type="password" id="passwordConfirm" name="passwordConfirm" class="form-control{{#passwordConfirmError}} is-invalid{{/passwordConfirmError}}" required />
+                {{#passwordConfirmError}}<div class="invalid-feedback">{{{.}}}</div>{{/passwordConfirmError}}
+            </div>
+            <div  class="form-group">
+                <label for="roles">{{userRolesLabel}}</label>
+                <select type="text" id="roles" name="roles" class="form-control{{#rolesError}} is-invalid{{/rolesError}}" required multiple>
+                    {{#roles}}
+                        <option value="{{name}}" {{selected}}>{{name}}</option>
+                    {{/roles}}
+                </select>
+                {{#rolesError}}<div class="invalid-feedback">{{{.}}}</div>{{/rolesError}}
+            </div>
+            <div  class="form-group">
+                <button id="login-submit" type="submit" class="btn btn-primary">{{submitButtonLabel}}</button>
+            </div>
+        </form>
+    </div>
+{{/layout}}

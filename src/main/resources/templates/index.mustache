@@ -1,0 +1,10 @@
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}
+<div class="container">
+    {{#isLoggedIn}}
+        Select an option from the menus above.
+    {{/isLoggedIn}}
+    {{^isLoggedIn}}
+        Please <a href="/login">login</a> to continue
+    {{/isLoggedIn}}
+</div>
+{{/layout}}

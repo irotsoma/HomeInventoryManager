@@ -1,0 +1,49 @@
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <td>
+                    {{propertyNameLabel}}
+                </td>
+                <td>
+                    {{propertyAddressLabel}}
+                </td>
+                <td>
+                    {{actionsLabel}}
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            {{#property}}
+            <tr>
+                <td>
+                    {{name}}
+                </td>
+                <td>
+                    {{addressStreet}}, {{addressCity}}
+                </td>
+                <td>
+                    <form class="delete-form" action="/property/{{id}}" method="post">
+                        <input type="submit" class="delete-button" value="Delete">
+                        <input type="hidden" name="action" value="delete">
+                    </form>
+
+                </td>
+            </tr>
+            {{/property}}
+        </tbody>
+
+    </table>
+
+
+
+</div>
+    {{#scripts}}
+        <script>
+            $("form.delete-form").submit(function(){
+                return confirm({{deleteConfirmationMessage}});
+            })
+        </script>
+    {{/scripts}}
+{{/layout}}

@@ -1,0 +1,32 @@
+spring:
+  mustache:
+    expose-request-attributes: true
+management.endpoints.web:
+  expose: "*"
+
+# Main menu items
+filecontroller.webui.menus:
+  menuLayout:
+    - nameProperty: home.label
+      path: /
+      validUserRoles:
+    - nameProperty: users.label
+      validUserRoles:
+      menuItems:
+        - nameProperty: logIn.label
+          path: /login
+          validUserRoles:
+        - nameProperty: logOut.label
+          path: /logout
+          validUserRoles:
+            - ROLE_USER
+            - ROLE_ADMIN
+        - nameProperty: userDetails.label
+          path: /userinfo
+          validUserRoles:
+            - ROLE_USER
+            - ROLE_ADMIN
+        - nameProperty: newUser.label
+          path: /newuser
+          validUserRoles:
+            - ROLE_ADMIN

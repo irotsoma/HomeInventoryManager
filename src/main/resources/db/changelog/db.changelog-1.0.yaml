@@ -1,0 +1,466 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: justin
+      changes:
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - createTable:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: long
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: password
+                  value: '$2a$10$QAvWmPlLkw7s0G4tRj5aL.jPrPRmziPJg9Nw7FA/rGO.dPvqxJlI.'
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: role
+                  value: ROLE_ADMIN
+        - insert:
+            tableName: user_roles
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: role
+                  value: ROLE_USER
+        - createTable:
+            tableName: inventory_item
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: clob
+              - column:
+                  name: value
+                  type: decimal
+              - column:
+                  name: property_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: room_id
+                  type: int
+              - column:
+                  name: category_id
+                  type: int
+              - column:
+                  name: purchase_date
+                  type: date
+              - column:
+                  name: manufacturer
+                  type: nvarchar(1023)
+              - column:
+                  name: serial_number
+                  type: nvarchar(1023)
+              - column:
+                  name: state
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - createTable:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: name
+                  value: Electronics
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  value: 2
+              - column:
+                  name: name
+                  value: Art
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  value: 3
+              - column:
+                  name: name
+                  value: Clothing
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  value: 4
+              - column:
+                  name: name
+                  value: Jewelry
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  value: 5
+              - column:
+                  name: name
+                  value: Furnishings
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  value: 6
+              - column:
+                  name: name
+                  value: Appliances
+              - column:
+                  name: state
+                  value: ACTIVE
+        - createTable:
+            tableName: room
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - createTable:
+            tableName: property
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address_street
+                  type: nvarchar(1023)
+              - column:
+                  name: address_city
+                  type: nvarchar(1023)
+              - column:
+                  name: address_state
+                  type: nvarchar(1023)
+              - column:
+                  name: address_postal_code
+                  type: nvarchar(1023)
+              - column:
+                  name: address_country
+                  type: nvarchar(1023)
+              - column:
+                  name: state
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - createTable:
+            tableName: attachment
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: mongo_id
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - createTable:
+            tableName: inventory_item-attachment
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: inventory_item_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: attachment_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - insert:
+            tableName: property
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Example Property
+              - column:
+                  name: address_street
+                  value: 123 Example Street
+              - column:
+                  name: address_city
+                  value: Example City
+              - column:
+                  name: address_state
+                  value: Example State
+              - column:
+                  name: address_postal_code
+                  value: 12345-0000
+              - column:
+                  name: address_country
+                  value: USA
+              - column:
+                  name: state
+                  value: ACTIVE

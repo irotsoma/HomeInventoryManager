@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>{{layout.title}}</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width" />
+    <base href="/" />
+    <link rel="stylesheet" type="text/css"
+          href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css"
+          href="/css/default.css" />
+</head>
+<body>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                {{#menus}}
+                    <li class="nav-item{{#containsMenuItems}} dropdown{{/containsMenuItems}}{{#disabled}} disabled{{/disabled}}">
+                        <a class="nav-link{{#containsMenuItems}} dropdown-toggle{{/containsMenuItems}}" href="{{#path}}{{.}}{{/path}}{{^path}}#{{/path}}"{{#containsMenuItems}} data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"{{/containsMenuItems}}>{{name}}</a>
+                        {{#containsMenuItems}}
+                            <div class="dropdown-menu">
+                        {{/containsMenuItems}}
+                        {{#menuItems}}
+                                    <a class="dropdown-item{{#disabled}} disabled{{/disabled}}" href="{{path}}">{{name}}</a>
+                        {{/menuItems}}
+                        {{#containsMenuItems}}
+                            </div>
+                        {{/containsMenuItems}}
+                    </li>
+                {{/menus}}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="jumbotron">
+        <div class="container">
+            <h1>{{layout.title}}</h1>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div id="message-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            &lt;!&ndash; Modal content&ndash;&gt;
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Header</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Something went wrong and there's no text here. :'(</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {{{layout.body}}}
+    <!-- Scripts -->
+    <script type="text/javascript" src="webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="webjars/popper.js/popper.js"></script>
+    {{{layout.scripts}}}
+</body>
+</html>

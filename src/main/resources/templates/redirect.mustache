@@ -1,0 +1,13 @@
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}
+<div class="container">
+    <p>{{message}}</p>
+    <p>You will be redirected in 3 seconds, or <a href="{{location}}">click here</a> to go now.</p>
+</div>
+
+<script>
+    var timer = setTimeout(function() {
+        window.location='{{location}}'
+    }, 3000);
+</script>
+
+{{/layout}}

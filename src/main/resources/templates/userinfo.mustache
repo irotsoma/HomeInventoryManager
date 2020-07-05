@@ -1,0 +1,33 @@
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">{{userDetailsLabel}}</th>
+            </tr>
+        </thead>
+        <tr>
+            <td>
+                {{usernameLabel}}
+            </td>
+            <td>
+                {{username}}
+            </td>
+        </tr>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">{{userRolesLabel}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#userRoles}}
+                <tr>
+                    <td>{{.}}</td>
+                </tr>
+            {{/userRoles}}
+        </tbody>
+    </table>
+</div>
+{{/layout}}
