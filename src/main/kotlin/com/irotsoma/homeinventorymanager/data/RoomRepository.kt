@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface RoomRepository: JpaRepository<Room, Int> {
+    fun findByUserId(id: Int): List<Room>?
 }

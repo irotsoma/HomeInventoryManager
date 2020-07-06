@@ -5,57 +5,51 @@
             <h3>{{tableTitle}}</h3>
         </div>
         <div class="col">
-            <form action="/propertyedit" method="get">
+            <form action="/roomedit" method="get">
                 <input class="btn btn-secondary float-right" type="submit" id="new-button" value="{{addNewLabel}}">
             </form>
         </div>
     </div>
     <table class="table">
         <thead class="thead-light">
-            <tr>
-                <th>
-                    {{nameLabel}}
-                </th>
-                <th>
-                    {{addressLabel}}
-                </th>
-                <th>
-                    <span class="float-right">{{actionsLabel}}</span>
-                </th>
-            </tr>
+        <tr>
+            <th>
+                {{nameLabel}}
+            </th>
+            <th>
+                <span class="float-right">{{actionsLabel}}</span>
+            </th>
+        </tr>
         </thead>
         <tbody>
-            {{#property}}
+        {{#room}}
             <tr>
                 <td>
                     {{name}}
                 </td>
-                <td>
-                    {{#addressStreet}}{{.}},{{/addressStreet}} {{#addressCity}}{{.}}{{/addressCity}}
-                </td>
                 <td class="pr-1">
                     <div class="row float-right">
-                        <form class="col-auto" action="/propertyedit/{{id}}" method="get">
+                        <form class="col-auto" action="/roomedit/{{id}}" method="get">
                             <input class="btn btn-secondary" type="submit" id="edit-button" value="{{editLabel}}">
                         </form>
 
-                        <form class="delete-form col-auto" action="/property/{{id}}" method="post">
+                        <form class="delete-form col-auto" action="/room/{{id}}" method="post">
                             <input class="btn btn-secondary" type="submit" id="delete-button" value="{{deleteLabel}}">
                             <input type="hidden" name="action" value="DELETE">
                         </form>
                     </div>
                 </td>
             </tr>
-            {{/property}}
+        {{/room}}
         </tbody>
     </table>
 </div>
-    {{#scripts}}
-        <!-- confirmation popup -->
-        <script>
-            $("form.delete-form").submit(function(){
-                return confirm("{{deleteConfirmationMessage}}");
-            });
-        </script>
-    {{/scripts}}
+{{#scripts}}
+    <!-- confirmation popup -->
+    <script>
+        $("form.delete-form").submit(function(){
+            return confirm("{{deleteConfirmationMessage}}");
+        });
+    </script>
+{{/scripts}}
 {{/layout}}

@@ -14,9 +14,9 @@
 </head>
 <body>
     <!-- navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="/">Home Inventory Manager</a>
+            <a class="navbar-brand" href="/">{{layout.applicationTitle}}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -40,11 +40,14 @@
             </div>
         </div>
     </nav>
-    <div class="jumbotron">
-        <div class="container">
-            <h1>{{layout.title}}</h1>
+    {{^disableJumbotron}}
+        <div class="jumbotron">
+            <div class="container">
+                <h1>{{layout.title}}</h1>
+                {{#layout.subTitle}}<p class="lead">{{.}}</p>{{/layout.subTitle}}
+            </div>
         </div>
-    </div>
+    {{/disableJumbotron}}
     <!-- Modal -->
     <div id="message-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">

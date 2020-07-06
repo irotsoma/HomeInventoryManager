@@ -1,6 +1,6 @@
 package com.irotsoma.homeinventorymanager.webui.controllers
 
-import com.irotsoma.homeinventorymanager.data.PropertyRepository
+import com.irotsoma.homeinventorymanager.data.RoomRepository
 import com.irotsoma.homeinventorymanager.data.UserRepository
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,16 +17,16 @@ import javax.servlet.http.HttpSession
 
 @Controller
 @Lazy
-@RequestMapping("/property")
+@RequestMapping("/room")
 @Secured("ROLE_USER")
-class PropertyController {
+class RoomController {
     /** kotlin-logging implementation*/
     private companion object: KLogging()
     private val locale: Locale = LocaleContextHolder.getLocale()
     @Autowired
     private lateinit var messageSource: MessageSource
     @Autowired
-    private lateinit var propertyRepository: PropertyRepository
+    private lateinit var roomRepository: RoomRepository
     @Autowired
     private lateinit var userRepository: UserRepository
 
@@ -34,38 +34,36 @@ class PropertyController {
     fun getList(model: Model, session: HttpSession): String {
         addStaticAttributes(model)
         val authentication = SecurityContextHolder.getContext().authentication
-        val userId = userRepository.findByUsername(authentication.name)?.id ?: return "property"
-        val properties = propertyRepository.findByUserId(userId)
-        model.addAttribute("property", properties)
-        return "property"
+        val userId = userRepository.findByUsername(authentication.name)?.id ?: return "room"
+        val properties = roomRepository.findByUserId(userId)
+        model.addAttribute("room", properties)
+        return "room"
     }
 
     @PostMapping("/{id}")
     fun delete(@PathVariable id: Int, @RequestParam("action") action: String, model: Model): String{
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
-        val property = propertyRepository.findById(id)
-        if (userId == null || property.isEmpty || property.get().userId != userId || action != "DELETE"){
+        val room = roomRepository.findById(id)
+        if (userId == null || room.isEmpty || room.get().userId != userId || action != "DELETE"){
             val errorMessage = messageSource.getMessage("data.access.error.message", null, locale)
             logger.warn {errorMessage}
             model.addAttribute("error", errorMessage)
             return "error"
         }
-        propertyRepository.delete(property.get())
-        return "redirect:/property"
+        roomRepository.delete(room.get())
+        return "redirect:/room"
     }
 
     fun addStaticAttributes(model:Model) {
-        model.addAttribute("pageTitle", messageSource.getMessage("propertyList.label", null, locale))
-        model.addAttribute("pageSubTitle", messageSource.getMessage("propertyList.subTitle", null, locale))
+        model.addAttribute("pageTitle", messageSource.getMessage("roomList.label", null, locale))
+        model.addAttribute("pageSubTitle", messageSource.getMessage("roomList.subTitle", null, locale))
         model.addAttribute("nameLabel", messageSource.getMessage("name.label", null, locale))
-        model.addAttribute("addressLabel", messageSource.getMessage("address.label", null, locale))
         model.addAttribute("actionsLabel", messageSource.getMessage("actions.label", null, locale))
         model.addAttribute("deleteLabel", messageSource.getMessage("delete.button.label",null, locale))
         model.addAttribute("editLabel", messageSource.getMessage("edit.button.label",null, locale))
         model.addAttribute("addNewLabel", messageSource.getMessage("addNew.button.label",null, locale))
-        model.addAttribute("tableTitle", messageSource.getMessage("properties.label", null, locale))
-        //model.addAttribute("disableJumbotron", "disable")
+        model.addAttribute("tableTitle", messageSource.getMessage("rooms.label", null, locale))
         model.addAttribute("deleteConfirmationMessage", messageSource.getMessage("deleteConfirmation.message", null, locale))
     }
 }

@@ -23,10 +23,15 @@ webui.menus:
           path: /newuser
           validUserRoles:
             - ROLE_ADMIN
-    - nameProperty: edit.menu.label
+    - nameProperty: data.menu.label
       menuItems:
         - nameProperty: propertyList.label
           path: /property
+          validUserRoles:
+            - ROLE_USER
+            - ROLE_ADMIN
+        - nameProperty: roomList.label
+          path: /room
           validUserRoles:
             - ROLE_USER
             - ROLE_ADMIN

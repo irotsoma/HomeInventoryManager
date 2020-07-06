@@ -14,7 +14,11 @@ class Layout(private val compiler: Mustache.Compiler) : Mustache.Lambda {
 
     var body: String = ""
 
+    var applicationTitle = "Home Inventory Manager"
+
     var title = "Home Inventory Manager"
+
+    var subTitle: String? = null
 
     var scripts: String = ""
 

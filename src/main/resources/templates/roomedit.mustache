@@ -1,0 +1,31 @@
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}
+<div class="container form-group">
+    <form id="edit-room-form" method="POST" action="/roomedit">
+        {{#formError}}
+            <div class="form-group alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{.}}
+            </div>
+        {{/formError}}
+        <input type="hidden" id="id" name="id" {{#room}}value="{{id}}"{{/room}}>
+        <div  class="form-group">
+            <label for="name">{{nameLabel}}</label>
+            <input type="text" id="name" name="name" class="form-control{{#nameError}} is-invalid{{/nameError}}" {{#room}}value="{{name}}"{{/room}} required />
+            {{#nameError}}<div class="invalid-feedback">{{{.}}}</div>{{/nameError}}
+        </div>
+        <div  class="form-group">
+            <button id="room-edit-submit" type="submit" class="btn btn-primary">{{submitButtonLabel}}</button>
+        </div>
+    </form>
+</div>
+{{#scripts}}
+    <script>
+        //enable tooltips
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+{{/scripts}}
+{{/layout}}

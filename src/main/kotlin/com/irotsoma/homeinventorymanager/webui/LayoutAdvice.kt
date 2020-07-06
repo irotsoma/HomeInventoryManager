@@ -25,8 +25,13 @@ class LayoutAdvice {
     }
 
     @ModelAttribute("title")
-    fun title(@ModelAttribute layout: Layout): Mustache.Lambda {
+    fun pageTitle(@ModelAttribute layout: Layout): Mustache.Lambda {
         return Mustache.Lambda { frag, _ -> layout.title = frag.execute() }
+    }
+
+    @ModelAttribute("subTitle")
+    fun pageSubTitle(@ModelAttribute layout: Layout): Mustache.Lambda {
+        return Mustache.Lambda { frag, _ -> layout.subTitle = frag.execute() }
     }
 
     @ModelAttribute("menus")
@@ -37,5 +42,10 @@ class LayoutAdvice {
     @ModelAttribute("scripts")
     fun scripts(@ModelAttribute layout: Layout): Mustache.Lambda {
         return Mustache.Lambda { frag, _ -> layout.scripts = frag.execute() }
+    }
+
+    @ModelAttribute("applicationTitle")
+    fun applicationTitle(@ModelAttribute layout: Layout): String {
+        return layout.applicationTitle
     }
 }
