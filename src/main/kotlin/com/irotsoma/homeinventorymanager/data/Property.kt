@@ -15,13 +15,13 @@ import javax.persistence.Table
 @Table(name = "property")
 @SQLDelete(sql = "UPDATE property SET state = 'deleted' WHERE id = ?", check = ResultCheckStyle.COUNT)
 @Where(clause = "state = 'active'")
-class Property(@Column(name = "user_id", nullable = false) var userId: Int,
-               @Column(name = "name", nullable = false) val name: String,
-               @Column(name = "address_street", nullable = false) val addressStreet: String,
-               @Column(name = "address_city", nullable = false) val addressCity: String,
-               @Column(name = "address_state", nullable = false) val addressState: String,
-               @Column(name = "address_postal_code", nullable = false) val addressPostalCode: String,
-               @Column(name = "address_country", nullable = false) val addressCountry: String,
+class Property(@Column(name = "user_id", nullable = false, updatable = false) val userId: Int,
+               @Column(name = "name", nullable = false) var name: String,
+               @Column(name = "address_street") var addressStreet: String?,
+               @Column(name = "address_city") var addressCity: String?,
+               @Column(name = "address_state") var addressState: String?,
+               @Column(name = "address_postal_code") var addressPostalCode: String?,
+               @Column(name = "address_country") var addressCountry: String?,
                @Column(name = "state", nullable = false) @Enumerated(EnumType.STRING) var state: DataState
                ) {
     /** kotlin-logging implementation */

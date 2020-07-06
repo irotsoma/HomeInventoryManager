@@ -1,0 +1,59 @@
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}
+    <div class="container form-group">
+        <form id="edit-property-form" method="POST" action="/propertyedit">
+            {{#formError}}
+                <div class="form-group alert alert-danger alert-dismissible fade show">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    {{.}}
+                </div>
+            {{/formError}}
+            <input type="hidden" id="id" name="id" {{#property}}value="{{id}}"{{/property}}>
+            <div  class="form-group">
+                <h4><label for="name">{{nameLabel}}</label></h4>
+                <input type="text" id="name" name="name" class="form-control{{#nameError}} is-invalid{{/nameError}}" {{#property}}value="{{name}}"{{/property}} required />
+                {{#nameError}}<div class="invalid-feedback">{{{.}}}</div>{{/nameError}}
+            </div>
+            <h4>{{addressLabel}}</h4>
+            <div class="form-group">
+                <label for="street">{{streetLabel}}</label>
+                <input type="text" id="street" name="street" class="form-control{{#streetError}} is-invalid{{/streetError}}" {{#property}}{{#addressStreet}}value="{{.}}"{{/addressStreet}}{{/property}}/>
+                {{#streetError}}<div class="invalid-feedback">{{{.}}}</div>{{/streetError}}
+            </div>
+            <div class="form-row">
+                <div  class="form-group col-md-5">
+                    <label for="city">{{cityLabel}}</label>
+                    <input type="text" id="city" name="city" class="form-control{{#cityError}} is-invalid{{/cityError}}" {{#property}}{{#addressCity}}value="{{.}}"{{/addressCity}}{{/property}}/>
+                    {{#cityError}}<div class="invalid-feedback">{{{.}}}</div>{{/cityError}}
+                </div>
+                <div  class="form-group col-md-3">
+                    <label for="state">{{stateLabel}}</label>
+                        <input type="text" id="state" name="state" class="form-control{{#stateError}} is-invalid{{/stateError}}" {{#property}}{{#addressState}}value="{{.}}"{{/addressState}}{{/property}}/>
+                    {{#stateError}}<div class="invalid-feedback">{{{.}}}</div>{{/stateError}}
+                </div>
+                <div  class="form-group col-md-2">
+                    <label for="postal-code">{{postalCodeLabel}}</label>
+                        <input type="text" id="postal-code" name="postal-code" class="form-control{{#postalCodeError}} is-invalid{{/postalCodeError}}" {{#property}}{{#addressPostalCode}}value="{{.}}"{{/addressPostalCode}}{{/property}}/>
+                    {{#postalCodeError}}<div class="invalid-feedback">{{{.}}}</div>{{/postalCodeError}}
+                </div>
+                <div  class="form-group col-md-2">
+                    <label for="country">{{countryLabel}}</label>
+                        <input type="text" id="country" name="country" class="form-control{{#countryError}} is-invalid{{/countryError}}" {{#property}}{{#addressCountry}}value="{{.}}"{{/addressCountry}}{{/property}}/>
+                    {{#countryError}}<div class="invalid-feedback">{{{.}}}</div>{{/countryError}}
+                </div>
+            </div>
+            <div  class="form-group">
+                <button id="property-edit-submit" type="submit" class="btn btn-primary">{{submitButtonLabel}}</button>
+            </div>
+        </form>
+    </div>
+    {{#scripts}}
+        <script>
+            //enable tooltips
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+        </script>
+    {{/scripts}}
+{{/layout}}

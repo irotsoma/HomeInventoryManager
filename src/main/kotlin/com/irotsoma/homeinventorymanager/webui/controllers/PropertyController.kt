@@ -1,6 +1,3 @@
-/*
- * Created by irotsoma on 7/4/2020.
- */
 package com.irotsoma.homeinventorymanager.webui.controllers
 
 import com.irotsoma.homeinventorymanager.data.PropertyRepository
@@ -34,7 +31,7 @@ class PropertyController {
     private lateinit var userRepository: UserRepository
 
     @GetMapping
-    fun get(model: Model, session: HttpSession): String {
+    fun getList(model: Model, session: HttpSession): String {
         addStaticAttributes(model)
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id ?: return "property"
@@ -43,12 +40,15 @@ class PropertyController {
         return "property"
     }
 
-    @RequestMapping("/{id}", method = [RequestMethod.POST])
-    fun delete(@PathVariable id: Int, @RequestParam("action") action: String): String{
+    @PostMapping("/{id}")
+    fun delete(@PathVariable id: Int, @RequestParam("action") action: String, model: Model): String{
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
         val property = propertyRepository.findById(id)
-        if (userId == null || property.isEmpty || property.get().userId != id){
+        if (userId == null || property.isEmpty || property.get().userId != userId || action != "DELETE"){
+            val errorMessage = messageSource.getMessage("property.access.error.message", null, locale)
+            logger.warn {errorMessage}
+            model.addAttribute("error", errorMessage)
             return "error"
         }
         propertyRepository.delete(property.get())
@@ -57,10 +57,12 @@ class PropertyController {
 
     fun addStaticAttributes(model:Model) {
         model.addAttribute("pageTitle", messageSource.getMessage("propertyList.label", null, locale))
-        model.addAttribute("propertyNameLabel", messageSource.getMessage("name.label", null, locale))
-        model.addAttribute("propertyAddressLabel", messageSource.getMessage("address.label", null, locale))
+        model.addAttribute("nameLabel", messageSource.getMessage("name.label", null, locale))
+        model.addAttribute("addressLabel", messageSource.getMessage("address.label", null, locale))
         model.addAttribute("actionsLabel", messageSource.getMessage("actions.label", null, locale))
-        model.addAttribute("deleteButtonLabel", messageSource.getMessage("delete.label",null, locale))
+        model.addAttribute("deleteLabel", messageSource.getMessage("delete.button.label",null, locale))
+        model.addAttribute("editLabel", messageSource.getMessage("edit.button.label",null, locale))
+        model.addAttribute("addNewLabel", messageSource.getMessage("addNew.button.label",null, locale))
         model.addAttribute("deleteConfirmationMessage", messageSource.getMessage("deleteConfirmation.message", null, locale))
     }
 }

@@ -25,6 +25,7 @@ class MainMenu {
     private lateinit var messageSource: MessageSource
 
     val menuLayout = ArrayList<Menu>()
+    //use a separate property to store the value so that the getter isn't called to repopulate values every time it's accessed
     private var _menus = ArrayList<Menu>()
     val menus: ArrayList<Menu>
         get() {

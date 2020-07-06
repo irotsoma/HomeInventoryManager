@@ -68,7 +68,7 @@ class NewUserController {
             }
             //Send back previous values for fields
             if (newUserForm.username != null) {
-                model.addAttribute("username", newUserForm.username)
+                model.addAttribute("username1", newUserForm.username)
             }
             addStaticAttributes(model)
             val roles = ArrayList<Option>()

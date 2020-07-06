@@ -1,21 +1,14 @@
 spring:
   mustache:
     expose-request-attributes: true
-management.endpoints.web:
-  expose: "*"
 
 # Main menu items
 webui.menus:
   menuLayout:
-    - nameProperty: home.label
-      path: /
-      validUserRoles:
     - nameProperty: users.label
-      validUserRoles:
       menuItems:
         - nameProperty: logIn.label
           path: /login
-          validUserRoles:
         - nameProperty: logOut.label
           path: /logout
           validUserRoles:
@@ -29,4 +22,11 @@ webui.menus:
         - nameProperty: newUser.label
           path: /newuser
           validUserRoles:
+            - ROLE_ADMIN
+    - nameProperty: edit.menu.label
+      menuItems:
+        - nameProperty: propertyList.label
+          path: /property
+          validUserRoles:
+            - ROLE_USER
             - ROLE_ADMIN

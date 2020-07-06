@@ -14,7 +14,7 @@ class Layout(private val compiler: Mustache.Compiler) : Mustache.Lambda {
 
     var body: String = ""
 
-    var title = "CloudBackEnc"
+    var title = "Home Inventory Manager"
 
     var scripts: String = ""
 

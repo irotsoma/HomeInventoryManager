@@ -26,7 +26,7 @@ import javax.persistence.Table
 @Table(name = "user")
 @SQLDelete(sql = "UPDATE user SET state = 'deleted' WHERE id = ?", check = ResultCheckStyle.COUNT)
 @Where(clause = "state = 'active'")
-class User(@Column(name = "username", nullable = false, updatable = false) val username: String,
+class User(@Column(name = "username", nullable = false, updatable = false, unique = true) val username: String,
            password: String,
            @Column(name = "state", nullable = false) @Enumerated(EnumType.STRING) var state: DataState,
            roles: List<UserRoles> ) {
