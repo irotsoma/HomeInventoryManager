@@ -290,6 +290,9 @@ databaseChangeLog:
                   name: purchase_date
                   type: date
               - column:
+                  name: purchase_price
+                  type: decimal
+              - column:
                   name: manufacturer
                   type: nvarchar(1023)
               - column:
