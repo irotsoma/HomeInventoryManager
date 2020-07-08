@@ -1,0 +1,275 @@
+databaseChangeLog:
+  - changeSet:
+      id: 10000
+      author: justin
+      changes:
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Electronics
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Art
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Clothing
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Jewelry
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Furnishings
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: category
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Appliances
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: property
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Example Property
+              - column:
+                  name: address_street
+                  value: 123 Example Street
+              - column:
+                  name: address_city
+                  value: Example City
+              - column:
+                  name: address_state
+                  value: Example State
+              - column:
+                  name: address_postal_code
+                  value: 12345-0000
+              - column:
+                  name: address_country
+                  value: USA
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: property
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Example Property 2
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: room
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Living Room
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: room
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Bedroom
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: room
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Dining Room
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: room
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Kitchen
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: inventory_item
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Example Item
+              - column:
+                  name: description
+                  value: This is an example.
+              - column:
+                  name: value
+                  value: 1555.55
+              - column:
+                  name: property_id
+                  value: 1
+              - column:
+                  name: room_id
+                  value: 1
+              - column:
+                  name: category_id
+                  type: int
+                  value: 1
+              - column:
+                  name: purchase_date
+                  value: "2020-01-01"
+              - column:
+                  name: manufacturer
+                  value: ACME
+              - column:
+                  name: serial_number
+                  value: 123AB45
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: inventory_item
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Example Item 2
+              - column:
+                  name: description
+                  value: This is another example.
+              - column:
+                  name: value
+                  value: 100
+              - column:
+                  name: property_id
+                  value: 2
+              - column:
+                  name: room_id
+                  value: 2
+              - column:
+                  name: category_id
+                  type: int
+                  value: 2
+              - column:
+                  name: purchase_date
+                  value: "2019-01-01"
+              - column:
+                  name: manufacturer
+                  value: ACME
+              - column:
+                  name: serial_number
+                  value: agfdagwe342
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: inventory_item
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: name
+                  value: Example Item 3
+              - column:
+                  name: description
+                  value: This is an example.
+              - column:
+                  name: value
+                  value: 1555.55
+              - column:
+                  name: property_id
+                  value: 1
+              - column:
+                  name: room_id
+                  value: 3
+              - column:
+                  name: category_id
+                  type: int
+                  value: 3
+              - column:
+                  name: purchase_date
+                  value: "2018-01-01"
+              - column:
+                  name: manufacturer
+                  value: ACME
+              - column:
+                  name: serial_number
+                  value: asdfasd
+              - column:
+                  name: state
+                  value: ACTIVE

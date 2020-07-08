@@ -9,17 +9,23 @@
             <h3>{{tableTitle}}</h3>
         </div>
         <div class="col">
-            <form action="/roomedit" method="get">
+            <form action="/inventoryedit" method="get">
                 <button class="btn btn-info float-right" type="submit"><span class="oi oi-plus" aria-hidden="true"></span> {{addNewLabel}}</button>
             </form>
         </div>
     </div>
     <hr class="mt-0">
-    <table id="room-table" class="table">
+    <table id="inventory-table" class="table">
         <thead class="thead-light">
         <tr>
             <th>
                 {{nameLabel}}
+            </th>
+            <th>
+                {{categoryLabel}}
+            </th>
+            <th>
+                {{roomLabel}}
             </th>
             <th class="nosort nosearch">
                 <span class="float-right">{{actionsLabel}}</span>
@@ -27,31 +33,34 @@
         </tr>
         </thead>
         <tbody>
-        {{#room}}
+        {{#inventoryItem}}
             <tr>
                 <td>
                     {{name}}
                 </td>
+                <td>
+                    {{category}}
+                </td>
+                <td>
+                    {{room}}
+                </td>
                 <td class="pr-1">
                     <div class="row float-right">
-                        <form class="col-auto" action="/roomedit/{{id}}" method="get">
+                        <form class="col-auto" action="/inventoryedit/{{id}}" method="get">
                             <input class="btn btn-secondary" type="submit" id="edit-button" value="{{editLabel}}">
                         </form>
-
-                        <form class="delete-form col-auto" action="/room/{{id}}" method="post">
-                            {{#isActivelyUsed}}<span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="{{activelyUsedMessage}}">{{/isActivelyUsed}}
-                            <input class="btn btn-secondary" type="submit" id="delete-button" value="{{deleteLabel}}"{{#isActivelyUsed}} disabled style="pointer-events: none;" {{/isActivelyUsed}}>
-                            {{#isActivelyUsed}}</span>{{/isActivelyUsed}}
+                        <form class="delete-form col-auto" action="/inventory/{{id}}" method="post">
+                            <input class="btn btn-secondary" type="submit" id="delete-button" value="{{deleteLabel}}">
                             <input type="hidden" name="action" value="DELETE">
                         </form>
                     </div>
                 </td>
             </tr>
-        {{/room}}
+        {{/inventoryItem}}
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="2" class="p-1"></td>
+                <td colspan="4" class="p-1"></td>
             </tr>
         </tfoot>
     </table>
@@ -64,17 +73,12 @@
         $("form.delete-form").submit(function(){
             return confirm("{{deleteConfirmationMessage}}");
         });
-        //Enable Bootstrap tooltips
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
+
         //Enable DataTables
         $(document).ready( function () {
-            $('#room-table').DataTable({
-                paging: false,
-                info: false,
+            $('#inventory-table').DataTable({
                 stateSave: true,
-                columnDefs: [ {
+                columnDefs: [{
                     targets: 'nosort',
                     orderable: false
                 }, {

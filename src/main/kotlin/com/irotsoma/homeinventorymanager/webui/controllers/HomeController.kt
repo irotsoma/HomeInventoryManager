@@ -25,7 +25,9 @@ internal class HomeController {
     @GetMapping("/")
     fun home(model: Model): String {
         model.addAttribute("pageTitle", messageSource.getMessage("home.label", null, locale))
-        model.addAttribute("isLoggedIn", SecurityContextHolder.getContext().authentication != null)
+        if (!SecurityContextHolder.getContext().authentication.authorities.any { r -> r.authority == "ROLE_ANONYMOUS" }) {
+            model.addAttribute("isLoggedIn", true)
+        }
         return "index"
     }
 }

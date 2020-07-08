@@ -1,7 +1,7 @@
-{{#layout}}{{#title}}{{pageTitle}}{{/title}}
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
 <div class="container">
     <table class="table">
-        <thead>
+        <thead  class="thead-light">
             <tr>
                 <th colspan="2">{{detailsLabel}}</th>
             </tr>
@@ -18,7 +18,7 @@
         </tbody>
     </table>
     <table class="table">
-        <thead>
+        <thead class="thead-light">
             <tr>
                 <th>{{userRolesLabel}}</th>
             </tr>

@@ -5,7 +5,7 @@ spring:
 # Main menu items
 webui.menus:
   menuLayout:
-    - nameProperty: users.label
+    - nameProperty: users.menu.label
       menuItems:
         - nameProperty: logIn.label
           path: /login
@@ -32,6 +32,11 @@ webui.menus:
             - ROLE_ADMIN
         - nameProperty: roomList.label
           path: /room
+          validUserRoles:
+            - ROLE_USER
+            - ROLE_ADMIN
+        - nameProperty: categoryList.label
+          path: /category
           validUserRoles:
             - ROLE_USER
             - ROLE_ADMIN

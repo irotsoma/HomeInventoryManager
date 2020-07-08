@@ -46,7 +46,7 @@ class PropertyController {
         val userId = userRepository.findByUsername(authentication.name)?.id
         val property = propertyRepository.findById(id)
         if (userId == null || property.isEmpty || property.get().userId != userId || action != "DELETE"){
-            val errorMessage = messageSource.getMessage("data.access.error.message", null, locale)
+            val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
             logger.warn {errorMessage}
             model.addAttribute("error", errorMessage)
             return "error"
@@ -65,6 +65,7 @@ class PropertyController {
         model.addAttribute("editLabel", messageSource.getMessage("edit.button.label",null, locale))
         model.addAttribute("addNewLabel", messageSource.getMessage("addNew.button.label",null, locale))
         model.addAttribute("tableTitle", messageSource.getMessage("properties.label", null, locale))
+        model.addAttribute("activelyUsedMessage", messageSource.getMessage("record.activelyUsed.message", null, locale))
         //model.addAttribute("disableJumbotron", "disable")
         model.addAttribute("deleteConfirmationMessage", messageSource.getMessage("deleteConfirmation.message", null, locale))
     }

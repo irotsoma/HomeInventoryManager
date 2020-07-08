@@ -1,6 +1,6 @@
 package com.irotsoma.homeinventorymanager.webui.controllers
 
-import com.irotsoma.homeinventorymanager.authentication.DataState
+import com.irotsoma.homeinventorymanager.data.DataState
 import com.irotsoma.homeinventorymanager.data.User
 import com.irotsoma.homeinventorymanager.data.UserRepository
 import com.irotsoma.homeinventorymanager.data.UserRoles

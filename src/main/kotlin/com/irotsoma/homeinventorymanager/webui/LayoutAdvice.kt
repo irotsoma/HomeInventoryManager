@@ -48,4 +48,9 @@ class LayoutAdvice {
     fun applicationTitle(@ModelAttribute layout: Layout): String {
         return layout.applicationTitle
     }
+
+    @ModelAttribute("stylesheets")
+    fun stylesheets(@ModelAttribute layout: Layout): Mustache.Lambda {
+        return Mustache.Lambda { frag, _ -> layout.stylesheets = frag.execute() }
+    }
 }

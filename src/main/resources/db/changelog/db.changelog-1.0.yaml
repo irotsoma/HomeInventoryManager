@@ -53,116 +53,16 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: user_id
-                  type: long
+                  type: int
                   constraints:
                     nullable: false
+                    foreignKeyName: fk_user_roles-user
+                    references: user(id)
               - column:
                   name: role
                   type: nvarchar(1023)
                   constraints:
                     nullable: false
-        - insert:
-            tableName: user
-            columns:
-              - column:
-                  name: id
-                  value: 1
-              - column:
-                  name: username
-                  value: admin
-              - column:
-                  name: password
-                  value: '$2a$10$QAvWmPlLkw7s0G4tRj5aL.jPrPRmziPJg9Nw7FA/rGO.dPvqxJlI.'
-              - column:
-                  name: state
-                  value: ACTIVE
-        - insert:
-            tableName: user_roles
-            columns:
-              - column:
-                  name: id
-                  value: 3
-              - column:
-                  name: user_id
-                  value: 1
-              - column:
-                  name: role
-                  value: ROLE_ADMIN
-        - insert:
-            tableName: user_roles
-            columns:
-              - column:
-                  name: id
-                  value: 4
-              - column:
-                  name: user_id
-                  value: 1
-              - column:
-                  name: role
-                  value: ROLE_USER
-        - createTable:
-            tableName: inventory_item
-            columns:
-              - column:
-                  name: id
-                  type: int
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: user_id
-                  type: int
-                  constraints:
-                    nullable: false
-              - column:
-                  name: name
-                  type: nvarchar(1023)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: description
-                  type: clob
-              - column:
-                  name: value
-                  type: decimal
-              - column:
-                  name: property_id
-                  type: int
-                  constraints:
-                    nullable: false
-              - column:
-                  name: room_id
-                  type: int
-              - column:
-                  name: category_id
-                  type: int
-              - column:
-                  name: purchase_date
-                  type: date
-              - column:
-                  name: manufacturer
-                  type: nvarchar(1023)
-              - column:
-                  name: serial_number
-                  type: nvarchar(1023)
-              - column:
-                  name: state
-                  type: nvarchar(1023)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: created
-                  type: timestamp
-                  constraints:
-                    nullable: false
-                  defaultValueComputed: CURRENT_TIMESTAMP
-              - column:
-                  name: updated
-                  type: timestamp
-                  constraints:
-                    nullable: false
-                  defaultValueComputed: CURRENT_TIMESTAMP
         - createTable:
             tableName: category
             columns:
@@ -173,6 +73,13 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_category-user
+                    references: user(id)
               - column:
                   name: name
                   type: nvarchar(1023)
@@ -195,78 +102,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                   defaultValueComputed: CURRENT_TIMESTAMP
-        - insert:
-            tableName: category
-            columns:
-              - column:
-                  name: id
-                  value: 1
-              - column:
-                  name: name
-                  value: Electronics
-              - column:
-                  name: state
-                  value: ACTIVE
-        - insert:
-            tableName: category
-            columns:
-              - column:
-                  name: id
-                  value: 2
-              - column:
-                  name: name
-                  value: Art
-              - column:
-                  name: state
-                  value: ACTIVE
-        - insert:
-            tableName: category
-            columns:
-              - column:
-                  name: id
-                  value: 3
-              - column:
-                  name: name
-                  value: Clothing
-              - column:
-                  name: state
-                  value: ACTIVE
-        - insert:
-            tableName: category
-            columns:
-              - column:
-                  name: id
-                  value: 4
-              - column:
-                  name: name
-                  value: Jewelry
-              - column:
-                  name: state
-                  value: ACTIVE
-        - insert:
-            tableName: category
-            columns:
-              - column:
-                  name: id
-                  value: 5
-              - column:
-                  name: name
-                  value: Furnishings
-              - column:
-                  name: state
-                  value: ACTIVE
-        - insert:
-            tableName: category
-            columns:
-              - column:
-                  name: id
-                  value: 6
-              - column:
-                  name: name
-                  value: Appliances
-              - column:
-                  name: state
-                  value: ACTIVE
         - createTable:
             tableName: room
             columns:
@@ -282,6 +117,8 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
+                    foreignKeyName: fk_room-user
+                    references: user(id)
               - column:
                   name: name
                   type: nvarchar(1023)
@@ -319,6 +156,8 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
+                    foreignKeyName: fk_property-user
+                    references: user(id)
               - column:
                   name: name
                   type: nvarchar(1023)
@@ -371,6 +210,8 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
+                    foreignKeyName: fk_attachment-user
+                    references: user(id)
               - column:
                   name: mongo_id
                   type: nvarchar(1023)
@@ -381,6 +222,79 @@ databaseChangeLog:
                   type: nvarchar(1023)
                   constraints:
                     nullable: false
+              - column:
+                  name: state
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: updated
+                  type: timestamp
+                  constraints:
+                    nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - createTable:
+            tableName: inventory_item
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_inventory_item-user
+                    references: user(id)
+              - column:
+                  name: name
+                  type: nvarchar(1023)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: clob
+              - column:
+                  name: value
+                  type: decimal
+              - column:
+                  name: property_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_inventory_item-property
+                    references: property(id)
+              - column:
+                  name: room_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_inventory_item-room
+                    references: room(id)
+              - column:
+                  name: category_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_inventory_item-category
+                    references: category(id)
+              - column:
+                  name: purchase_date
+                  type: date
+              - column:
+                  name: manufacturer
+                  type: nvarchar(1023)
+              - column:
+                  name: serial_number
+                  type: nvarchar(1023)
               - column:
                   name: state
                   type: nvarchar(1023)
@@ -413,11 +327,15 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
+                    foreignKeyName: fk_link_inventory_item-attachment
+                    references: inventory_item(id)
               - column:
                   name: attachment_id
                   type: int
                   constraints:
                     nullable: false
+                    foreignKeyName: fk_link_attachment-inventory_item
+                    references: attachment(id)
               - column:
                   name: state
                   type: nvarchar(1023)
@@ -436,7 +354,22 @@ databaseChangeLog:
                     nullable: false
                   defaultValueComputed: CURRENT_TIMESTAMP
         - insert:
-            tableName: property
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  value: 1
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: password
+                  value: '$2a$10$QAvWmPlLkw7s0G4tRj5aL.jPrPRmziPJg9Nw7FA/rGO.dPvqxJlI.'
+              - column:
+                  name: state
+                  value: ACTIVE
+        - insert:
+            tableName: user_roles
             columns:
               - column:
                   name: id
@@ -445,28 +378,10 @@ databaseChangeLog:
                   name: user_id
                   value: 1
               - column:
-                  name: name
-                  value: Example Property
-              - column:
-                  name: address_street
-                  value: 123 Example Street
-              - column:
-                  name: address_city
-                  value: Example City
-              - column:
-                  name: address_state
-                  value: Example State
-              - column:
-                  name: address_postal_code
-                  value: 12345-0000
-              - column:
-                  name: address_country
-                  value: USA
-              - column:
-                  name: state
-                  value: ACTIVE
+                  name: role
+                  value: ROLE_ADMIN
         - insert:
-            tableName: property
+            tableName: user_roles
             columns:
               - column:
                   name: id
@@ -475,8 +390,5 @@ databaseChangeLog:
                   name: user_id
                   value: 1
               - column:
-                  name: name
-                  value: Example Property 2
-              - column:
-                  name: state
-                  value: ACTIVE
+                  name: role
+                  value: ROLE_USER

@@ -1,5 +1,5 @@
-{{#layout}}{{#title}}{{pageTitle}}{{/title}}
-    <div class="container form-group">
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
+<div class="container form-group">
         <form id="edit-property-form" method="POST" action="/propertyedit">
             {{#formError}}
                 <div class="form-group alert alert-danger alert-dismissible fade show">

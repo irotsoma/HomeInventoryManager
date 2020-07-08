@@ -1,21 +1,23 @@
 {{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
+
 {{#stylesheets}}
     <link href="webjars/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="webjars/datatables/css/dataTables.bootstrap4.css">
 {{/stylesheets}}
+
 <div class="container mt-5">
     <div class="row mt-2 mb-2 pr-1">
         <div class="col">
             <h3>{{tableTitle}}</h3>
         </div>
         <div class="col">
-            <form action="/roomedit" method="get">
+            <form action="/categoryedit" method="get">
                 <button class="btn btn-info float-right" type="submit"><span class="oi oi-plus" aria-hidden="true"></span> {{addNewLabel}}</button>
             </form>
         </div>
     </div>
     <hr class="mt-0">
-    <table id="room-table" class="table">
+    <table id="category-table" class="table">
         <thead class="thead-light">
         <tr>
             <th>
@@ -27,32 +29,32 @@
         </tr>
         </thead>
         <tbody>
-        {{#room}}
+        {{#category}}
             <tr>
                 <td>
                     {{name}}
                 </td>
                 <td class="pr-1">
                     <div class="row float-right">
-                        <form class="col-auto" action="/roomedit/{{id}}" method="get">
+                        <form class="col-auto" action="/categoryedit/{{id}}" method="get">
                             <input class="btn btn-secondary" type="submit" id="edit-button" value="{{editLabel}}">
                         </form>
 
-                        <form class="delete-form col-auto" action="/room/{{id}}" method="post">
+                        <form class="delete-form col-auto" action="/category/{{id}}" method="post">
                             {{#isActivelyUsed}}<span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="{{activelyUsedMessage}}">{{/isActivelyUsed}}
-                            <input class="btn btn-secondary" type="submit" id="delete-button" value="{{deleteLabel}}"{{#isActivelyUsed}} disabled style="pointer-events: none;" {{/isActivelyUsed}}>
+                                <input class="btn btn-secondary" type="submit" id="delete-button" value="{{deleteLabel}}"{{#isActivelyUsed}} disabled style="pointer-events: none;" {{/isActivelyUsed}}>
                             {{#isActivelyUsed}}</span>{{/isActivelyUsed}}
                             <input type="hidden" name="action" value="DELETE">
                         </form>
                     </div>
                 </td>
             </tr>
-        {{/room}}
+        {{/category}}
         </tbody>
         <tfoot>
-            <tr>
-                <td colspan="2" class="p-1"></td>
-            </tr>
+        <tr>
+            <td colspan="2" class="p-1"></td>
+        </tr>
         </tfoot>
     </table>
 </div>
@@ -70,7 +72,7 @@
         })
         //Enable DataTables
         $(document).ready( function () {
-            $('#room-table').DataTable({
+            $('#category-table').DataTable({
                 paging: false,
                 info: false,
                 stateSave: true,

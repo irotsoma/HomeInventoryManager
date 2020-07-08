@@ -1,10 +1,11 @@
-{{#layout}}{{#title}}{{pageTitle}}{{/title}}
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
 <div class="container">
     {{#isLoggedIn}}
-        Select an option from the menus above.
+        <script>window.location.replace("/inventory");</script>
     {{/isLoggedIn}}
     {{^isLoggedIn}}
         Please <a href="/login">login</a> to continue
     {{/isLoggedIn}}
+
 </div>
 {{/layout}}

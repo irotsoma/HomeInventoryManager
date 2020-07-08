@@ -9,8 +9,8 @@
     <base href="/" />
     <link rel="stylesheet" type="text/css"
           href="/webjars/bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css"
-          href="/css/default.css" />
+    <link rel="stylesheet" type="text/css" href="/css/default.css" />
+    {{{layout.stylesheets}}}
 </head>
 <body>
     <!-- navbar -->
@@ -68,7 +68,12 @@
 
         </div>
     </div>
+
     {{{layout.body}}}
+
+    <footer class="footer mt-3">
+        <div class="bg-light footer-copyright py-3 text-center text-muted">Copyright © 2020</div>
+    </footer>
     <!-- Scripts -->
     <script type="text/javascript" src="webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="webjars/bootstrap/js/bootstrap.bundle.min.js"></script>

@@ -1,7 +1,7 @@
 /*
  * Created by irotsoma on 6/30/2020.
  */
-package com.irotsoma.homeinventorymanager.authentication
+package com.irotsoma.homeinventorymanager.data
 
 
 /**

@@ -3,7 +3,6 @@
  */
 package com.irotsoma.homeinventorymanager.data
 
-import com.irotsoma.homeinventorymanager.authentication.DataState
 import mu.KLogging
 import org.hibernate.annotations.*
 import java.math.BigDecimal
@@ -59,5 +58,9 @@ class InventoryItem(@Column(name = "name", nullable = false) val name: String,
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     var room: Room? = null
+
+    @OneToOne(cascade = [CascadeType.ALL])
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    var category: Category? = null
 
 }

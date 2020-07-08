@@ -1,10 +1,14 @@
+/*
+ * Created by irotsoma on 7/7/2020.
+ */
 package com.irotsoma.homeinventorymanager.webui.controllers
 
+
+import com.irotsoma.homeinventorymanager.data.Category
+import com.irotsoma.homeinventorymanager.data.CategoryRepository
 import com.irotsoma.homeinventorymanager.data.DataState
-import com.irotsoma.homeinventorymanager.data.Room
-import com.irotsoma.homeinventorymanager.data.RoomRepository
 import com.irotsoma.homeinventorymanager.data.UserRepository
-import com.irotsoma.homeinventorymanager.webui.models.RoomForm
+import com.irotsoma.homeinventorymanager.webui.models.CategoryForm
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
@@ -24,74 +28,77 @@ import javax.validation.Valid
 
 @Controller
 @Lazy
-@RequestMapping("/roomedit")
+@RequestMapping("/categoryedit")
 @Secured("ROLE_USER")
-class RoomEditController {
+class CategoryEditController {
     /** kotlin-logging implementation*/
-    private companion object: KLogging()
+    private companion object : KLogging()
+
     private val locale: Locale = LocaleContextHolder.getLocale()
+
     @Autowired
     private lateinit var messageSource: MessageSource
+
     @Autowired
-    private lateinit var roomRepository: RoomRepository
+    private lateinit var categoryRepository: CategoryRepository
+
     @Autowired
     private lateinit var userRepository: UserRepository
 
     @GetMapping
-    fun new(model: Model) : String{
+    fun new(model: Model): String {
         addStaticAttributes(model)
-        return "roomedit"
+        return "categoryedit"
     }
 
     @GetMapping("/{id}")
-    fun get(@PathVariable id: Int, model: Model) : String {
+    fun get(@PathVariable id: Int, model: Model): String {
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
-        val room = roomRepository.findById(id)
-        if (userId == null || room.isEmpty || room.get().userId != userId){
+        val category = categoryRepository.findById(id)
+        if (userId == null || category.isEmpty|| category.get().userId != userId) {
             val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
-            logger.warn {errorMessage}
+            logger.warn { errorMessage }
             model.addAttribute("error", errorMessage)
             return "error"
         }
         addStaticAttributes(model)
-        model.addAttribute("room", room.get())
-        return "roomedit"
+        model.addAttribute("category", category.get())
+        return "categoryedit"
     }
 
     @PostMapping
-    fun put(@Valid roomForm: RoomForm, bindingResult: BindingResult, model: Model): String{
+    fun put(@Valid categoryForm: CategoryForm, bindingResult: BindingResult, model: Model): String {
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
-        val room = roomRepository.findById(roomForm.id)
-        if (userId == null || (room.isEmpty && roomForm.id != -1) || (room.isPresent && room.get().userId != userId)){
+        val category = categoryRepository.findById(categoryForm.id)
+        if (userId == null || (category.isEmpty && categoryForm.id != -1) || (category.isPresent && category.get().userId != userId)) {
             val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
-            logger.warn {errorMessage}
+            logger.warn { errorMessage }
             model.addAttribute("error", errorMessage)
             return "error"
         }
         val updatedProperty =
-            if (roomForm.id == -1) {
-                Room(
+            if (categoryForm.id == -1) {
+                Category(
                     userId,
-                    roomForm.name.trim(),
+                    categoryForm.name.trim(),
                     DataState.ACTIVE
                 )
             } else {
-                room.get().apply {
-                    this.name = roomForm.name
+                category.get().apply {
+                    this.name = categoryForm.name
                 }
             }
-        roomRepository.saveAndFlush(updatedProperty)
+        categoryRepository.saveAndFlush(updatedProperty)
 
-        return "redirect:/room"
+        return "redirect:/category"
     }
 
 
     fun addStaticAttributes(model: Model) {
-        model.addAttribute("pageTitle", messageSource.getMessage("editRoom.label", null, locale))
+        model.addAttribute("pageTitle", messageSource.getMessage("editCategory.label", null, locale))
         model.addAttribute("nameLabel", messageSource.getMessage("name.label", null, locale))
-        //model.addAttribute("disableJumbotron", "disable")
         model.addAttribute("submitButtonLabel", messageSource.getMessage("submit.label", null, locale))
     }
 }

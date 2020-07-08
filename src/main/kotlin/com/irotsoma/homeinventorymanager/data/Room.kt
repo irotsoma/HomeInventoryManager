@@ -1,6 +1,5 @@
 package com.irotsoma.homeinventorymanager.data
 
-import com.irotsoma.homeinventorymanager.authentication.DataState
 import mu.KLogging
 import org.hibernate.annotations.*
 import java.util.*
@@ -34,5 +33,22 @@ class Room (@Column(name = "user_id", nullable = false) var userId: Int,
     @Column(name = "updated")
     var updated: Date? = null
         private set
+
+    @OneToMany(fetch=FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    var inventoryItems : Collection<InventoryItem>? = null
+
+    @Transient
+    var isActivelyUsed: Boolean? = null
+
+    @PostLoad
+    fun calculateIsActivelyUsed(){
+        isActivelyUsed = if (inventoryItems?.isNotEmpty() == true) { true } else { null }
+    }
+
+    override fun toString(): String {
+        return name;
+    }
 }
 

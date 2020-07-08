@@ -3,7 +3,6 @@
  */
 package com.irotsoma.homeinventorymanager.data
 
-import com.irotsoma.homeinventorymanager.authentication.DataState
 import mu.KLogging
 import org.hibernate.annotations.*
 import java.util.*

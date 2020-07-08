@@ -1,6 +1,6 @@
 package com.irotsoma.homeinventorymanager.webui.controllers
 
-import com.irotsoma.homeinventorymanager.authentication.DataState
+import com.irotsoma.homeinventorymanager.data.DataState
 import com.irotsoma.homeinventorymanager.data.Property
 import com.irotsoma.homeinventorymanager.data.PropertyRepository
 import com.irotsoma.homeinventorymanager.data.UserRepository
@@ -49,7 +49,7 @@ class PropertyEditController {
         val userId = userRepository.findByUsername(authentication.name)?.id
         val property = propertyRepository.findById(id)
         if (userId == null || property.isEmpty || property.get().userId != userId){
-            val errorMessage = messageSource.getMessage("data.access.error.message", null, locale)
+            val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
             logger.warn {errorMessage}
             model.addAttribute("error", errorMessage)
             return "error"
@@ -67,7 +67,7 @@ class PropertyEditController {
         val userId = userRepository.findByUsername(authentication.name)?.id
         val property = propertyRepository.findById(propertyForm.id)
         if (userId == null || (property.isEmpty && propertyForm.id != -1) || (property.isPresent && property.get().userId != userId)){
-            val errorMessage = messageSource.getMessage("data.access.error.message", null, locale)
+            val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
             logger.warn {errorMessage}
             model.addAttribute("error", errorMessage)
             return "error"

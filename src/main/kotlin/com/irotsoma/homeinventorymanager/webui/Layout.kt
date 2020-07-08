@@ -22,6 +22,8 @@ class Layout(private val compiler: Mustache.Compiler) : Mustache.Lambda {
 
     var scripts: String = ""
 
+    var stylesheets: String = ""
+
     override fun execute(frag: Fragment, out: Writer) {
         body = frag.execute()
         compiler.compile("{{>layout}}").execute(frag.context(), out)

@@ -12,6 +12,8 @@ val popperVersion = "1.12.9-1"
 val webjarsLocatorVersion = "0.40"
 val javaxValidationVersion = "2.0.1.Final"
 val passayVersion = "1.4.0"
+val openIconicVersion = "1.1.1"
+val dataTablesVersion = "1.10.21"
 
 plugins {
     val kotlinVersion = "1.3.72"
@@ -76,6 +78,8 @@ dependencies {
     implementation("org.webjars:jquery:$jqueryVersion")
     implementation("org.webjars:popper.js:$popperVersion")
     implementation("org.webjars:webjars-locator:$webjarsLocatorVersion")
+    implementation("org.webjars.bower:open-iconic:$openIconicVersion")
+    implementation("org.webjars:datatables:$dataTablesVersion")
     //web validation library
     implementation("com.irotsoma.web:validation:$webValidationVersion")
     implementation("javax.validation:validation-api:$javaxValidationVersion")

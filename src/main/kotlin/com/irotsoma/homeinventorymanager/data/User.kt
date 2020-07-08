@@ -1,7 +1,6 @@
 package com.irotsoma.homeinventorymanager.data
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.irotsoma.homeinventorymanager.authentication.DataState
 import mu.KLogging
 import org.hibernate.annotations.*
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -77,4 +76,8 @@ class User(@Column(name = "username", nullable = false, updatable = false, uniqu
                 }
             }
         }
+
+    override fun toString(): String {
+        return username;
+    }
 }

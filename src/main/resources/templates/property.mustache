@@ -1,4 +1,8 @@
-{{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{pageSubTitle}}{{/subTitle}}
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
+{{#stylesheets}}
+    <link href="webjars/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="webjars/datatables/css/dataTables.bootstrap4.css">
+{{/stylesheets}}
 <div class="container mt-5">
     <div class="row mt-2 mb-2 pr-1">
         <div class="col">
@@ -6,11 +10,12 @@
         </div>
         <div class="col">
             <form action="/propertyedit" method="get">
-                <input class="btn btn-secondary float-right" type="submit" id="new-button" value="{{addNewLabel}}">
+                <button class="btn btn-info float-right" type="submit"><span class="oi oi-plus" aria-hidden="true"></span> {{addNewLabel}}</button>
             </form>
         </div>
     </div>
-    <table class="table">
+    <hr class="mt-0">
+    <table id="property-table" class="table">
         <thead class="thead-light">
             <tr>
                 <th>
@@ -19,7 +24,7 @@
                 <th>
                     {{addressLabel}}
                 </th>
-                <th>
+                <th class="nosort nosearch">
                     <span class="float-right">{{actionsLabel}}</span>
                 </th>
             </tr>
@@ -40,7 +45,9 @@
                         </form>
 
                         <form class="delete-form col-auto" action="/property/{{id}}" method="post">
-                            <input class="btn btn-secondary" type="submit" id="delete-button" value="{{deleteLabel}}">
+                            {{#isActivelyUsed}}<span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="{{activelyUsedMessage}}">{{/isActivelyUsed}}
+                            <input class="btn btn-secondary" type="submit" id="delete-button" value="{{deleteLabel}}"{{#isActivelyUsed}} disabled style="pointer-events: none;" {{/isActivelyUsed}}>
+                            {{#isActivelyUsed}}</span>{{/isActivelyUsed}}
                             <input type="hidden" name="action" value="DELETE">
                         </form>
                     </div>
@@ -48,14 +55,40 @@
             </tr>
             {{/property}}
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="p-1"></td>
+            </tr>
+        </tfoot>
     </table>
 </div>
     {{#scripts}}
-        <!-- confirmation popup -->
+        <script type="text/javascript" src="webjars/datatables/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="webjars/datatables/js/dataTables.bootstrap4.min.js"></script>
         <script>
+            //confirmation popup
             $("form.delete-form").submit(function(){
                 return confirm("{{deleteConfirmationMessage}}");
             });
+            //Enable Bootstrap tooltips
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
+            //Enable DataTables
+            $(document).ready( function () {
+                $('#property-table').DataTable({
+                    paging: false,
+                    stateSave: true,
+                    info: false,
+                    columnDefs: [ {
+                        targets: 'nosort',
+                        orderable: false
+                    }, {
+                        targets: 'nosearch',
+                        searchable: false
+                    }]
+                });
+            } );
         </script>
     {{/scripts}}
 {{/layout}}
