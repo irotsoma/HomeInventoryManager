@@ -1,6 +1,7 @@
 package com.irotsoma.homeinventorymanager.filerepository
 
 
+import com.irotsoma.homeinventorymanager.Utilities
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,7 +16,7 @@ class MongoAttachmentServiceTest {
     @Autowired
     lateinit var mongoAttachmentService: MongoAttachmentService
     @Test
-    fun attachments() {
+    fun mongoAttachments() {
         val file = File(this.javaClass.classLoader.getResource("picture.PNG")!!.file)
         var filestream = file.inputStream()
         val inputHash = Utilities.hashFile(filestream)
@@ -25,8 +26,8 @@ class MongoAttachmentServiceTest {
         assert(attachmentFile != null)
         val outputHash = Utilities.hashFile(attachmentFile!!.inputStream)
         assert(inputHash == outputHash)
-        //TODO: delete
-
+        mongoAttachmentService.deleteAttachment(attachmentId)
+        assert(mongoAttachmentService.getAttachment(attachmentId) == null)
     }
 
 }

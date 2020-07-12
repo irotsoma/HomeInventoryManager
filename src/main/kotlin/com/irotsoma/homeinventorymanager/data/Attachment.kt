@@ -15,6 +15,8 @@ import javax.persistence.Table
 @SQLDelete(sql = "UPDATE attachment SET state = 'deleted' WHERE id = ?", check = ResultCheckStyle.COUNT)
 @Where(clause = "state = 'active'")
 class Attachment (@Column(name = "mongo_id", nullable = false) val mongoId: String,
+                  @Column(name = "name", nullable = false) val name: String,
+                  @Column(name = "user_id", nullable = false) val userId: Int,
                   @Column(name = "state", nullable = false) @Enumerated(EnumType.STRING) var state: DataState
 ) {
     /** kotlin-logging implementation */

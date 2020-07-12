@@ -14,6 +14,7 @@ val javaxValidationVersion = "2.0.1.Final"
 val passayVersion = "1.4.0"
 val openIconicVersion = "1.1.1"
 val dataTablesVersion = "1.10.21"
+val jasperVersion = "6.13.0"
 
 plugins {
     val kotlinVersion = "1.3.72"
@@ -34,14 +35,10 @@ plugins {
     id("org.liquibase.gradle") version liquibaseGradleVersion
 }
 
-
-
 repositories {
-    mavenLocal()
     mavenCentral()
     jcenter()
     gradlePluginPortal()
-
 }
 
 dependencies {
@@ -57,7 +54,8 @@ dependencies {
     implementation( "org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-mustache")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation ("org.springframework.boot:spring-boot-starter-integration")
+    implementation("org.springframework.boot:spring-boot-starter-integration")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
     //mariaDb
     implementation( "org.mariadb.jdbc:mariadb-java-client")
     //liquibase
@@ -84,7 +82,10 @@ dependencies {
     implementation("com.irotsoma.web:validation:$webValidationVersion")
     implementation("javax.validation:validation-api:$javaxValidationVersion")
     implementation("org.passay:passay:$passayVersion")
-
+    //jasper
+    implementation("net.sf.jasperreports:jasperreports:$jasperVersion")
+    implementation("com.lowagie:itext:2.1.7")
+    //spring boot tools
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 

@@ -47,9 +47,7 @@ class MongoAttachmentService {
         return MongoAttachment(id, file.metadata!!["name"].toString(), operations.getResource(file).inputStream)
     }
 
-    fun removeAttachment(id: String) {
+    fun deleteAttachment(id: String) {
         gridFsTemplate.delete(Query(Criteria.where("_id").`is`(id)))
     }
-
-    //TODO: P2 delete with timed service to clean up items that have been deleted for a long time for db cleanup
 }

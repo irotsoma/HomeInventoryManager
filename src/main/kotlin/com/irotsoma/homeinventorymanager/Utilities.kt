@@ -1,7 +1,4 @@
-/*
- * Created by irotsoma on 7/2/2020.
- */
-package com.irotsoma.homeinventorymanager.filerepository
+package com.irotsoma.homeinventorymanager
 
 import java.io.InputStream
 import java.security.MessageDigest
@@ -9,7 +6,7 @@ import javax.xml.bind.DatatypeConverter
 
 
 /**
- * A singleton object that contains shared Utilities for use by various cloudbackenc applications.
+ * A singleton object that contains shared Utilities
  *
  * @author Justin Zak
  */

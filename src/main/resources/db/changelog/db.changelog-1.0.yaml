@@ -56,7 +56,7 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_user_roles-user
+                    foreignKeyName: fk_user_roles_user
                     references: user(id)
               - column:
                   name: role
@@ -78,7 +78,7 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_category-user
+                    foreignKeyName: fk_category_user
                     references: user(id)
               - column:
                   name: name
@@ -117,7 +117,7 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_room-user
+                    foreignKeyName: fk_room_user
                     references: user(id)
               - column:
                   name: name
@@ -156,7 +156,7 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_property-user
+                    foreignKeyName: fk_property_user
                     references: user(id)
               - column:
                   name: name
@@ -210,7 +210,7 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_attachment-user
+                    foreignKeyName: fk_attachment_user
                     references: user(id)
               - column:
                   name: mongo_id
@@ -254,7 +254,7 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_inventory_item-user
+                    foreignKeyName: fk_inventory_item_user
                     references: user(id)
               - column:
                   name: name
@@ -272,19 +272,19 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_inventory_item-property
+                    foreignKeyName: fk_inventory_item_property
                     references: property(id)
               - column:
                   name: room_id
                   type: int
                   constraints:
-                    foreignKeyName: fk_inventory_item-room
+                    foreignKeyName: fk_inventory_item_room
                     references: room(id)
               - column:
                   name: category_id
                   type: int
                   constraints:
-                    foreignKeyName: fk_inventory_item-category
+                    foreignKeyName: fk_inventory_item_category
                     references: category(id)
               - column:
                   name: purchase_date
@@ -316,7 +316,7 @@ databaseChangeLog:
                     nullable: false
                   defaultValueComputed: CURRENT_TIMESTAMP
         - createTable:
-            tableName: inventory_item-attachment
+            tableName: inventory_item_attachment
             columns:
               - column:
                   name: id
@@ -330,14 +330,14 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_link_inventory_item-attachment
+                    foreignKeyName: fk_link_inventory_item_attachment
                     references: inventory_item(id)
               - column:
                   name: attachment_id
                   type: int
                   constraints:
                     nullable: false
-                    foreignKeyName: fk_link_attachment-inventory_item
+                    foreignKeyName: fk_link_attachment_inventory_item
                     references: attachment(id)
               - column:
                   name: state

@@ -3,9 +3,7 @@
  */
 package com.irotsoma.homeinventorymanager.filerepository
 
-import com.irotsoma.homeinventorymanager.data.Attachment
-import com.irotsoma.homeinventorymanager.data.AttachmentRepository
-import com.irotsoma.homeinventorymanager.data.DataState
+import com.irotsoma.homeinventorymanager.Utilities
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,19 +14,23 @@ import java.io.File
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AttachmentTest {
+class AttachmentServiceTest {
     @Autowired
-    lateinit var attachmentRepository: AttachmentRepository
-    @Autowired
-    lateinit var mongoAttachmentService: MongoAttachmentService
+    lateinit var attachmentService: AttachmentService
     @Test
-    fun testAttachment(){
+    fun testAttachmentService(){
         val file = File(this.javaClass.classLoader.getResource("picture.PNG")!!.file)
         var filestream = file.inputStream()
         val inputHash = Utilities.hashFile(filestream)
         filestream = file.inputStream()
-        val id = mongoAttachmentService.addAttachment("test",MockMultipartFile("test",filestream))
-        val attachment = Attachment(id, DataState.ACTIVE)
-        attachmentRepository.save(attachment)
+        val attachment = attachmentService.addAttachment("test", 1, MockMultipartFile("test",filestream))
+        val outputAttachment = attachmentService.getAttachment(attachment.getId())
+        assert(outputAttachment != null)
+        val outputFile =  File.createTempFile("out",".tmp")
+        outputAttachment!!.getInputStream().transferTo(outputFile.outputStream())
+        attachmentService.deleteAttachment(attachment)
+        val outputHash = Utilities.hashFile(outputFile.inputStream())
+        assert(inputHash == outputHash)
+
     }
 }

@@ -20,5 +20,11 @@ spring.jpa:
 
 security.rememberme.key: mdnumBcFXfwCxTIF16qo
 
+jasper.reporting:
+  groupByRoomCategoryReportPath: ./config/reports/Home_Inventory_room_category.jrxml
+  groupByPropertyCategoryReportPath: ./config/reports/Home_Inventory_property_category.jrxml
+  groupByPropertyRoomReportPath: ./config/reports/Home_Inventory_property_room.jrxml
+  groupByRoomReportPath: ./config/reports/Home_Inventory_room.jrxml
+  groupByCategoryReportPath: ./config/reports/Home_Inventory_category.jrxml
 
 

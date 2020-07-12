@@ -40,3 +40,15 @@ webui.menus:
           validUserRoles:
             - ROLE_USER
             - ROLE_ADMIN
+    - nameProperty: reports.menu.label
+      menuItems:
+        - nameProperty: value.report.menu.label
+          path: /valuereport
+          validUserRoles:
+            - ROLE_USER
+            - ROLE_ADMIN
+        - nameProperty: inventory.report.menu.label
+          path: /inventoryreport
+          validUserRoles:
+            - ROLE_USER
+            - ROLE_ADMIN

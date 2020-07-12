@@ -16,9 +16,13 @@ import javax.persistence.Table
 @Table(name = "inventory_item")
 @SQLDelete(sql = "UPDATE inventory_item SET state = 'deleted' WHERE id = ?", check = ResultCheckStyle.COUNT)
 @Where(clause = "state = 'active'")
-class InventoryItem(@Column(name = "name", nullable = false) val name: String,
-                    @Column(name = "description") val description: String,
-                    @Column(name = "value") val value: BigDecimal,
+class InventoryItem(@Column(name = "name", nullable = false) var name: String,
+                    @Column(name = "description") var description: String,
+                    @Column(name = "value") var value: BigDecimal,
+                    @Column(name = "purchase_date") var purchaseDate: Date,
+                    @Column(name = "purchase_price") var purchasePrice: BigDecimal,
+                    @Column(name = "manufacturer") var manufacturer: String,
+                    @Column(name = "serial_number") var serialNumber: String,
                     @Column(name = "state", nullable = false) @Enumerated(EnumType.STRING) var state: DataState
 ) {
     /** kotlin-logging implementation */
@@ -42,7 +46,7 @@ class InventoryItem(@Column(name = "name", nullable = false) val name: String,
         private set
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    @JoinTable(name="inventory_item-attachment",
+    @JoinTable(name="inventory_item_attachment",
                 joinColumns = [JoinColumn(name="inventory_item_id")],
                 inverseJoinColumns = [JoinColumn(name="attachment_id")])
     var attachments: Set<Attachment> = hashSetOf()
@@ -62,5 +66,19 @@ class InventoryItem(@Column(name = "name", nullable = false) val name: String,
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     var category: Category? = null
+
+    @Formula("(select r.name from room r where r.id = room_id)")
+    var roomName: String = ""
+    @Formula("(select c.name from category c where c.id = category_id)")
+    var categoryName: String = ""
+    @Formula("(select p.name from property p where p.id = property_id)")
+    var propertyName: String = ""
+
+    @PostLoad
+    fun populateSubTableNames(){
+        roomName = room?.name ?: "None"
+        categoryName = category?.name ?: "None"
+        propertyName = property?.name ?: "None"
+    }
 
 }
