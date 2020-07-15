@@ -249,6 +249,6 @@ class InventoryEditController {
         model.addAttribute("categoryLabel",messageSource.getMessage("category.label", null, locale))
         model.addAttribute("submitButtonLabel", messageSource.getMessage("submit.label", null, locale))
         model.addAttribute("addNewLabel", messageSource.getMessage("addNew.button.label",null, locale))
-
+        model.addAttribute("cancelLabel", messageSource.getMessage("cancel.button.label", null, locale))
     }
 }

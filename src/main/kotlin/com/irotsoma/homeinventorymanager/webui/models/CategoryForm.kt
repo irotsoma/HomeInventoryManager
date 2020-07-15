@@ -5,8 +5,7 @@ package com.irotsoma.homeinventorymanager.webui.models
 
 import javax.validation.constraints.NotBlank
 
-
 class CategoryForm {
     @NotBlank
-    var name: String = ""
+    var categoryName: String = ""
 }

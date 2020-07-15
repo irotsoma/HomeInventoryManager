@@ -9,6 +9,7 @@ import com.irotsoma.homeinventorymanager.data.CategoryRepository
 import com.irotsoma.homeinventorymanager.data.DataState
 import com.irotsoma.homeinventorymanager.data.UserRepository
 import com.irotsoma.homeinventorymanager.webui.models.CategoryForm
+import com.irotsoma.homeinventorymanager.webui.models.FormResponse
 import mu.KLogging
 import org.hibernate.exception.ConstraintViolationException
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,11 +22,10 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.validation.FieldError
+import org.springframework.web.bind.annotation.*
 import java.util.*
+import java.util.stream.Collectors
 import javax.validation.Valid
 
 @Controller
@@ -80,7 +80,7 @@ class CategoryEditController {
         }
         val newCategory = Category(
                     userId,
-                    categoryForm.name.trim(),
+                    categoryForm.categoryName.trim(),
                     DataState.ACTIVE
                 )
         try {
@@ -95,6 +95,40 @@ class CategoryEditController {
         }
         return "redirect:/category"
     }
+    @PostMapping("/modal")
+    @ResponseBody fun postModal(@ModelAttribute @Valid categoryForm: CategoryForm, bindingResult: BindingResult) : FormResponse {
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            return FormResponse(categoryForm.categoryName, false, errors)
+        }
+
+        val locale: Locale = LocaleContextHolder.getLocale()
+        val authentication = SecurityContextHolder.getContext().authentication
+        val userId = userRepository.findByUsername(authentication.name)?.id
+        if (userId == null) {
+            val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
+            logger.warn { errorMessage }
+            return FormResponse(categoryForm.categoryName, false, mapOf(Pair("categoryName", errorMessage)))
+        }
+        val newCategory = Category(
+            userId,
+            categoryForm.categoryName.trim(),
+            DataState.ACTIVE
+        )
+        try {
+            categoryRepository.saveAndFlush(newCategory)
+        } catch (e: DataIntegrityViolationException){
+            if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_category_name_per_user"){
+                val errorMessage = messageSource.getMessage("name.uniquenessError.message", null, locale)
+                return FormResponse(categoryForm.categoryName, false, mapOf(Pair("categoryName",errorMessage)))
+            }
+        }
+        return FormResponse(categoryForm.categoryName, true, null)
+    }
+
     @PostMapping("/{id}")
     fun put(@Valid categoryForm: CategoryForm, bindingResult: BindingResult, model: Model, @PathVariable id: Int): String {
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -107,7 +141,7 @@ class CategoryEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
-        val updatedCategory = category.get().apply { this.name = categoryForm.name.trim() }
+        val updatedCategory = category.get().apply { this.name = categoryForm.categoryName.trim() }
         try {
             categoryRepository.saveAndFlush(updatedCategory)
         } catch (e: DataIntegrityViolationException){

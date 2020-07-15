@@ -74,7 +74,7 @@ class RoomEditController {
         }
         val newRoom = Room(
             userId,
-            roomForm.name.trim(),
+            roomForm.roomName.trim(),
             DataState.ACTIVE
         )
         try {
@@ -104,7 +104,7 @@ class RoomEditController {
             return "error"
         }
         val updatedRoom = room.get().apply {
-                this.name = roomForm.name.trim()
+                this.name = roomForm.roomName.trim()
             }
         try {
             roomRepository.saveAndFlush(updatedRoom)

@@ -74,7 +74,7 @@ class PropertyEditController {
         }
         val newProperty = Property(
             userId,
-            propertyForm.name.trim(),
+            propertyForm.propertyName.trim(),
             if (propertyForm.street.isNullOrBlank()) null else propertyForm.street!!.trim(),
             if (propertyForm.city.isNullOrBlank()) null else propertyForm.city!!.trim(),
             if (propertyForm.state.isNullOrBlank()) null else propertyForm.state!!.trim(),
@@ -108,7 +108,7 @@ class PropertyEditController {
             return "error"
         }
         val updatedProperty = property.get().apply {
-            this.name = propertyForm.name.trim()
+            this.name = propertyForm.propertyName.trim()
             this.addressStreet = if (propertyForm.street.isNullOrBlank()) null else propertyForm.street!!.trim()
             this.addressCity = if (propertyForm.city.isNullOrBlank()) null else propertyForm.city!!.trim()
             this.addressState = if (propertyForm.state.isNullOrBlank()) null else propertyForm.state!!.trim()

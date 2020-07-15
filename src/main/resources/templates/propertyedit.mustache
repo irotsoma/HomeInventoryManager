@@ -10,8 +10,8 @@
                 </div>
             {{/formError}}
             <div  class="form-group">
-                <h4><label for="name">{{nameLabel}}</label></h4>
-                <input type="text" id="name" name="name" class="form-control{{#nameError}} is-invalid{{/nameError}}" {{#property}}value="{{name}}"{{/property}} required />
+                <h4><label for="propertyName">{{nameLabel}}</label></h4>
+                <input type="text" id="propertyName" name="propertyName" class="form-control{{#nameError}} is-invalid{{/nameError}}" {{#property}}value="{{name}}"{{/property}} required />
                 {{#nameError}}<div class="invalid-feedback">{{{.}}}</div>{{/nameError}}
             </div>
             <h4>{{addressLabel}}</h4>

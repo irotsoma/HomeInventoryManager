@@ -8,6 +8,6 @@ import javax.validation.constraints.NotBlank
 
 class RoomForm {
     @NotBlank
-    var name: String = ""
+    var roomName: String = ""
 
 }
