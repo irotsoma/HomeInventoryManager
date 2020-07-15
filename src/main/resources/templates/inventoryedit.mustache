@@ -1,0 +1,204 @@
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
+{{#stylesheets}}
+    <link href="webjars/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
+{{/stylesheets}}
+<div class="container form-group">
+    <form id="edit-room-form" method="POST" action="/inventoryedit{{#inventoryItem}}{{#id}}/{{.}}{{/id}}{{/inventoryItem}}">
+        {{#formError}}
+            <div class="form-group alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{.}}
+            </div>
+        {{/formError}}
+        <div  class="form-group">
+            <label for="name">{{nameLabel}}</label>
+            <input type="text" id="name" name="name" class="form-control{{#nameError}} is-invalid{{/nameError}}" {{#inventoryItem}}{{#name}}value="{{.}}"{{/name}}{{/inventoryItem}} required />
+            {{#nameError}}<div class="invalid-feedback">{{{.}}}</div>{{/nameError}}
+        </div>
+        <div  class="form-group">
+            <label for="description">{{descriptionLabel}}</label>
+            <textarea type="text" id="description" name="description" class="form-control{{#descriptionError}} is-invalid{{/descriptionError}}" rows="3">{{#inventoryItem}}{{#description}}{{.}}{{/description}}{{/inventoryItem}}</textarea>
+            {{#descriptionError}}<div class="invalid-feedback">{{{.}}}</div>{{/descriptionError}}
+        </div>
+        <div class = "form-group row">
+            <div class="col">
+                <label for="properties">{{propertyLabel}}</label>
+                <div class = "input-group">
+                    <select type="text" id="properties" name="properties" class = "form-control{{#propertiesError}} is-invalid{{/propertiesError}}" required>
+                        {{#properties}}
+                            <option id="{{id}}" value="{{id}}" {{selected}}>{{name}}</option>
+                        {{/properties}}
+                    </select>
+                    <button id="add-property-btn" class="btn btn-info" type="button" data-toggle="tooltip" title="{{addNewLabel}}"><span class="oi oi-plus" aria-hidden="true"></span></button>
+                </div>
+                {{#propertiesError}}<div class="invalid-feedback">{{{.}}}</div>{{/propertiesError}}
+            </div>
+            <div class="col">
+                <label for="rooms">{{roomLabel}}</label>
+                <div class = "input-group">
+                    <select type="text" id="rooms" name="rooms" class = "form-control{{#roomsError}} is-invalid{{/roomsError}}">
+                        {{#rooms}}
+                            <option value="{{name}}" {{selected}}>{{name}}</option>
+                        {{/rooms}}
+                    </select>
+                    <button id="add-room-btn" class="btn btn-info" type="button" data-toggle="tooltip" title="{{addNewLabel}}"><span class="oi oi-plus" aria-hidden="true"></span></button>
+                </div>
+                {{#roomsError}}<div class="invalid-feedback">{{{.}}}</div>{{/roomsError}}
+            </div>
+            <div class="col">
+                <label for="categories">{{categoryLabel}}</label>
+                <div class = "input-group">
+                    <select type="text" id="categories" name="categories" class = "form-control{{#categoriesError}} is-invalid{{/categoriesError}}">
+                        {{#categories}}
+                            <option value="{{name}}" {{selected}}>{{name}}</option>
+                        {{/categories}}
+                    </select>
+                    <button id="add-category-btn" class="btn btn-info" type="button" data-toggle="tooltip" title="{{addNewLabel}}"><span class="oi oi-plus" aria-hidden="true"></span></button>
+                </div>
+                {{#categoriesError}}<div class="invalid-feedback">{{{.}}}</div>{{/categoriesError}}
+            </div>
+        </div>
+        <div class = "form-group row">
+            <div class="col">
+                <label for="value">{{valueLabel}}</label>
+                <div  class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">{{currencySymbol}}</span>
+                    </div>
+                    <input type="text" id="value" name="value" data-type="currency" class="form-control currency{{#valueError}} is-invalid{{/valueError}}" {{#inventoryItem}}{{#value}}value="{{.}}"{{/value}}{{/inventoryItem}}/>
+                    {{#valueError}}<div class="invalid-feedback">{{{.}}}</div>{{/valueError}}
+                </div>
+            </div>
+            <div class="col">
+                <label for="purchase-price">{{purchasePriceLabel}}</label>
+                <div  class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">{{currencySymbol}}</span>
+                    </div>
+                    <input type="text" id="purchase-price" name="purchase-price" data-type="currency" class="form-control currency{{#purchasePriceError}} is-invalid{{/purchasePriceError}}" {{#inventoryItem}}value="{{#purchasePrice}}value="{{.}}"{{/purchasePrice}}"{{/inventoryItem}}/>
+                </div>
+                {{#purchasePriceError}}<div class="invalid-feedback">{{{.}}}</div>{{/purchasePriceError}}
+            </div>
+            <div class="col">
+                <label for="purchase-date">{{purchaseDateLabel}}</label>
+                <input type="date" id="purchase-date" name="purchase-date" class="form-control{{#purchaseDateError}} is-invalid{{/purchaseDateError}}" {{#inventoryItem}}{{#purchaseDateFormatted}}value="{{.}}"{{/purchaseDateFormatted}}{{/inventoryItem}} required />
+                {{#purchaseDateError}}<div class="invalid-feedback">{{{.}}}</div>{{/purchaseDateError}}
+            </div>
+        </div>
+        <div class = "form-group row">
+            <div class="col">
+                <label for="manufacturer">{{manufacturerLabel}}</label>
+                <input type="text" id="manufacturer" name="manufacturer" class="form-control{{#manufacturerError}} is-invalid{{/manufacturerError}}" {{#inventoryItem}}{{#manufacturer}}value="{{.}}"{{/manufacturer}}{{/inventoryItem}} required />
+                {{#manufacturerError}}<div class="invalid-feedback">{{{.}}}</div>{{/manufacturerError}}
+            </div>
+            <div class="col">
+                <label for="serial-number">{{serialNumberLabel}}</label>
+                <input type="text" id="serial-number" name="serial-number" class="form-control{{#serialNumberError}} is-invalid{{/serialNumberError}}" {{#inventoryItem}}{{#serialNumber}}value="{{.}}"{{/serialNumber}}{{/inventoryItem}} required />
+                {{#serialNumberError}}<div class="invalid-feedback">{{{.}}}</div>{{/serialNumberError}}
+            </div>
+        </div>
+        <div  class="form-group">
+            <button id="room-edit-submit" type="submit" class="btn btn-primary">{{submitButtonLabel}}</button>
+        </div>
+    </form>
+</div>
+{{#scripts}}
+    <script>
+        $(function () {
+            //enable tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+            //run format currency on load
+            $.each($("input[data-type='currency']"), function(){
+                formatCurrency($(this), "blur");
+            })
+        })
+
+        //currency formatting function from https://codepen.io/559wade/pen/LRzEjj
+        // with dollar sign removed and added locale based formatting
+
+        $("input[data-type='currency']").on({
+            keyup: function() {
+                formatCurrency($(this));
+            },
+            blur: function() {
+                formatCurrency($(this), "blur");
+            }
+        });
+
+
+
+        function formatNumber(n) {
+            // format number 1000000 to 1,234,567
+            return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "{{thousandsSeparator}}")
+        }
+        function formatCurrency(input, blur) {
+            // validates decimal side and puts cursor back in right position.
+            // get input value
+            var input_val = input.val();
+
+            // don't validate empty input
+            if (input_val === "") { return; }
+
+            // original length
+            var original_len = input_val.length;
+
+            // initial caret position
+            var caret_pos = input.prop("selectionStart");
+
+            // check for decimal
+            if (input_val.indexOf("{{decimalSeparator}}") >= 0) {
+
+                // get position of first decimal
+                // this prevents multiple decimals from
+                // being entered
+                var decimal_pos = input_val.indexOf("{{decimalSeparator}}");
+
+                // split number by decimal point
+                var left_side = input_val.substring(0, decimal_pos);
+                var right_side = input_val.substring(decimal_pos);
+
+                // add commas to left side of number
+                left_side = formatNumber(left_side);
+
+                // validate right side
+                right_side = formatNumber(right_side);
+
+                // On blur make sure 2 numbers after decimal
+                if (blur === "blur") {
+                    right_side += "00";
+                }
+
+                // Limit decimal to only 2 digits
+                right_side = right_side.substring(0, 2);
+
+                // join number by .
+                input_val = left_side + "{{decimalSeparator}}" + right_side;
+
+            } else {
+                // no decimal entered
+                // add commas to number
+                // remove all non-digits
+                input_val = formatNumber(input_val);
+
+                // final formatting
+                if (blur === "blur") {
+                    input_val += "{{decimalSeparator}}00";
+                }
+            }
+
+            // send updated string to input
+            input.val(input_val);
+
+            // put caret back in the right position
+            var updated_len = input_val.length;
+            caret_pos = updated_len - original_len + caret_pos;
+            input[0].setSelectionRange(caret_pos, caret_pos);
+        }
+
+    </script>
+{{/scripts}}
+
+
+{{/layout}}

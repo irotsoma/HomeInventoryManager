@@ -28,7 +28,7 @@ class Property(@Column(name = "user_id", nullable = false, updatable = false) va
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    var id: Int = -1
+    var id: Int? = null
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

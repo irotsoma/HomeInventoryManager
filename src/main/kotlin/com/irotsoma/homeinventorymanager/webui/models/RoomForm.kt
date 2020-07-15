@@ -3,11 +3,11 @@
  */
 package com.irotsoma.homeinventorymanager.webui.models
 
-import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotBlank
 
 
 class RoomForm {
-    var id: Int = -1
-    @NotEmpty
+    @NotBlank
     var name: String = ""
+
 }

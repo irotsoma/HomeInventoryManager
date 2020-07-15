@@ -44,16 +44,22 @@ class CustomWebMvcConfigurerAdapter : WebMvcConfigurer {
         val slr = SessionLocaleResolver()
         slr.setDefaultLocale(Locale.US)
         return slr
+
     }
 
     /**
      * Adds a locale change interceptor to the registry
      */
     override fun addInterceptors(registry: InterceptorRegistry?) {
-        registry?.addInterceptor(LocaleChangeInterceptor())
+        registry?.addInterceptor(localeChangeInterceptor())
         if (registry != null) {
             super.addInterceptors(registry)
         }
+    }
+
+    @Bean
+    fun localeChangeInterceptor(): LocaleChangeInterceptor {
+        return LocaleChangeInterceptor()
     }
 
     @Bean

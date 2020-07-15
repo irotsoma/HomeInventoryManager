@@ -1,6 +1,6 @@
 {{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
 <div class="container form-group">
-    <form id="edit-room-form" method="POST" action="/categoryedit">
+    <form id="edit-room-form" method="POST" action="/categoryedit{{#category}}{{#id}}/{{.}}{{/id}}{{/category}}">
         {{#formError}}
             <div class="form-group alert alert-danger alert-dismissible fade show">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -9,7 +9,6 @@
                 {{.}}
             </div>
         {{/formError}}
-        <input type="hidden" id="id" name="id" {{#category}}value="{{id}}"{{/category}}>
         <div  class="form-group">
             <label for="name">{{nameLabel}}</label>
             <input type="text" id="name" name="name" class="form-control{{#nameError}} is-invalid{{/nameError}}" {{#category}}value="{{name}}"{{/category}} required />

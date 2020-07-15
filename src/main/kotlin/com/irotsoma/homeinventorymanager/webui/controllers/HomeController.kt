@@ -19,11 +19,11 @@ import java.util.*
 @Controller
 @Lazy
 internal class HomeController {
-    val locale: Locale = LocaleContextHolder.getLocale()
     @Autowired
     private lateinit var messageSource: MessageSource
     @GetMapping("/")
     fun home(model: Model): String {
+        val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("home.label", null, locale))
         if (!SecurityContextHolder.getContext().authentication.authorities.any { r -> r.authority == "ROLE_ANONYMOUS" }) {
             model.addAttribute("isLoggedIn", true)

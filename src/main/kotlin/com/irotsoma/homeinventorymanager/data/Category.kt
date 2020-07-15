@@ -22,7 +22,7 @@ class Category(@Column(name = "user_id", nullable = false) var userId: Int,
     companion object : KLogging()
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     var id: Int? = null
 
     @CreationTimestamp

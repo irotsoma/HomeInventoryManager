@@ -6,10 +6,12 @@ import com.irotsoma.homeinventorymanager.data.PropertyRepository
 import com.irotsoma.homeinventorymanager.data.UserRepository
 import com.irotsoma.homeinventorymanager.webui.models.PropertyForm
 import mu.KLogging
+import org.hibernate.exception.ConstraintViolationException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Lazy
 import org.springframework.context.i18n.LocaleContextHolder
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
@@ -29,7 +31,6 @@ import javax.validation.Valid
 class PropertyEditController {
     /** kotlin-logging implementation*/
     private companion object: KLogging()
-    private val locale: Locale = LocaleContextHolder.getLocale()
     @Autowired
     private lateinit var messageSource: MessageSource
     @Autowired
@@ -45,6 +46,7 @@ class PropertyEditController {
 
     @GetMapping("/{id}")
     fun get(@PathVariable id: Int, model: Model) : String {
+        val locale: Locale = LocaleContextHolder.getLocale()
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
         val property = propertyRepository.findById(id)
@@ -56,51 +58,80 @@ class PropertyEditController {
         }
         addStaticAttributes(model)
         model.addAttribute("property", property.get())
-
-
         return "propertyedit"
     }
 
     @PostMapping
-    fun put(@Valid propertyForm: PropertyForm, bindingResult: BindingResult, model: Model): String{
+    fun post(@Valid propertyForm: PropertyForm, bindingResult: BindingResult, model: Model): String {
+        val locale: Locale = LocaleContextHolder.getLocale()
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
-        val property = propertyRepository.findById(propertyForm.id)
-        if (userId == null || (property.isEmpty && propertyForm.id != -1) || (property.isPresent && property.get().userId != userId)){
+        if (userId == null){
             val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
             logger.warn {errorMessage}
             model.addAttribute("error", errorMessage)
             return "error"
         }
-        val updatedProperty =
-            if (propertyForm.id == -1) {
-                Property(
-                    userId,
-                    propertyForm.name.trim(),
-                    if (propertyForm.street.isNullOrBlank()) null else propertyForm.street!!.trim(),
-                    if (propertyForm.city.isNullOrBlank()) null else propertyForm.city!!.trim(),
-                    if (propertyForm.state.isNullOrBlank()) null else propertyForm.state!!.trim(),
-                    if (propertyForm.postalCode.isNullOrBlank()) null else propertyForm.postalCode!!.trim(),
-                    if (propertyForm.country.isNullOrBlank()) null else propertyForm.country!!.trim(),
-                    DataState.ACTIVE
-                )
-            } else {
-                property.get().apply {
-                    this.name = propertyForm.name
-                    this.addressStreet = if (propertyForm.street.isNullOrBlank()) null else propertyForm.street!!.trim()
-                    this.addressCity = if (propertyForm.city.isNullOrBlank()) null else propertyForm.city!!.trim()
-                    this.addressState = if (propertyForm.state.isNullOrBlank()) null else propertyForm.state!!.trim()
-                    this.addressPostalCode = if (propertyForm.postalCode.isNullOrBlank()) null else propertyForm.postalCode!!.trim()
-                    this.addressCountry = if (propertyForm.country.isNullOrBlank()) null else propertyForm.country!!.trim()
-                }
+        val newProperty = Property(
+            userId,
+            propertyForm.name.trim(),
+            if (propertyForm.street.isNullOrBlank()) null else propertyForm.street!!.trim(),
+            if (propertyForm.city.isNullOrBlank()) null else propertyForm.city!!.trim(),
+            if (propertyForm.state.isNullOrBlank()) null else propertyForm.state!!.trim(),
+            if (propertyForm.postalCode.isNullOrBlank()) null else propertyForm.postalCode!!.trim(),
+            if (propertyForm.country.isNullOrBlank()) null else propertyForm.country!!.trim(),
+            DataState.ACTIVE
+        )
+        try {
+            propertyRepository.saveAndFlush(newProperty)
+        } catch (e: DataIntegrityViolationException){
+            if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_property_name_per_user"){
+                addStaticAttributes(model)
+                model.addAttribute("property", newProperty)
+                model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
+                return "propertyedit"
             }
-        propertyRepository.saveAndFlush(updatedProperty)
+        }
+        return "redirect:/property"
+    }
+
+    @PostMapping("/{id}")
+    fun put(@Valid propertyForm: PropertyForm, bindingResult: BindingResult, model: Model, @PathVariable id: Int): String{
+        val locale: Locale = LocaleContextHolder.getLocale()
+        val authentication = SecurityContextHolder.getContext().authentication
+        val userId = userRepository.findByUsername(authentication.name)?.id
+        val property = propertyRepository.findById(id)
+        if (userId == null || property.isEmpty || (property.isPresent && property.get().userId != userId)){
+            val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
+            logger.warn {errorMessage}
+            model.addAttribute("error", errorMessage)
+            return "error"
+        }
+        val updatedProperty = property.get().apply {
+            this.name = propertyForm.name.trim()
+            this.addressStreet = if (propertyForm.street.isNullOrBlank()) null else propertyForm.street!!.trim()
+            this.addressCity = if (propertyForm.city.isNullOrBlank()) null else propertyForm.city!!.trim()
+            this.addressState = if (propertyForm.state.isNullOrBlank()) null else propertyForm.state!!.trim()
+            this.addressPostalCode = if (propertyForm.postalCode.isNullOrBlank()) null else propertyForm.postalCode!!.trim()
+            this.addressCountry = if (propertyForm.country.isNullOrBlank()) null else propertyForm.country!!.trim()
+        }
+        try {
+            propertyRepository.saveAndFlush(updatedProperty)
+        } catch (e: DataIntegrityViolationException){
+            if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_property_name_per_user"){
+                addStaticAttributes(model)
+                model.addAttribute("property", updatedProperty)
+                model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
+                return "propertyedit"
+            }
+        }
 
         return "redirect:/property"
     }
 
 
     fun addStaticAttributes(model: Model) {
+        val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("editProperty.label", null, locale))
         model.addAttribute("nameLabel", messageSource.getMessage("name.label", null, locale))
         model.addAttribute("addressLabel", messageSource.getMessage("address.label", null, locale))
@@ -110,6 +141,5 @@ class PropertyEditController {
         model.addAttribute("postalCodeLabel", messageSource.getMessage("address.postalCode.label", null, locale))
         model.addAttribute("countryLabel", messageSource.getMessage("address.country.label", null, locale))
         model.addAttribute("submitButtonLabel", messageSource.getMessage("submit.label", null, locale))
-
     }
 }

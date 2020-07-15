@@ -21,12 +21,12 @@ import javax.servlet.http.HttpSession
 class UserInfoController {
     /** kotlin-logging implementation*/
     private companion object: KLogging()
-    private val locale: Locale = LocaleContextHolder.getLocale()
     @Autowired
     private lateinit var messageSource: MessageSource
 
     @GetMapping
     fun get(model: Model,session: HttpSession): String {
+        val locale: Locale = LocaleContextHolder.getLocale()
         val authentication = SecurityContextHolder.getContext().authentication
         model.addAttribute("pageTitle", messageSource.getMessage("userDetails.label", null, locale))
         model.addAttribute("usernameLabel", messageSource.getMessage("username.label",null,locale))

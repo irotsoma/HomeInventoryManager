@@ -1,10 +1,9 @@
 package com.irotsoma.homeinventorymanager.webui.models
 
-import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.NotBlank
 
 class PropertyForm {
-    var id: Int = -1
-    @NotEmpty
+    @NotBlank
     var name: String = ""
     var street: String? = null
     var city: String? = null

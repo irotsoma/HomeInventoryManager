@@ -4,7 +4,7 @@ version = "1.0-SNAPSHOT"
 val kotlinLoggingVersion = "1.8.0.1"
 val springContentVersion="1.1.0.M2"
 val tikaVersion="1.24.1"
-val webValidationVersion = "1.2"
+val webValidationVersion = "1.3-SNAPSHOT"
 val jaxbVersion="2.3.1"
 val bootstrapVersion = "4.5.0"
 val jqueryVersion = "3.5.1"
@@ -23,6 +23,7 @@ plugins {
     val dokkaVersion = "0.10.1"
     val springDependencyManagementVersion = "1.0.9.RELEASE"
     java
+    signing
     id("io.spring.dependency-management") version springDependencyManagementVersion
     kotlin("jvm") version kotlinVersion
     kotlin("kapt") version kotlinVersion
@@ -39,7 +40,9 @@ repositories {
     mavenCentral()
     jcenter()
     gradlePluginPortal()
+    mavenLocal()
 }
+
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
@@ -104,3 +107,6 @@ configurations.all{
     exclude(module = "logback-classic")
 }
 kapt.includeCompileClasspath = false
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    launchScript()
+}

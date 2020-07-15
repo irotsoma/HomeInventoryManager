@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface RoomRepository: JpaRepository<Room, Int> {
     fun findByUserId(id: Int): List<Room>?
+    fun findByNameAndUserId(name: String, id: Int): Room?
 }

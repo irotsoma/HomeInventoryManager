@@ -22,7 +22,6 @@ import javax.servlet.http.HttpSession
 class PropertyController {
     /** kotlin-logging implementation*/
     private companion object: KLogging()
-    private val locale: Locale = LocaleContextHolder.getLocale()
     @Autowired
     private lateinit var messageSource: MessageSource
     @Autowired
@@ -42,6 +41,7 @@ class PropertyController {
 
     @PostMapping("/{id}")
     fun delete(@PathVariable id: Int, @RequestParam("action") action: String, model: Model): String{
+        val locale: Locale = LocaleContextHolder.getLocale()
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
         val property = propertyRepository.findById(id)
@@ -56,6 +56,7 @@ class PropertyController {
     }
 
     fun addStaticAttributes(model:Model) {
+        val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("propertyList.label", null, locale))
         model.addAttribute("pageSubTitle", messageSource.getMessage("propertyList.subTitle", null, locale))
         model.addAttribute("nameLabel", messageSource.getMessage("name.label", null, locale))

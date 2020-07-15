@@ -15,18 +15,18 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: username
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
                     unique: true
               - column:
                   name: password
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: state
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -40,7 +40,6 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
-                  defaultValueComputed: CURRENT_TIMESTAMP
         - createTable:
             tableName: user_roles
             columns:
@@ -60,7 +59,7 @@ databaseChangeLog:
                     references: user(id)
               - column:
                   name: role
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
         - createTable:
@@ -82,12 +81,12 @@ databaseChangeLog:
                     references: user(id)
               - column:
                   name: name
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: state
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -101,7 +100,10 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
-                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addUniqueConstraint:
+            constraintName: unique_category_name_per_user
+            tableName: category
+            columnNames: name, user_id
         - createTable:
             tableName: room
             columns:
@@ -121,12 +123,12 @@ databaseChangeLog:
                     references: user(id)
               - column:
                   name: name
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: state
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -140,7 +142,10 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
-                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addUniqueConstraint:
+            constraintName: unique_room_name_per_user
+            tableName: room
+            columnNames: name, user_id
         - createTable:
             tableName: property
             columns:
@@ -160,27 +165,27 @@ databaseChangeLog:
                     references: user(id)
               - column:
                   name: name
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: address_street
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
               - column:
                   name: address_city
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
               - column:
                   name: address_state
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
               - column:
                   name: address_postal_code
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
               - column:
                   name: address_country
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
               - column:
                   name: state
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -194,7 +199,10 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
-                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addUniqueConstraint:
+            constraintName: unique_property_name_per_user
+            tableName: property
+            columnNames: name, user_id
         - createTable:
             tableName: attachment
             columns:
@@ -214,17 +222,17 @@ databaseChangeLog:
                     references: user(id)
               - column:
                   name: mongo_id
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: name
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: state
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -238,7 +246,7 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
-                  defaultValueComputed: CURRENT_TIMESTAMP
+
         - createTable:
             tableName: inventory_item
             columns:
@@ -258,7 +266,7 @@ databaseChangeLog:
                     references: user(id)
               - column:
                   name: name
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -294,13 +302,13 @@ databaseChangeLog:
                   type: decimal
               - column:
                   name: manufacturer
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
               - column:
                   name: serial_number
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
               - column:
                   name: state
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -314,7 +322,10 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
-                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addUniqueConstraint:
+            constraintName: unique_inventory_item_name_per_user
+            tableName: inventory_item
+            columnNames: name, user_id
         - createTable:
             tableName: inventory_item_attachment
             columns:
@@ -341,7 +352,7 @@ databaseChangeLog:
                     references: attachment(id)
               - column:
                   name: state
-                  type: nvarchar(1023)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
@@ -355,7 +366,6 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
-                  defaultValueComputed: CURRENT_TIMESTAMP
         - insert:
             tableName: user
             columns:

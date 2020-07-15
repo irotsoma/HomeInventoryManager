@@ -17,12 +17,12 @@ import javax.persistence.Table
 @SQLDelete(sql = "UPDATE inventory_item SET state = 'deleted' WHERE id = ?", check = ResultCheckStyle.COUNT)
 @Where(clause = "state = 'active'")
 class InventoryItem(@Column(name = "name", nullable = false) var name: String,
-                    @Column(name = "description") var description: String,
-                    @Column(name = "value") var value: BigDecimal,
-                    @Column(name = "purchase_date") var purchaseDate: Date,
-                    @Column(name = "purchase_price") var purchasePrice: BigDecimal,
-                    @Column(name = "manufacturer") var manufacturer: String,
-                    @Column(name = "serial_number") var serialNumber: String,
+                    @Column(name = "description") var description: String?,
+                    @Column(name = "value") var value: BigDecimal?,
+                    @Column(name = "purchase_date") var purchaseDate: Date?,
+                    @Column(name = "purchase_price") var purchasePrice: BigDecimal?,
+                    @Column(name = "manufacturer") var manufacturer: String?,
+                    @Column(name = "serial_number") var serialNumber: String?,
                     @Column(name = "state", nullable = false) @Enumerated(EnumType.STRING) var state: DataState
 ) {
     /** kotlin-logging implementation */
@@ -30,7 +30,7 @@ class InventoryItem(@Column(name = "name", nullable = false) var name: String,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    var id: Int = -1
+    var id: Int? = null
 
 
     @CreationTimestamp
@@ -56,7 +56,7 @@ class InventoryItem(@Column(name = "name", nullable = false) var name: String,
     var property: Property? = null
 
     @OneToOne(cascade = [CascadeType.ALL])
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     var user: User? = null
 
     @OneToOne(cascade = [CascadeType.ALL])
@@ -73,6 +73,10 @@ class InventoryItem(@Column(name = "name", nullable = false) var name: String,
     var categoryName: String = ""
     @Formula("(select p.name from property p where p.id = property_id)")
     var propertyName: String = ""
+
+    @Column(name="purchase_date", insertable = false, updatable=false)
+    var purchaseDateFormatted: String? = null
+        private set
 
     @PostLoad
     fun populateSubTableNames(){

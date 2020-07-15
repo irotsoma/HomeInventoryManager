@@ -30,7 +30,6 @@ import javax.validation.Valid
 class NewUserController {
     /** kotlin-logging implementation*/
     private companion object: KLogging()
-    private val locale: Locale = LocaleContextHolder.getLocale()
     @Autowired
     private lateinit var messageSource: MessageSource
     @Autowired
@@ -46,6 +45,7 @@ class NewUserController {
     }
     @PostMapping
     fun createUser(@Valid newUserForm: NewUserForm, bindingResult: BindingResult, model: Model, session: HttpSession): String {
+        val locale: Locale = LocaleContextHolder.getLocale()
         if (bindingResult.hasErrors()) {
             val processedMessages = ArrayList<String>()
             for (error in bindingResult.fieldErrors){
@@ -88,6 +88,7 @@ class NewUserController {
         return "redirect"
     }
     fun addStaticAttributes(model:Model) {
+        val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("newUser.label", null, locale))
         model.addAttribute("usernameLabel", messageSource.getMessage("username.label",null,locale))
         model.addAttribute("passwordLabel", messageSource.getMessage("password.label",null,locale))
