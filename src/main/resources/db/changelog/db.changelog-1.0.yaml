@@ -246,7 +246,6 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
-
         - createTable:
             tableName: inventory_item
             columns:

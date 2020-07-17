@@ -12,8 +12,8 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "attachment")
-@SQLDelete(sql = "UPDATE attachment SET state = 'deleted' WHERE id = ?", check = ResultCheckStyle.COUNT)
-@Where(clause = "state = 'active'")
+@SQLDelete(sql = "UPDATE attachment SET state = 'DELETED', name = (SELECT CONCAT(name, '--DELETED--', CURRENT_TIMESTAMP)) WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "state = 'ACTIVE'")
 class Attachment (@Column(name = "mongo_id", nullable = false) val mongoId: String,
                   @Column(name = "name", nullable = false) val name: String,
                   @Column(name = "user_id", nullable = false) val userId: Int,
