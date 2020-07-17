@@ -278,7 +278,6 @@ databaseChangeLog:
                   name: property_id
                   type: int
                   constraints:
-                    nullable: false
                     foreignKeyName: fk_inventory_item_property
                     references: property(id)
               - column:

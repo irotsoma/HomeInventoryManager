@@ -4,6 +4,7 @@ import com.irotsoma.homeinventorymanager.data.DataState
 import com.irotsoma.homeinventorymanager.data.Property
 import com.irotsoma.homeinventorymanager.data.PropertyRepository
 import com.irotsoma.homeinventorymanager.data.UserRepository
+import com.irotsoma.homeinventorymanager.webui.models.FormResponse
 import com.irotsoma.homeinventorymanager.webui.models.PropertyForm
 import mu.KLogging
 import org.hibernate.exception.ConstraintViolationException
@@ -17,11 +18,10 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.validation.FieldError
+import org.springframework.web.bind.annotation.*
 import java.util.*
+import java.util.stream.Collectors
 import javax.validation.Valid
 
 @Controller
@@ -90,6 +90,8 @@ class PropertyEditController {
                 model.addAttribute("property", newProperty)
                 model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
                 return "propertyedit"
+            } else {
+                throw e
             }
         }
         return "redirect:/property"
@@ -123,13 +125,53 @@ class PropertyEditController {
                 model.addAttribute("property", updatedProperty)
                 model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
                 return "propertyedit"
+            } else {
+                throw e
             }
         }
 
         return "redirect:/property"
     }
-
-
+    @PostMapping("/modal")
+    @ResponseBody
+    fun postModal(@ModelAttribute @Valid propertyForm: PropertyForm, bindingResult: BindingResult) : FormResponse {
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            return FormResponse(propertyForm.propertyName, false, errors)
+        }
+        val locale: Locale = LocaleContextHolder.getLocale()
+        val authentication = SecurityContextHolder.getContext().authentication
+        val userId = userRepository.findByUsername(authentication.name)?.id
+        if (userId == null) {
+            val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
+            logger.warn { errorMessage }
+            return FormResponse(propertyForm.propertyName, false, mapOf(Pair("propertyName", errorMessage)))
+        }
+        val newProperty = Property(
+            userId,
+            propertyForm.propertyName.trim(),
+            if (propertyForm.street.isNullOrBlank()) null else propertyForm.street!!.trim(),
+            if (propertyForm.city.isNullOrBlank()) null else propertyForm.city!!.trim(),
+            if (propertyForm.state.isNullOrBlank()) null else propertyForm.state!!.trim(),
+            if (propertyForm.postalCode.isNullOrBlank()) null else propertyForm.postalCode!!.trim(),
+            if (propertyForm.country.isNullOrBlank()) null else propertyForm.country!!.trim(),
+            DataState.ACTIVE
+        )
+        try {
+            propertyRepository.saveAndFlush(newProperty)
+        } catch (e: DataIntegrityViolationException){
+            if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_property_name_per_user"){
+                val errorMessage = messageSource.getMessage("name.uniquenessError.message", null, locale)
+                return FormResponse(propertyForm.propertyName, false, mapOf(Pair("propertyName",errorMessage)))
+            } else {
+                throw e
+            }
+        }
+        return FormResponse(propertyForm.propertyName, true, null)
+    }
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("editProperty.label", null, locale))

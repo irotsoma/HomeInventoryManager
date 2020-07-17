@@ -20,7 +20,7 @@ import javax.persistence.Table
  * @property id Database-generated ID for the user.
  * @property name Name of the record. (required)
  * @property description Long form description of the item to be used for any details without detail fields
- * @property value The estimated current monetary value of the item. (optional, but at least one of value and purchase price should be filled for full functionality) (use null if not used)
+ * @property estimatedValue The estimated current monetary value of the item. (optional, but at least one of value and purchase price should be filled for full functionality) (use null if not used)
  * @property purchaseDate Date the item was purchased if applicable
  * @property purchasePrice The price of the item when purchased if applicable (optional, but at least one of value and purchase price should be filled for full functionality) (use null if not used)
  * @property manufacturer The name of the manufacturer of the item
@@ -44,7 +44,7 @@ import javax.persistence.Table
 @Where(clause = "state = 'ACTIVE'")
 class InventoryItem(@Column(name = "name", nullable = false) var name: String,
                     @Column(name = "description") var description: String?,
-                    @Column(name = "value") var value: BigDecimal?,
+                    @Column(name = "value") var estimatedValue: BigDecimal?,
                     @Column(name = "purchase_date") var purchaseDate: Date?,
                     @Column(name = "purchase_price") var purchasePrice: BigDecimal?,
                     @Column(name = "manufacturer") var manufacturer: String?,

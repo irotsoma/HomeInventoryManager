@@ -78,6 +78,20 @@ class CategoryEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            addStaticAttributes(model)
+            model.addAllAttributes(errors)
+            model.addAttribute("category", Category(
+                userId,
+                categoryForm.categoryName.trim(),
+                DataState.ACTIVE
+            ))
+            return "categoryEdit"
+        }
         val newCategory = Category(
                     userId,
                     categoryForm.categoryName.trim(),
@@ -91,6 +105,8 @@ class CategoryEditController {
                 model.addAttribute("category", newCategory)
                 model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
                 return "categoryedit"
+            } else {
+                throw e
             }
         }
         return "redirect:/category"
@@ -124,6 +140,8 @@ class CategoryEditController {
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_category_name_per_user"){
                 val errorMessage = messageSource.getMessage("name.uniquenessError.message", null, locale)
                 return FormResponse(categoryForm.categoryName, false, mapOf(Pair("categoryName",errorMessage)))
+            } else {
+                throw e
             }
         }
         return FormResponse(categoryForm.categoryName, true, null)
@@ -150,6 +168,8 @@ class CategoryEditController {
                 model.addAttribute("category", updatedCategory)
                 model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
                 return "categoryedit"
+            } else {
+                throw e
             }
         }
 

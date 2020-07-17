@@ -26,6 +26,29 @@
         </div>
     </div>
 </div>
+<div id="room-form-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Modal Header</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="container form-group">
+                <form id="new-room-form">
+                    <div  class="form-group">
+                        <label for="roomName">{{nameLabel}}</label>
+                        <input type="text" id="roomName" name="roomName" class="form-control" required />
+                    </div>
+                    <div  class="modal-footer">
+                        <button id="room-edit-submit" type="button" class="btn btn-primary">{{submitButtonLabel}}</button>
+                        <button type="button" class="btn" data-dismiss="modal">{{cancelLabel}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container form-group">
     <form id="edit-room-form" method="POST" action="/inventoryedit{{#inventoryItem}}{{#id}}/{{.}}{{/id}}{{/inventoryItem}}">
         {{#formError}}
@@ -64,7 +87,7 @@
                 <div class = "input-group">
                     <select type="text" id="rooms" name="rooms" class = "form-control{{#roomsError}} is-invalid{{/roomsError}}">
                         {{#rooms}}
-                            <option value="{{name}}" {{selected}}>{{name}}</option>
+                            <option id="{{id}}" value="{{id}}" {{selected}}>{{name}}</option>
                         {{/rooms}}
                     </select>
                     <button id="add-room-btn" class="btn btn-info" type="button" data-toggle="tooltip" title="{{addNewLabel}}"><span class="oi oi-plus" aria-hidden="true"></span></button>
@@ -76,7 +99,7 @@
                 <div class = "input-group">
                     <select type="text" id="categories" name="categories" class = "form-control{{#categoriesError}} is-invalid{{/categoriesError}}">
                         {{#categories}}
-                            <option value="{{name}}" {{selected}}>{{name}}</option>
+                            <option id="{{id}}" value="{{id}}" {{selected}}>{{name}}</option>
                         {{/categories}}
                     </select>
                     <button id="add-category-btn" class="btn btn-info" type="button" data-toggle="tooltip" title="{{addNewLabel}}"><span class="oi oi-plus" aria-hidden="true"></span></button>
@@ -86,40 +109,40 @@
         </div>
         <div class = "form-group row">
             <div class="col">
-                <label for="value">{{valueLabel}}</label>
+                <label for="estimatedValue">{{estimatedValueLabel}}</label>
                 <div  class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">{{currencySymbol}}</span>
                     </div>
-                    <input type="text" id="value" name="value" data-type="currency" class="form-control currency{{#valueError}} is-invalid{{/valueError}}" {{#inventoryItem}}{{#value}}value="{{.}}"{{/value}}{{/inventoryItem}}/>
-                    {{#valueError}}<div class="invalid-feedback">{{{.}}}</div>{{/valueError}}
+                    <input type="text" id="estimatedValue" name="estimatedValue" data-type="currency" class="form-control currency{{#estimatedValueError}} is-invalid{{/estimatedValueError}}" {{#inventoryItem}}{{#estimatedValue}}value="{{.}}"{{/estimatedValue}}{{/inventoryItem}}/>
+                    {{#estimatedValueError}}<div class="invalid-feedback">{{{.}}}</div>{{/estimatedValueError}}
                 </div>
             </div>
             <div class="col">
-                <label for="purchase-price">{{purchasePriceLabel}}</label>
+                <label for="purchasePrice">{{purchasePriceLabel}}</label>
                 <div  class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">{{currencySymbol}}</span>
                     </div>
-                    <input type="text" id="purchase-price" name="purchase-price" data-type="currency" class="form-control currency{{#purchasePriceError}} is-invalid{{/purchasePriceError}}" {{#inventoryItem}}value="{{#purchasePrice}}value="{{.}}"{{/purchasePrice}}"{{/inventoryItem}}/>
+                    <input type="text" id="purchasePrice" name="purchasePrice" data-type="currency" class="form-control currency{{#purchasePriceError}} is-invalid{{/purchasePriceError}}" {{#inventoryItem}}{{#purchasePrice}}value="{{.}}"{{/purchasePrice}}{{/inventoryItem}}/>
                 </div>
                 {{#purchasePriceError}}<div class="invalid-feedback">{{{.}}}</div>{{/purchasePriceError}}
             </div>
             <div class="col">
-                <label for="purchase-date">{{purchaseDateLabel}}</label>
-                <input type="date" id="purchase-date" name="purchase-date" class="form-control{{#purchaseDateError}} is-invalid{{/purchaseDateError}}" {{#inventoryItem}}{{#purchaseDateFormatted}}value="{{.}}"{{/purchaseDateFormatted}}{{/inventoryItem}} required />
+                <label for="purchaseDate">{{purchaseDateLabel}}</label>
+                <input type="date" id="purchaseDate" name="purchaseDate" class="form-control{{#purchaseDateError}} is-invalid{{/purchaseDateError}}" {{#inventoryItem}}{{#purchaseDateFormatted}}value="{{.}}"{{/purchaseDateFormatted}}{{/inventoryItem}}  />
                 {{#purchaseDateError}}<div class="invalid-feedback">{{{.}}}</div>{{/purchaseDateError}}
             </div>
         </div>
         <div class = "form-group row">
             <div class="col">
                 <label for="manufacturer">{{manufacturerLabel}}</label>
-                <input type="text" id="manufacturer" name="manufacturer" class="form-control{{#manufacturerError}} is-invalid{{/manufacturerError}}" {{#inventoryItem}}{{#manufacturer}}value="{{.}}"{{/manufacturer}}{{/inventoryItem}} required />
+                <input type="text" id="manufacturer" name="manufacturer" class="form-control{{#manufacturerError}} is-invalid{{/manufacturerError}}" {{#inventoryItem}}{{#manufacturer}}value="{{.}}"{{/manufacturer}}{{/inventoryItem}} />
                 {{#manufacturerError}}<div class="invalid-feedback">{{{.}}}</div>{{/manufacturerError}}
             </div>
             <div class="col">
-                <label for="serial-number">{{serialNumberLabel}}</label>
-                <input type="text" id="serial-number" name="serial-number" class="form-control{{#serialNumberError}} is-invalid{{/serialNumberError}}" {{#inventoryItem}}{{#serialNumber}}value="{{.}}"{{/serialNumber}}{{/inventoryItem}} required />
+                <label for="serialNumber">{{serialNumberLabel}}</label>
+                <input type="text" id="serialNumber" name="serialNumber" class="form-control{{#serialNumberError}} is-invalid{{/serialNumberError}}" {{#inventoryItem}}{{#serialNumber}}value="{{.}}"{{/serialNumber}}{{/inventoryItem}} />
                 {{#serialNumberError}}<div class="invalid-feedback">{{{.}}}</div>{{/serialNumberError}}
             </div>
         </div>

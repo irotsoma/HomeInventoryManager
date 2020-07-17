@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import java.math.BigDecimal
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.validation.Valid
 
@@ -96,6 +98,10 @@ class InventoryEditController {
     fun post(@Valid inventoryItemForm: InventoryItemForm, bindingResult: BindingResult, model: Model): String{
         val locale: Locale = LocaleContextHolder.getLocale()
 
+        if (bindingResult.hasErrors()) {
+
+        }
+
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByUsername(authentication.name)
         if (user == null){
@@ -104,12 +110,14 @@ class InventoryEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
+        val value = inventoryItemForm.estimatedValue?.replace(",","")
+        val purchasePrice = inventoryItemForm.purchasePrice?.replace(",", "")
         val newInventoryItem = InventoryItem(
             inventoryItemForm.name.trim(),
             inventoryItemForm.description?.trim(),
-            inventoryItemForm.value,
-            inventoryItemForm.purchaseDate,
-            inventoryItemForm.purchasePrice,
+            if (value.isNullOrBlank()) null else BigDecimal(value),
+            if (inventoryItemForm.purchaseDate.isNullOrBlank()) null else SimpleDateFormat("yyyy-MM-dd").parse(inventoryItemForm.purchaseDate),
+            if (purchasePrice.isNullOrBlank()) null else BigDecimal(purchasePrice),
             inventoryItemForm.manufacturer,
             inventoryItemForm.serialNumber,
             DataState.ACTIVE
@@ -151,6 +159,8 @@ class InventoryEditController {
                 categoryRepository.findByUserId(user.id)?.forEach{ if (inventoryItemForm.categories == it.name) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
                 model.addAttribute("categories", categories)
                 return "inventoryedit"
+            } else {
+                throw e
             }
         }
 
@@ -173,23 +183,43 @@ class InventoryEditController {
         val updatedInventoryItem = inventoryItem.get().apply {
             this.name = inventoryItemForm.name.trim()
             this.description = inventoryItemForm.description?.trim()
-            this.value = inventoryItemForm.value
-            this.purchaseDate = inventoryItemForm.purchaseDate
-            this.purchasePrice = inventoryItemForm.purchasePrice
+            val value = inventoryItemForm.estimatedValue?.replace(",","")
+            this.estimatedValue = if (value.isNullOrBlank()) null else BigDecimal(value)
+            this.purchaseDate = if (inventoryItemForm.purchaseDate.isNullOrBlank()) null else SimpleDateFormat("yyyy-MM-dd").parse(inventoryItemForm.purchaseDate)
+            val purchasePrice = inventoryItemForm.purchasePrice?.replace(",","")
+            this.purchasePrice = if (purchasePrice.isNullOrBlank()) null else BigDecimal(purchasePrice)
             this.manufacturer = inventoryItemForm.manufacturer
             this.serialNumber = inventoryItemForm.serialNumber
             if (inventoryItemForm.properties != null) {
-                this.property = propertyRepository.findByNameAndUserId(inventoryItemForm.properties!!, userId)
+                try {
+                    this.property = propertyRepository.findById(inventoryItemForm.properties!!.toInt()).get()
+                } catch (e: NumberFormatException) {
+                    this.property = null
+                } catch (e: NoSuchElementException) {
+                    this.property = null
+                }
             } else {
                 this.property = null
             }
             if (inventoryItemForm.rooms != null) {
-                this.room = roomRepository.findByNameAndUserId(inventoryItemForm.rooms!!, userId)
+                try {
+                    this.room = roomRepository.findById(inventoryItemForm.rooms!!.toInt()).get()
+                } catch (e: NumberFormatException) {
+                    this.property = null
+                } catch (e: NoSuchElementException) {
+                    this.property = null
+                }
             } else {
                 this.room = null
             }
             if (inventoryItemForm.categories != null) {
-                this.category = categoryRepository.findByNameAndUserId(inventoryItemForm.categories!!, userId)
+                try {
+                    this.category = categoryRepository.findById(inventoryItemForm.categories!!.toInt()).get()
+                } catch (e: NumberFormatException) {
+                    this.property = null
+                } catch (e: NoSuchElementException) {
+                    this.property = null
+                }
             } else {
                 this.category = null
             }
@@ -221,6 +251,8 @@ class InventoryEditController {
                 categoryRepository.findByUserId(userId)?.forEach{ if (inventoryItemForm.categories == it.name) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
                 model.addAttribute("categories", categories)
                 return "inventoryedit"
+            } else {
+                throw e
             }
         }
 
@@ -238,7 +270,7 @@ class InventoryEditController {
         model.addAttribute("pageTitle", messageSource.getMessage("editInventoryItem.label", null, locale))
         model.addAttribute("nameLabel", messageSource.getMessage("name.label", null, locale))
         model.addAttribute("descriptionLabel", messageSource.getMessage("description.label", null, locale))
-        model.addAttribute("valueLabel", messageSource.getMessage("estimatedValue.label", null, locale))
+        model.addAttribute("estimatedValueLabel", messageSource.getMessage("estimatedValue.label", null, locale))
         model.addAttribute("purchaseDateLabel", messageSource.getMessage("purchaseDate.label", null, locale))
         model.addAttribute("purchasePriceLabel", messageSource.getMessage("purchasePrice.label", null, locale))
         model.addAttribute("manufacturerLabel", messageSource.getMessage("manufacturer.label", null, locale))

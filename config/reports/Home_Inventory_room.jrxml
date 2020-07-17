@@ -28,8 +28,8 @@
 		<property name="com.jaspersoft.studio.field.label" value="purchasePrice"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="inventory_item"/>
 	</field>
-	<field name="value" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.label" value="value"/>
+	<field name="estimatedValue" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="estimatedValue"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="inventory_item"/>
 	</field>
 	<field name="manufacturer" class="java.lang.String">
@@ -227,7 +227,7 @@
 					<textElement>
 						<font size="14"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{value}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{estimatedValue}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 					<reportElement style="Detail" positionType="Float" x="565" y="0" width="113" height="18" uuid="d65d39e5-5e31-4016-8897-cdda45f5e283">

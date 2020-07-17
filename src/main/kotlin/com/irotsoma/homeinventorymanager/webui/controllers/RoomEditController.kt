@@ -4,6 +4,7 @@ import com.irotsoma.homeinventorymanager.data.DataState
 import com.irotsoma.homeinventorymanager.data.Room
 import com.irotsoma.homeinventorymanager.data.RoomRepository
 import com.irotsoma.homeinventorymanager.data.UserRepository
+import com.irotsoma.homeinventorymanager.webui.models.FormResponse
 import com.irotsoma.homeinventorymanager.webui.models.RoomForm
 import mu.KLogging
 import org.hibernate.exception.ConstraintViolationException
@@ -17,11 +18,10 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.validation.FieldError
+import org.springframework.web.bind.annotation.*
 import java.util.*
+import java.util.stream.Collectors
 import javax.validation.Valid
 
 @Controller
@@ -85,6 +85,8 @@ class RoomEditController {
                 model.addAttribute("room", newRoom)
                 model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
                 return "roomedit"
+            } else {
+                throw e
             }
         }
 
@@ -114,12 +116,50 @@ class RoomEditController {
                 model.addAttribute("room", updatedRoom)
                 model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
                 return "roomedit"
+            } else {
+                throw e
             }
         }
 
         return "redirect:/room"
     }
+    @PostMapping("/modal")
+    @ResponseBody
+    fun postModal(@ModelAttribute @Valid roomForm: RoomForm, bindingResult: BindingResult) : FormResponse {
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            return FormResponse(roomForm.roomName, false, errors)
+        }
+        val locale: Locale = LocaleContextHolder.getLocale()
+        val authentication = SecurityContextHolder.getContext().authentication
+        val userId = userRepository.findByUsername(authentication.name)?.id
+        if (userId == null) {
+            val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
+            logger.warn { errorMessage }
+            return FormResponse(roomForm.roomName, false, mapOf(Pair("roomName", errorMessage)))
+        }
+        val newRoom = Room(
+            userId,
+            roomForm.roomName.trim(),
+            DataState.ACTIVE
+        )
+        try {
+            roomRepository.saveAndFlush(newRoom)
+        } catch (e: DataIntegrityViolationException){
+            if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_room_name_per_user"){
+                val errorMessage = messageSource.getMessage("name.uniquenessError.message", null, locale)
+                return FormResponse(roomForm.roomName, false, mapOf(Pair("roomName",errorMessage)))
+            } else {
+                throw e
+            }
+        }
+        return FormResponse(roomForm.roomName, true, null)
 
+
+    }
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("editRoom.label", null, locale))
