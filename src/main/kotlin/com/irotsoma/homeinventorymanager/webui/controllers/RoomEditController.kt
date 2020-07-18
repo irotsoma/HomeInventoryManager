@@ -72,11 +72,22 @@ class RoomEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
+
         val newRoom = Room(
             userId,
             roomForm.roomName.trim(),
             DataState.ACTIVE
         )
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            addStaticAttributes(model)
+            model.addAllAttributes(errors)
+            model.addAttribute("room", newRoom)
+            return "roomedit"
+        }
         try {
             roomRepository.saveAndFlush(newRoom)
         } catch (e: DataIntegrityViolationException){
@@ -105,9 +116,20 @@ class RoomEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
+
         val updatedRoom = room.get().apply {
                 this.name = roomForm.roomName.trim()
             }
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            addStaticAttributes(model)
+            model.addAllAttributes(errors)
+            model.addAttribute("room", updatedRoom)
+            return "roomedit"
+        }
         try {
             roomRepository.saveAndFlush(updatedRoom)
         } catch (e: DataIntegrityViolationException){

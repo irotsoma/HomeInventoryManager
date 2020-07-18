@@ -12,6 +12,7 @@ import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Lazy
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.core.io.InputStreamResource
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -55,7 +56,7 @@ class AttachmentController {
         return ResponseEntity.ok(InputStreamResource(attachment.inputStream))
     }
 
-    @GetMapping("/{id}", produces=["application/octet-stream"])
+    @GetMapping("/{id}")
     fun get(@PathVariable id: Int): ResponseEntity<InputStreamResource> {
         val attachment = attachmentService.getAttachment(id) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
         val authentication = SecurityContextHolder.getContext().authentication
@@ -63,21 +64,22 @@ class AttachmentController {
         if (attachment.userId != userId) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
-        return ResponseEntity.ok(InputStreamResource(attachment.inputStream))
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${attachment.name}\"")
+            .contentType(attachment.dataType).body(InputStreamResource(attachment.inputStream))
     }
 
     @PostMapping("/ajax")
-    @ResponseBody fun post(@RequestParam("attachmentFile") file: MultipartFile?, @RequestParam("attachmentName") fileName: String?): FormResponse {
+    @ResponseBody fun post(@RequestParam("attachmentFile") file: MultipartFile?, @RequestParam("attachmentName") attachmentName: String?): FormResponse {
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id ?: throw UsernameNotFoundException("Unable to load user.")
         val locale: Locale = LocaleContextHolder.getLocale()
         if (file == null || file.isEmpty) {
             return FormResponse("attachmentFile", false, mapOf(Pair("attachmentFile", messageSource.getMessage("fileMissing.error.message", null, locale))))
         }
-        if (fileName.isNullOrBlank()) {
+        if (attachmentName.isNullOrBlank()) {
             return FormResponse("attachmentName", false, mapOf(Pair("attachmentName", messageSource.getMessage("nameMissing.error.message", null, locale))))
         }
-        attachmentService.addAttachment(fileName,userId,file)
+        attachmentService.addAttachment(attachmentName, userId, file)
         return FormResponse("attachment", true, null)
     }
 

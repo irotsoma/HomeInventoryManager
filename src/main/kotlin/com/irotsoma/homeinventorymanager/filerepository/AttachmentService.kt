@@ -3,10 +3,7 @@
  */
 package com.irotsoma.homeinventorymanager.filerepository
 
-import com.irotsoma.homeinventorymanager.data.Attachment
-import com.irotsoma.homeinventorymanager.data.AttachmentEntity
-import com.irotsoma.homeinventorymanager.data.AttachmentRepository
-import com.irotsoma.homeinventorymanager.data.DataState
+import com.irotsoma.homeinventorymanager.data.*
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.InvalidMediaTypeException
@@ -22,6 +19,8 @@ class AttachmentService {
     private lateinit var attachmentRepository: AttachmentRepository
     @Autowired
     private lateinit var mongoAttachmentService: MongoAttachmentService
+    @Autowired
+    private lateinit var inventoryItemAttachmentLinkRepository: InventoryItemAttachmentLinkRepository
 
     fun addAttachment(name: String, userId: Int, fileInfo: MultipartFile) : AttachmentEntity {
         val mongoAttachmentId = mongoAttachmentService.addAttachment(name, fileInfo)
@@ -58,5 +57,11 @@ class AttachmentService {
             return null
         }
         return AttachmentEntity(attachment.get(), mongoAttachment)
+    }
+
+    fun attachToInventoryItem(attachmentId: Int, inventoryItemId: Int): Int {
+        val link = InventoryItemAttachmentLink(inventoryItemId, attachmentId)
+        val savedLink = inventoryItemAttachmentLinkRepository.save(link)
+        return savedLink.id!!
     }
 }

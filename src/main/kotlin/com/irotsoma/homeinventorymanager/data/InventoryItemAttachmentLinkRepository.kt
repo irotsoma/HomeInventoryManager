@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 
 interface InventoryItemAttachmentLinkRepository : JpaRepository<InventoryItemAttachmentLink, Int> {
-    fun findByInventoryItemIdAndAttachmentId(inventoryItemId: Int, attachmentId: Int): InventoryItemAttachmentLink
+    fun findByInventoryItemIdAndAttachmentId(inventoryItemId: Int, attachmentId: Int): InventoryItemAttachmentLink?
 }

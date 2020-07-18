@@ -72,6 +72,7 @@ class PropertyEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
+
         val newProperty = Property(
             userId,
             propertyForm.propertyName.trim(),
@@ -82,6 +83,16 @@ class PropertyEditController {
             if (propertyForm.country.isNullOrBlank()) null else propertyForm.country!!.trim(),
             DataState.ACTIVE
         )
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            addStaticAttributes(model)
+            model.addAllAttributes(errors)
+            model.addAttribute("property", newProperty)
+            return "propertyedit"
+        }
         try {
             propertyRepository.saveAndFlush(newProperty)
         } catch (e: DataIntegrityViolationException){
@@ -109,6 +120,7 @@ class PropertyEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
+
         val updatedProperty = property.get().apply {
             this.name = propertyForm.propertyName.trim()
             this.addressStreet = if (propertyForm.street.isNullOrBlank()) null else propertyForm.street!!.trim()
@@ -116,6 +128,16 @@ class PropertyEditController {
             this.addressState = if (propertyForm.state.isNullOrBlank()) null else propertyForm.state!!.trim()
             this.addressPostalCode = if (propertyForm.postalCode.isNullOrBlank()) null else propertyForm.postalCode!!.trim()
             this.addressCountry = if (propertyForm.country.isNullOrBlank()) null else propertyForm.country!!.trim()
+        }
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            addStaticAttributes(model)
+            model.addAllAttributes(errors)
+            model.addAttribute("property", updatedProperty)
+            return "propertyedit"
         }
         try {
             propertyRepository.saveAndFlush(updatedProperty)

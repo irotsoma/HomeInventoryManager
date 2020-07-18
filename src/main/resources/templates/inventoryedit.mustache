@@ -3,7 +3,6 @@
     <link href="webjars/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
 {{/stylesheets}}
 <!-- Modals -->
-<!-- Modal -->
 <div id="preview-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
 
@@ -27,7 +26,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Modal Header</h4>
+                <h4 class="modal-title">{{newCategoryModalTitle}}</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="container form-group">
@@ -37,7 +36,7 @@
                         <input type="text" id="categoryName" name="categoryName" class="form-control" required />
                     </div>
                     <div  class="modal-footer">
-                        <button id="category-edit-submit" type="button" class="btn btn-primary">{{submitButtonLabel}}</button>
+                        <button id="new-category-submit" type="button" class="btn btn-primary">{{submitButtonLabel}}</button>
                         <button type="button" class="btn" data-dismiss="modal">{{cancelLabel}}</button>
                     </div>
                 </form>
@@ -50,7 +49,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Modal Header</h4>
+                <h4 class="modal-title">{{newRoomModalTitle}}</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="container form-group">
@@ -60,7 +59,7 @@
                         <input type="text" id="roomName" name="roomName" class="form-control" required />
                     </div>
                     <div  class="modal-footer">
-                        <button id="room-edit-submit" type="button" class="btn btn-primary">{{submitButtonLabel}}</button>
+                        <button id="new-room-submit" type="button" class="btn btn-primary">{{submitButtonLabel}}</button>
                         <button type="button" class="btn" data-dismiss="modal">{{cancelLabel}}</button>
                     </div>
                 </form>
@@ -73,7 +72,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Modal Header</h4>
+                <h4 class="modal-title">{{newPropertyModalTitle}}</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="container form-group">
@@ -105,7 +104,34 @@
                         </div>
                     </div>
                     <div  class="modal-footer">
-                        <button id="property-edit-submit" type="button" class="btn btn-primary">{{submitButtonLabel}}</button>
+                        <button id="new-property-submit" type="button" class="btn btn-primary">{{submitButtonLabel}}</button>
+                        <button type="button" class="btn" data-dismiss="modal">{{cancelLabel}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="attachment-form-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{newAttachmentModalTitle}}</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="container form-group">
+                <form id="new-attachment-form">
+                    <div  class="form-group">
+                        <label for="attachmentName">{{nameLabel}}</label>
+                        <input type="text" id="attachmentName" name="attachmentName" class="form-control" required />
+                    </div>
+                    <div  class="form-group">
+                        <label for="attachmentFile">{{fileLabel}}</label>
+                        <input type="file" id="attachmentFile" name="attachmentFile" class="form-control border-0" required />
+                    </div>
+                    <div  class="modal-footer">
+                        <button id="new-attachment-submit" type="button" class="btn btn-primary">{{submitButtonLabel}}</button>
                         <button type="button" class="btn" data-dismiss="modal">{{cancelLabel}}</button>
                     </div>
                 </form>
@@ -115,8 +141,7 @@
 </div>
 
 
-
-
+<!--body-->
 <div class="container form-group">
     <form id="edit-room-form" method="POST" action="/inventoryedit{{#inventoryItem}}{{#id}}/{{.}}{{/id}}{{/inventoryItem}}">
         {{#formError}}
@@ -214,12 +239,12 @@
                 {{#serialNumberError}}<div class="invalid-feedback">{{{.}}}</div>{{/serialNumberError}}
             </div>
         </div>
-        <div  class="row">
+        <div  class="row mb-1">
             <div class="col-4">
                 <label for="attachments">{{attachmentsLabel}}</label>
             </div>
             <div class="col-8">
-                <button id="add-new-attachment" class="btn btn-info float-right" type="button"><span class="oi oi-plus" aria-hidden="true"></span> {{addNewLabel}}</button>
+                <button id="add-attachment-btn" class="btn btn-info float-right" type="button"><span class="oi oi-plus" aria-hidden="true"></span> {{addNewLabel}}</button>
             </div>
         </div>
 
@@ -243,7 +268,7 @@
             </thead>
             <tbody>
                 {{#inventoryItem}}{{#attachments}}
-                <tr>
+                <tr id="attachment-row-{{id}}">
                     <td>
                         {{name}}
                     </td>
@@ -251,15 +276,17 @@
                         <div class="row float-right">
                             <div class="col-auto">
                                 {{#isUnsupportedType}}<span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="{{attachmentUnsupportedMessage}}">{{/isUnsupportedType}}
-                                <button class="btn btn-secondary" type="button" id="preview-button" onclick="showPreview('{{id}}')" {{#isUnsupportedType}} disabled style="pointer-events: none;" {{/isUnsupportedType}}>{{previewLabel}}</button>
+                                <button class="btn btn-secondary" type="button" onclick="showPreview('{{id}}')" {{#isUnsupportedType}} disabled style="pointer-events: none;" {{/isUnsupportedType}}>{{previewLabel}}</button>
                                 {{#isUnsupportedType}}</span>{{/isUnsupportedType}}
                             </div>
-                            <form class="col-auto" action="/attachment/{{id}}" method="get">
-                                <input class="btn btn-secondary" type="submit" id="download-button" value="{{downloadLabel}}">
-                            </form>
-                            <form class="col-auto" action="/inventoryedit/{{#inventoryItem}}{{id}}{{/inventoryItem}}/remove-attachment/{{id}}" method="post">
-                                <input class="btn btn-secondary" type="submit" id="delete-attachment-button" value="{{deleteLabel}}">
-                            </form>
+                            <div class="col-auto">
+                                <button class="btn btn-secondary" type="button" onclick="window.open('/attachment/{{id}}')">{{downloadLabel}}</button>
+                            </div>
+                            <div class="col-auto">
+                                <form action="/inventoryedit/{{#inventoryItem}}{{id}}{{/inventoryItem}}/remove-attachment/{{id}}" method="post">
+                                    <button class="btn btn-secondary" type="button" onclick="removeAttachment('{{id}}')" >{{deleteLabel}}</button>
+                                </form>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -382,13 +409,34 @@
         $('#add-category-btn').click(function(e){
             e.preventDefault();
             let form = $('#category-form-modal');
-            //form.find('div.invalid-feedback').remove();
-            //form.find('.form-control').removeClass('is-invalid');
+            form.find('div.invalid-feedback').remove();
+            form.find('.form-control').removeClass('is-invalid');
+            form.modal('show');
+        });
+        $('#add-property-btn').click(function(e){
+            e.preventDefault();
+            let form = $('#property-form-modal');
+            form.find('div.invalid-feedback').remove();
+            form.find('.form-control').removeClass('is-invalid');
+            form.modal('show');
+        });
+        $('#add-room-btn').click(function(e){
+            e.preventDefault();
+            let form = $('#room-form-modal');
+            form.find('div.invalid-feedback').remove();
+            form.find('.form-control').removeClass('is-invalid');
+            form.modal('show');
+        });
+        $('#add-attachment-btn').click(function(e){
+            e.preventDefault();
+            let form = $('#attachment-form-modal');
+            form.find('div.invalid-feedback').remove();
+            form.find('.form-control').removeClass('is-invalid');
             form.modal('show');
 
         });
 
-        $('#category-edit-submit').click(function(e){
+        $('#new-category-submit').click(function(e){
             e.preventDefault();
             //let form = $('#category-form-modal');
             //form.find('div.invalid-feedback').remove();
@@ -416,7 +464,7 @@
                 }
             });
         });
-        $('#property-edit-submit').click(function(e){
+        $('#new-property-submit').click(function(e){
             e.preventDefault();
             //let form = $('#category-form-modal');
             //form.find('div.invalid-feedback').remove();
@@ -444,7 +492,7 @@
                 }
             });
         });
-        $('#room-edit-submit').click(function(e){
+        $('#new-room-submit').click(function(e){
             e.preventDefault();
             //let form = $('#category-form-modal');
             //form.find('div.invalid-feedback').remove();
@@ -472,9 +520,53 @@
                 }
             });
         });
+        $('#new-attachment-submit').click(function(e){
+            e.preventDefault();
+            var fd = new FormData();
+            var attachment = $('#attachmentFile')[0].files[0];
+            fd.append('attachmentFile', attachment);
+            fd.append('attachmentName', $('#attachmentName').val())
+
+            $.ajax({
+                type: 'POST',
+                url : '/inventoryedit/{{#inventoryItem}}{{id}}{{/inventoryItem}}/add-new-attachment/ajax',
+                data : fd,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.validated) {
+                        location.reload();
+                    } else {
+                        //Set error messages
+                        $.each(response.errorMessages, function (key, value) {
+                            let selector = $('#' + key);
+                            selector.addClass('is-invalid');
+                            selector.after('<div class="invalid-feedback">' + value + '</div>');
+                        });
+                    }
+                },
+                error: function(e){
+                    alert('Error: ' + e.message);
+                }
+            });
+        });
         function showPreview(attachmentId){
             $('#preview-modal-image').attr('src', '/attachment/image/'+attachmentId);
             $('#preview-modal').modal('show');
+        }
+        function removeAttachment(attachmentId){
+            $.ajax({
+                type: 'POST',
+                url : '/inventoryedit/{{#inventoryItem}}{{id}}{{/inventoryItem}}/remove-attachment/'+attachmentId,
+                success: function() {
+                    $('#attachment-row-'+attachmentId).remove()
+                },
+                statusCode: {
+                    404: function() {
+                        alert("{{accessErrorMessage}}");
+                    }
+                }
+            })
         }
     </script>
 {{/scripts}}

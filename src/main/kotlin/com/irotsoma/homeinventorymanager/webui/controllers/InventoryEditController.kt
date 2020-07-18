@@ -4,6 +4,8 @@
 package com.irotsoma.homeinventorymanager.webui.controllers
 
 import com.irotsoma.homeinventorymanager.data.*
+import com.irotsoma.homeinventorymanager.filerepository.AttachmentService
+import com.irotsoma.homeinventorymanager.webui.models.FormResponse
 import com.irotsoma.homeinventorymanager.webui.models.InventoryItemForm
 import com.irotsoma.homeinventorymanager.webui.models.Option
 import mu.KLogging
@@ -13,19 +15,22 @@ import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Lazy
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.validation.FieldError
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.stream.Collectors
+import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 
@@ -50,6 +55,10 @@ class InventoryEditController {
     private lateinit var roomRepository: RoomRepository
     @Autowired
     private lateinit var categoryRepository: CategoryRepository
+    @Autowired
+    private lateinit var inventoryItemAttachmentLinkRepository: InventoryItemAttachmentLinkRepository
+    @Autowired
+    private lateinit var attachmentService: AttachmentService
 
     @GetMapping
     fun new(model: Model) : String{
@@ -98,9 +107,7 @@ class InventoryEditController {
     fun post(@Valid inventoryItemForm: InventoryItemForm, bindingResult: BindingResult, model: Model): String{
         val locale: Locale = LocaleContextHolder.getLocale()
 
-        if (bindingResult.hasErrors()) {
-            //TODO: finish doing these
-        }
+
 
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByUsername(authentication.name)
@@ -131,6 +138,16 @@ class InventoryEditController {
         }
         if (inventoryItemForm.categories != null) {
             newInventoryItem.category = categoryRepository.findByNameAndUserId(inventoryItemForm.categories!!, user.id)
+        }
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            addStaticAttributes(model)
+            model.addAllAttributes(errors)
+            model.addAttribute("inventoryitem", newInventoryItem)
+            return "inventoryedit"
         }
         val attachmentSet = hashSetOf<Attachment>()
         for (attachmentId in inventoryItemForm.attachments){
@@ -234,6 +251,16 @@ class InventoryEditController {
         if (attachmentSet.isNotEmpty()){
             updatedInventoryItem.attachments = attachmentSet
         }
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            addStaticAttributes(model)
+            model.addAllAttributes(errors)
+            model.addAttribute("inventoryitem", updatedInventoryItem)
+            return "inventoryedit"
+        }
         try {
             inventoryItemRepository.saveAndFlush(updatedInventoryItem)
         } catch (e: DataIntegrityViolationException){
@@ -260,19 +287,35 @@ class InventoryEditController {
     }
 
     @PostMapping("/{id}/remove-attachment/{attachmentId}")
-    fun delete(@PathVariable id: Int, @PathVariable attachmentId: Int, model: Model): String{
+    fun delete(@PathVariable id: Int, @PathVariable attachmentId: Int, model: Model): ResponseEntity<Any> {
         val locale: Locale = LocaleContextHolder.getLocale()
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
-        val category = categoryRepository.findById(id)
-        if (userId == null || category.isEmpty || category.get().userId != userId){
+        val inventoryItem = inventoryItemRepository.findById(attachmentId)
+        val link = inventoryItemAttachmentLinkRepository.findByInventoryItemIdAndAttachmentId(id,attachmentId)
+        if (userId == null || link == null || inventoryItem.isEmpty || inventoryItem.get().user?.id != userId){
             val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
             logger.warn {errorMessage}
-            model.addAttribute("error", errorMessage)
-            return "error"
+            return ResponseEntity.notFound().build()
         }
-        categoryRepository.delete(category.get())
-        return "redirect:/category"
+        inventoryItemAttachmentLinkRepository.delete(link)
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/{id}/add-new-attachment/ajax")
+    @ResponseBody fun post(@PathVariable id: Int, @RequestParam("attachmentFile") file: MultipartFile?, @RequestParam("attachmentName") attachmentName: String?, request: HttpServletRequest): FormResponse {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val userId = userRepository.findByUsername(authentication.name)?.id ?: throw UsernameNotFoundException("Unable to load user.")
+        val locale: Locale = LocaleContextHolder.getLocale()
+        if (file == null || file.isEmpty) {
+            return FormResponse("attachmentFile", false, mapOf(Pair("attachmentFile", messageSource.getMessage("fileMissing.error.message", null, locale))))
+        }
+        if (attachmentName.isNullOrBlank()) {
+            return FormResponse("attachmentName", false, mapOf(Pair("attachmentName", messageSource.getMessage("nameMissing.error.message", null, locale))))
+        }
+        val attachment = attachmentService.addAttachment(attachmentName, userId, file)
+        attachmentService.attachToInventoryItem(attachment.id, id)
+        return FormResponse("attachment", true, null)
     }
 
 
@@ -310,6 +353,13 @@ class InventoryEditController {
         model.addAttribute("postalCodeLabel", messageSource.getMessage("address.postalCode.label", null, locale))
         model.addAttribute("countryLabel", messageSource.getMessage("address.country.label", null, locale))
         model.addAttribute("previewModalTitle", messageSource.getMessage("attachmentPreview.title.label", null, locale))
+        model.addAttribute("newCategoryModalTitle", messageSource.getMessage("newCategory.title.label", null, locale))
+        model.addAttribute("newRoomModalTitle", messageSource.getMessage("newRoom.title.label", null, locale))
+        model.addAttribute("newPropertyModalTitle", messageSource.getMessage("newProperty.title.label", null, locale))
+        model.addAttribute("newAttachmentModalTitle", messageSource.getMessage("newAttachment.title.label", null, locale))
+
+        model.addAttribute("fileLabel", messageSource.getMessage("file.label", null, locale))
+        model.addAttribute("accessErrorMessage", messageSource.getMessage("dataAccess.error.message", null, locale))
         model.addAttribute("attachmentUnsupportedMessage", messageSource.getMessage("attachment.unsupportedFormat.error.message", null, locale))
     }
 }

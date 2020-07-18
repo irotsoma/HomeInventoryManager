@@ -78,6 +78,12 @@ class CategoryEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
+
+        val newCategory = Category(
+                    userId,
+                    categoryForm.categoryName.trim(),
+                    DataState.ACTIVE
+                )
         if (bindingResult.hasErrors()) {
             val errors = bindingResult.fieldErrors.stream()
                 .collect(
@@ -85,18 +91,9 @@ class CategoryEditController {
                 )
             addStaticAttributes(model)
             model.addAllAttributes(errors)
-            model.addAttribute("category", Category(
-                userId,
-                categoryForm.categoryName.trim(),
-                DataState.ACTIVE
-            ))
-            return "categoryEdit"
+            model.addAttribute(newCategory)
+            return "categoryedit"
         }
-        val newCategory = Category(
-                    userId,
-                    categoryForm.categoryName.trim(),
-                    DataState.ACTIVE
-                )
         try {
             categoryRepository.saveAndFlush(newCategory)
         } catch (e: DataIntegrityViolationException){
@@ -120,7 +117,6 @@ class CategoryEditController {
                 )
             return FormResponse(categoryForm.categoryName, false, errors)
         }
-
         val locale: Locale = LocaleContextHolder.getLocale()
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
@@ -160,6 +156,16 @@ class CategoryEditController {
             return "error"
         }
         val updatedCategory = category.get().apply { this.name = categoryForm.categoryName.trim() }
+        if (bindingResult.hasErrors()) {
+            val errors = bindingResult.fieldErrors.stream()
+                .collect(
+                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
+                )
+            addStaticAttributes(model)
+            model.addAllAttributes(errors)
+            model.addAttribute("category", updatedCategory)
+            return "categoryedit"
+        }
         try {
             categoryRepository.saveAndFlush(updatedCategory)
         } catch (e: DataIntegrityViolationException){

@@ -47,10 +47,10 @@
                 <td class="pr-1">
                     <div class="row float-right">
                         <form class="col-auto" action="/inventoryedit/{{id}}" method="get">
-                            <input class="btn btn-secondary" type="submit" id="edit-button" value="{{editLabel}}">
+                            <input class="btn btn-secondary" type="submit" value="{{editLabel}}">
                         </form>
                         <form class="delete-form col-auto" action="/inventory/{{id}}" method="post">
-                            <input class="btn btn-secondary" type="submit" id="delete-button" value="{{deleteLabel}}">
+                            <input class="btn btn-secondary" type="submit" value="{{deleteLabel}}">
                             <input type="hidden" name="action" value="DELETE">
                         </form>
                     </div>
