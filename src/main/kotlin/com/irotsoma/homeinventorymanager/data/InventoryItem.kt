@@ -70,7 +70,7 @@ class InventoryItem(@Column(name = "name", nullable = false) var name: String,
     var updated: Date? = null
         private set
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     @JoinTable(name="inventory_item_attachment",
                 joinColumns = [JoinColumn(name="inventory_item_id")],
                 inverseJoinColumns = [JoinColumn(name="attachment_id")])

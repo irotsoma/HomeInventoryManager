@@ -2,7 +2,26 @@
 {{#stylesheets}}
     <link href="webjars/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
 {{/stylesheets}}
+<!-- Modals -->
 <!-- Modal -->
+<div id="preview-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        &lt;!&ndash; Modal content&ndash;&gt;
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{previewModalTitle}}</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div id="preview-modal-body" class="container">
+                <img class="w-100" id="preview-modal-image" src="" alt="preview image">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="category-form-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
@@ -49,6 +68,55 @@
         </div>
     </div>
 </div>
+<div id="property-form-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Modal Header</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="container form-group">
+                <form id="new-property-form">
+                    <div  class="form-group">
+                        <label for="propertyName">{{nameLabel}}</label>
+                        <input type="text" id="propertyName" name="propertyName" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="street">{{streetLabel}}</label>
+                        <input type="text" id="street" name="street" class="form-control"/>
+                    </div>
+                    <div class="form-row">
+                        <div  class="form-group col-md-5">
+                            <label for="city">{{cityLabel}}</label>
+                            <input type="text" id="city" name="city" class="form-control"/>
+                        </div>
+                        <div  class="form-group col-md-3">
+                            <label for="state">{{stateLabel}}</label>
+                            <input type="text" id="state" name="state" class="form-control"/>
+                        </div>
+                        <div  class="form-group col-md-2">
+                            <label for="postal-code">{{postalCodeLabel}}</label>
+                            <input type="text" id="postal-code" name="postal-code" class="form-control"/>
+                        </div>
+                        <div  class="form-group col-md-2">
+                            <label for="country">{{countryLabel}}</label>
+                            <input type="text" id="country" name="country" class="form-control"/>
+                        </div>
+                    </div>
+                    <div  class="modal-footer">
+                        <button id="property-edit-submit" type="button" class="btn btn-primary">{{submitButtonLabel}}</button>
+                        <button type="button" class="btn" data-dismiss="modal">{{cancelLabel}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 <div class="container form-group">
     <form id="edit-room-form" method="POST" action="/inventoryedit{{#inventoryItem}}{{#id}}/{{.}}{{/id}}{{/inventoryItem}}">
         {{#formError}}
@@ -70,7 +138,7 @@
             {{#descriptionError}}<div class="invalid-feedback">{{{.}}}</div>{{/descriptionError}}
         </div>
         <div class = "form-group row">
-            <div class="col">
+            <div class="col-xs-12 col-md-4">
                 <label for="properties">{{propertyLabel}}</label>
                 <div class = "input-group">
                     <select type="text" id="properties" name="properties" class = "form-control{{#propertiesError}} is-invalid{{/propertiesError}}" required>
@@ -82,7 +150,7 @@
                 </div>
                 {{#propertiesError}}<div class="invalid-feedback">{{{.}}}</div>{{/propertiesError}}
             </div>
-            <div class="col">
+            <div class="col-xs-12 col-md-4">
                 <label for="rooms">{{roomLabel}}</label>
                 <div class = "input-group">
                     <select type="text" id="rooms" name="rooms" class = "form-control{{#roomsError}} is-invalid{{/roomsError}}">
@@ -94,7 +162,7 @@
                 </div>
                 {{#roomsError}}<div class="invalid-feedback">{{{.}}}</div>{{/roomsError}}
             </div>
-            <div class="col">
+            <div class="col-xs-12 col-md-4">
                 <label for="categories">{{categoryLabel}}</label>
                 <div class = "input-group">
                     <select type="text" id="categories" name="categories" class = "form-control{{#categoriesError}} is-invalid{{/categoriesError}}">
@@ -108,7 +176,7 @@
             </div>
         </div>
         <div class = "form-group row">
-            <div class="col">
+            <div class="col-xs-12 col-md-4">
                 <label for="estimatedValue">{{estimatedValueLabel}}</label>
                 <div  class="input-group">
                     <div class="input-group-prepend">
@@ -118,7 +186,7 @@
                     {{#estimatedValueError}}<div class="invalid-feedback">{{{.}}}</div>{{/estimatedValueError}}
                 </div>
             </div>
-            <div class="col">
+            <div class="col-xs-12 col-md-4">
                 <label for="purchasePrice">{{purchasePriceLabel}}</label>
                 <div  class="input-group">
                     <div class="input-group-prepend">
@@ -128,24 +196,90 @@
                 </div>
                 {{#purchasePriceError}}<div class="invalid-feedback">{{{.}}}</div>{{/purchasePriceError}}
             </div>
-            <div class="col">
+            <div class="col-xs-12 col-md-4">
                 <label for="purchaseDate">{{purchaseDateLabel}}</label>
                 <input type="date" id="purchaseDate" name="purchaseDate" class="form-control{{#purchaseDateError}} is-invalid{{/purchaseDateError}}" {{#inventoryItem}}{{#purchaseDateFormatted}}value="{{.}}"{{/purchaseDateFormatted}}{{/inventoryItem}}  />
                 {{#purchaseDateError}}<div class="invalid-feedback">{{{.}}}</div>{{/purchaseDateError}}
             </div>
         </div>
         <div class = "form-group row">
-            <div class="col">
+            <div class="col-xs-12 col-md-6">
                 <label for="manufacturer">{{manufacturerLabel}}</label>
                 <input type="text" id="manufacturer" name="manufacturer" class="form-control{{#manufacturerError}} is-invalid{{/manufacturerError}}" {{#inventoryItem}}{{#manufacturer}}value="{{.}}"{{/manufacturer}}{{/inventoryItem}} />
                 {{#manufacturerError}}<div class="invalid-feedback">{{{.}}}</div>{{/manufacturerError}}
             </div>
-            <div class="col">
+            <div class="col-xs-12 col-md-6">
                 <label for="serialNumber">{{serialNumberLabel}}</label>
                 <input type="text" id="serialNumber" name="serialNumber" class="form-control{{#serialNumberError}} is-invalid{{/serialNumberError}}" {{#inventoryItem}}{{#serialNumber}}value="{{.}}"{{/serialNumber}}{{/inventoryItem}} />
                 {{#serialNumberError}}<div class="invalid-feedback">{{{.}}}</div>{{/serialNumberError}}
             </div>
         </div>
+        <div  class="row">
+            <div class="col-4">
+                <label for="attachments">{{attachmentsLabel}}</label>
+            </div>
+            <div class="col-8">
+                <button id="add-new-attachment" class="btn btn-info float-right" type="button"><span class="oi oi-plus" aria-hidden="true"></span> {{addNewLabel}}</button>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        <table id="attachment-table" class="table">
+            <thead class="thead-light">
+            <tr>
+                <th>
+                    {{nameLabel}}
+                </th>
+                <th class="nosort nosearch">
+                    <span class="float-right">{{actionsLabel}}</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+                {{#inventoryItem}}{{#attachments}}
+                <tr>
+                    <td>
+                        {{name}}
+                    </td>
+                    <td class="pr-1">
+                        <div class="row float-right">
+                            <div class="col-auto">
+                                {{#isUnsupportedType}}<span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="{{attachmentUnsupportedMessage}}">{{/isUnsupportedType}}
+                                <button class="btn btn-secondary" type="button" id="preview-button" onclick="showPreview('{{id}}')" {{#isUnsupportedType}} disabled style="pointer-events: none;" {{/isUnsupportedType}}>{{previewLabel}}</button>
+                                {{#isUnsupportedType}}</span>{{/isUnsupportedType}}
+                            </div>
+                            <form class="col-auto" action="/attachment/{{id}}" method="get">
+                                <input class="btn btn-secondary" type="submit" id="download-button" value="{{downloadLabel}}">
+                            </form>
+                            <form class="col-auto" action="/inventoryedit/{{#inventoryItem}}{{id}}{{/inventoryItem}}/remove-attachment/{{id}}" method="post">
+                                <input class="btn btn-secondary" type="submit" id="delete-attachment-button" value="{{deleteLabel}}">
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {{/attachments}}{{/inventoryItem}}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="2" class="p-1"></td>
+            </tr>
+            </tfoot>
+        </table>
+
+
+
+
+
+
+
+
+
         <div  class="form-group">
             <button id="room-edit-submit" type="submit" class="btn btn-primary">{{submitButtonLabel}}</button>
         </div>
@@ -153,6 +287,7 @@
 </div>
 {{#scripts}}
     <script>
+        //stop enter from being detected in forms which tends to close the form modals
         $(document).on("keydown", "form", function(event) {
             return event.key !== "Enter";
         });
@@ -260,7 +395,7 @@
             //form.find('.form-control').removeClass('is-invalid');
             $.ajax({
                 type: 'POST',
-                url : '/categoryedit/modal',
+                url : '/categoryedit/ajax',
                 data : $('#new-category-form').serialize(),
                 success: function(response) {
                     if (response.validated) {
@@ -280,9 +415,67 @@
                     alert('Error: ' + e.message);
                 }
             });
-
         });
-
+        $('#property-edit-submit').click(function(e){
+            e.preventDefault();
+            //let form = $('#category-form-modal');
+            //form.find('div.invalid-feedback').remove();
+            //form.find('.form-control').removeClass('is-invalid');
+            $.ajax({
+                type: 'POST',
+                url : '/propertyedit/ajax',
+                data : $('#new-category-form').serialize(),
+                success: function(response) {
+                    if (response.validated) {
+                        let newOption = $('#propertyName').val();
+                        $('#properties').append('<option value="' + newOption + '" selected>' + newOption + '</option>');
+                        $('#property-form-modal').modal('hide');
+                    } else {
+                        //Set error messages
+                        $.each(response.errorMessages, function (key, value) {
+                            let selector = $('#' + key);
+                            selector.addClass('is-invalid');
+                            selector.after('<div class="invalid-feedback">' + value + '</div>');
+                        });
+                    }
+                },
+                error: function(e){
+                    alert('Error: ' + e.message);
+                }
+            });
+        });
+        $('#room-edit-submit').click(function(e){
+            e.preventDefault();
+            //let form = $('#category-form-modal');
+            //form.find('div.invalid-feedback').remove();
+            //form.find('.form-control').removeClass('is-invalid');
+            $.ajax({
+                type: 'POST',
+                url : '/roomedit/ajax',
+                data : $('#new-category-form').serialize(),
+                success: function(response) {
+                    if (response.validated) {
+                        let newOption = $('#roomName').val();
+                        $('#rooms').append('<option value="' + newOption + '" selected>' + newOption + '</option>');
+                        $('#room-form-modal').modal('hide');
+                    } else {
+                        //Set error messages
+                        $.each(response.errorMessages, function (key, value) {
+                            let selector = $('#' + key);
+                            selector.addClass('is-invalid');
+                            selector.after('<div class="invalid-feedback">' + value + '</div>');
+                        });
+                    }
+                },
+                error: function(e){
+                    alert('Error: ' + e.message);
+                }
+            });
+        });
+        function showPreview(attachmentId){
+            $('#preview-modal-image').attr('src', '/attachment/image/'+attachmentId);
+            $('#preview-modal').modal('show');
+        }
     </script>
 {{/scripts}}
 

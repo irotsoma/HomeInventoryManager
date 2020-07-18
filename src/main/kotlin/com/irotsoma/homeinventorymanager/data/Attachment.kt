@@ -5,6 +5,7 @@ package com.irotsoma.homeinventorymanager.data
 
 import mu.KLogging
 import org.hibernate.annotations.*
+import org.springframework.http.MediaType
 import java.util.*
 import javax.persistence.*
 import javax.persistence.Entity
@@ -16,6 +17,7 @@ import javax.persistence.Table
 @Where(clause = "state = 'ACTIVE'")
 class Attachment (@Column(name = "mongo_id", nullable = false) val mongoId: String,
                   @Column(name = "name", nullable = false) val name: String,
+                  @Column(name = "data_type", nullable = false) val dataType: String,
                   @Column(name = "user_id", nullable = false) val userId: Int,
                   @Column(name = "state", nullable = false) @Enumerated(EnumType.STRING) var state: DataState
 ) {
@@ -37,4 +39,13 @@ class Attachment (@Column(name = "mongo_id", nullable = false) val mongoId: Stri
     @Column(name = "updated")
     var updated: Date? = null
         private set
+
+    @Transient
+    var isUnsupportedType: Boolean? = null
+
+    @PostLoad
+    fun calculateIsActivelyUsed(){
+        isUnsupportedType = if (dataType in listOf(MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE, MediaType.IMAGE_JPEG_VALUE)) null else true
+    }
+
 }

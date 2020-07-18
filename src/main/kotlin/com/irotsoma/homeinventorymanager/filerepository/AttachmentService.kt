@@ -9,6 +9,8 @@ import com.irotsoma.homeinventorymanager.data.AttachmentRepository
 import com.irotsoma.homeinventorymanager.data.DataState
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.InvalidMediaTypeException
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 
@@ -17,13 +19,21 @@ class AttachmentService {
     /** kotlin-logging implementation */
     companion object : KLogging()
     @Autowired
-    lateinit var attachmentRepository: AttachmentRepository
+    private lateinit var attachmentRepository: AttachmentRepository
     @Autowired
-    lateinit var mongoAttachmentService: MongoAttachmentService
+    private lateinit var mongoAttachmentService: MongoAttachmentService
 
-    fun addAttachment(name: String, userId: Int, fileInfo: MultipartFile) : AttachmentEntity{
+    fun addAttachment(name: String, userId: Int, fileInfo: MultipartFile) : AttachmentEntity {
         val mongoAttachmentId = mongoAttachmentService.addAttachment(name, fileInfo)
-        val attachment = Attachment(mongoAttachmentId, name, userId, DataState.ACTIVE)
+        var fileType = MediaType.APPLICATION_OCTET_STREAM
+        if (fileInfo.contentType != null){
+            try {
+                fileType = MediaType.parseMediaType(fileInfo.contentType!!)
+            } catch (e: InvalidMediaTypeException){
+                //ignore and default to octet stream
+            }
+        }
+        val attachment = Attachment(mongoAttachmentId, name, fileType.toString(), userId, DataState.ACTIVE)
         val savedAttachment = attachmentRepository.save(attachment)
         return AttachmentEntity(savedAttachment, mongoAttachmentService.getAttachment(mongoAttachmentId)!!)
     }

@@ -231,6 +231,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: data_type
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
                   name: state
                   type: nvarchar(255)
                   constraints:
@@ -349,21 +354,11 @@ databaseChangeLog:
                     foreignKeyName: fk_link_attachment_inventory_item
                     references: attachment(id)
               - column:
-                  name: state
-                  type: nvarchar(255)
-                  constraints:
-                    nullable: false
-              - column:
                   name: created
                   type: timestamp
                   constraints:
                     nullable: false
                   defaultValueComputed: CURRENT_TIMESTAMP
-              - column:
-                  name: updated
-                  type: timestamp
-                  constraints:
-                    nullable: false
         - insert:
             tableName: user
             columns:

@@ -88,7 +88,7 @@ class PropertyEditController {
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_property_name_per_user"){
                 addStaticAttributes(model)
                 model.addAttribute("property", newProperty)
-                model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
+                model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 return "propertyedit"
             } else {
                 throw e
@@ -123,7 +123,7 @@ class PropertyEditController {
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_property_name_per_user"){
                 addStaticAttributes(model)
                 model.addAttribute("property", updatedProperty)
-                model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
+                model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 return "propertyedit"
             } else {
                 throw e
@@ -132,7 +132,7 @@ class PropertyEditController {
 
         return "redirect:/property"
     }
-    @PostMapping("/modal")
+    @PostMapping("/ajax")
     @ResponseBody
     fun postModal(@ModelAttribute @Valid propertyForm: PropertyForm, bindingResult: BindingResult) : FormResponse {
         if (bindingResult.hasErrors()) {
@@ -164,7 +164,7 @@ class PropertyEditController {
             propertyRepository.saveAndFlush(newProperty)
         } catch (e: DataIntegrityViolationException){
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_property_name_per_user"){
-                val errorMessage = messageSource.getMessage("name.uniquenessError.message", null, locale)
+                val errorMessage = messageSource.getMessage("nameUniqueness.error.message", null, locale)
                 return FormResponse(propertyForm.propertyName, false, mapOf(Pair("propertyName",errorMessage)))
             } else {
                 throw e

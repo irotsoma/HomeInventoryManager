@@ -103,7 +103,7 @@ class CategoryEditController {
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_category_name_per_user"){
                 addStaticAttributes(model)
                 model.addAttribute("category", newCategory)
-                model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
+                model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 return "categoryedit"
             } else {
                 throw e
@@ -111,7 +111,7 @@ class CategoryEditController {
         }
         return "redirect:/category"
     }
-    @PostMapping("/modal")
+    @PostMapping("/ajax")
     @ResponseBody fun postModal(@ModelAttribute @Valid categoryForm: CategoryForm, bindingResult: BindingResult) : FormResponse {
         if (bindingResult.hasErrors()) {
             val errors = bindingResult.fieldErrors.stream()
@@ -138,7 +138,7 @@ class CategoryEditController {
             categoryRepository.saveAndFlush(newCategory)
         } catch (e: DataIntegrityViolationException){
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_category_name_per_user"){
-                val errorMessage = messageSource.getMessage("name.uniquenessError.message", null, locale)
+                val errorMessage = messageSource.getMessage("nameUniqueness.error.message", null, locale)
                 return FormResponse(categoryForm.categoryName, false, mapOf(Pair("categoryName",errorMessage)))
             } else {
                 throw e
@@ -166,7 +166,7 @@ class CategoryEditController {
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_category_name_per_user"){
                 addStaticAttributes(model)
                 model.addAttribute("category", updatedCategory)
-                model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
+                model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 return "categoryedit"
             } else {
                 throw e

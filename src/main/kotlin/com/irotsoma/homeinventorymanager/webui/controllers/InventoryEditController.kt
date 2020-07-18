@@ -99,7 +99,7 @@ class InventoryEditController {
         val locale: Locale = LocaleContextHolder.getLocale()
 
         if (bindingResult.hasErrors()) {
-
+            //TODO: finish doing these
         }
 
         val authentication = SecurityContextHolder.getContext().authentication
@@ -148,7 +148,7 @@ class InventoryEditController {
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_inventory_item_name_per_user"){
                 addStaticAttributes(model)
                 model.addAttribute("inventoryItem", newInventoryItem)
-                model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
+                model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 val properties = ArrayList<Option>()
                 propertyRepository.findByUserId(user.id)?.forEach{ if (inventoryItemForm.properties == it.name) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
                 model.addAttribute("properties", properties)
@@ -240,7 +240,7 @@ class InventoryEditController {
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_inventory_item_name_per_user"){
                 addStaticAttributes(model)
                 model.addAttribute("inventoryItem", updatedInventoryItem)
-                model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
+                model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 val properties = ArrayList<Option>()
                 propertyRepository.findByUserId(userId)?.forEach{ if (inventoryItemForm.properties == it.name) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
                 model.addAttribute("properties", properties)
@@ -258,6 +258,23 @@ class InventoryEditController {
 
         return "redirect:/inventory"
     }
+
+    @PostMapping("/{id}/remove-attachment/{attachmentId}")
+    fun delete(@PathVariable id: Int, @PathVariable attachmentId: Int, model: Model): String{
+        val locale: Locale = LocaleContextHolder.getLocale()
+        val authentication = SecurityContextHolder.getContext().authentication
+        val userId = userRepository.findByUsername(authentication.name)?.id
+        val category = categoryRepository.findById(id)
+        if (userId == null || category.isEmpty || category.get().userId != userId){
+            val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
+            logger.warn {errorMessage}
+            model.addAttribute("error", errorMessage)
+            return "error"
+        }
+        categoryRepository.delete(category.get())
+        return "redirect:/category"
+    }
+
 
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -282,5 +299,17 @@ class InventoryEditController {
         model.addAttribute("submitButtonLabel", messageSource.getMessage("submit.label", null, locale))
         model.addAttribute("addNewLabel", messageSource.getMessage("addNew.button.label",null, locale))
         model.addAttribute("cancelLabel", messageSource.getMessage("cancel.button.label", null, locale))
+        model.addAttribute("actionsLabel", messageSource.getMessage("actions.label", null, locale))
+        model.addAttribute("deleteLabel", messageSource.getMessage("delete.button.label",null, locale))
+        model.addAttribute("downloadLabel", messageSource.getMessage("download.button.label",null, locale))
+        model.addAttribute("previewLabel", messageSource.getMessage("preview.button.label",null, locale))
+        model.addAttribute("addressLabel", messageSource.getMessage("address.label", null, locale))
+        model.addAttribute("streetLabel", messageSource.getMessage("address.street.label", null, locale))
+        model.addAttribute("cityLabel", messageSource.getMessage("address.city.label", null, locale))
+        model.addAttribute("stateLabel", messageSource.getMessage("address.state.label", null, locale))
+        model.addAttribute("postalCodeLabel", messageSource.getMessage("address.postalCode.label", null, locale))
+        model.addAttribute("countryLabel", messageSource.getMessage("address.country.label", null, locale))
+        model.addAttribute("previewModalTitle", messageSource.getMessage("attachmentPreview.title.label", null, locale))
+        model.addAttribute("attachmentUnsupportedMessage", messageSource.getMessage("attachment.unsupportedFormat.error.message", null, locale))
     }
 }

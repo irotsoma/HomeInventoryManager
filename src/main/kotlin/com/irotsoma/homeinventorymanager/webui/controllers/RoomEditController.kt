@@ -83,7 +83,7 @@ class RoomEditController {
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_room_name_per_user"){
                 addStaticAttributes(model)
                 model.addAttribute("room", newRoom)
-                model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
+                model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 return "roomedit"
             } else {
                 throw e
@@ -114,7 +114,7 @@ class RoomEditController {
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_room_name_per_user"){
                 addStaticAttributes(model)
                 model.addAttribute("room", updatedRoom)
-                model.addAttribute("nameError", messageSource.getMessage("name.uniquenessError.message", null, locale))
+                model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 return "roomedit"
             } else {
                 throw e
@@ -123,7 +123,7 @@ class RoomEditController {
 
         return "redirect:/room"
     }
-    @PostMapping("/modal")
+    @PostMapping("/ajax")
     @ResponseBody
     fun postModal(@ModelAttribute @Valid roomForm: RoomForm, bindingResult: BindingResult) : FormResponse {
         if (bindingResult.hasErrors()) {
@@ -150,7 +150,7 @@ class RoomEditController {
             roomRepository.saveAndFlush(newRoom)
         } catch (e: DataIntegrityViolationException){
             if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_room_name_per_user"){
-                val errorMessage = messageSource.getMessage("name.uniquenessError.message", null, locale)
+                val errorMessage = messageSource.getMessage("nameUniqueness.error.message", null, locale)
                 return FormResponse(roomForm.roomName, false, mapOf(Pair("roomName",errorMessage)))
             } else {
                 throw e
