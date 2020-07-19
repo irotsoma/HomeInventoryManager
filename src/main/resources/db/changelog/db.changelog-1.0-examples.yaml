@@ -176,7 +176,7 @@ databaseChangeLog:
                   value: This is an example.
               - column:
                   name: value
-                  value: 1555.55
+                  value: 1000.22
               - column:
                   name: property_id
                   value: 1
@@ -187,6 +187,9 @@ databaseChangeLog:
                   name: category_id
                   type: int
                   value: 1
+              - column:
+                  name: purchase_price
+                  value: 2000
               - column:
                   name: purchase_date
                   value: "2020-01-01"
@@ -261,6 +264,9 @@ databaseChangeLog:
                   name: category_id
                   type: int
                   value: 3
+              - column:
+                  name: purchase_price
+                  value: 2000
               - column:
                   name: purchase_date
                   value: "2018-01-01"

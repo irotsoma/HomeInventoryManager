@@ -8,7 +8,6 @@ import org.hibernate.annotations.*
 import java.math.BigDecimal
 import java.util.*
 import javax.persistence.*
-import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.Table
 
@@ -70,25 +69,25 @@ class InventoryItem(@Column(name = "name", nullable = false) var name: String,
     var updated: Date? = null
         private set
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="inventory_item_attachment",
                 joinColumns = [JoinColumn(name="inventory_item_id")],
                 inverseJoinColumns = [JoinColumn(name="attachment_id")])
     var attachments: Set<Attachment> = hashSetOf()
 
-    @OneToOne(cascade = [CascadeType.ALL])
+    @OneToOne()
     @JoinColumn(name = "property_id", referencedColumnName = "id")
     var property: Property? = null
 
-    @OneToOne(cascade = [CascadeType.ALL])
+    @OneToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     var user: User? = null
 
-    @OneToOne(cascade = [CascadeType.ALL])
+    @OneToOne()
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     var room: Room? = null
 
-    @OneToOne(cascade = [CascadeType.ALL])
+    @OneToOne()
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     var category: Category? = null
 

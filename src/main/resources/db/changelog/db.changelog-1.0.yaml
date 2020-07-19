@@ -278,7 +278,7 @@ databaseChangeLog:
                   type: clob
               - column:
                   name: value
-                  type: decimal
+                  type: decimal(18,2)
               - column:
                   name: property_id
                   type: int
@@ -302,7 +302,7 @@ databaseChangeLog:
                   type: date
               - column:
                   name: purchase_price
-                  type: decimal
+                  type: decimal(18,2)
               - column:
                   name: manufacturer
                   type: nvarchar(255)

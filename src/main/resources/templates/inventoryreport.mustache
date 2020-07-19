@@ -1,0 +1,45 @@
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
+{{#stylesheets}}
+    <link href="webjars/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="webjars/datatables/css/dataTables.bootstrap4.css">
+{{/stylesheets}}
+<div class="container form-group">
+    <form id="inventory-report-form" method="GET" action="/inventoryreport/report">
+        {{#formError}}
+            <div class="form-group alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{.}}
+            </div>
+        {{/formError}}
+        <div  class="form-group">
+            <label for="reportType">{{reportTypeLabel}}</label>
+            <select type="text" id="reportType" name="reportType" class = "form-control{{#reportTypeError}} is-invalid{{/reportTypeError}}" required>
+                {{#reportTypes}}
+                    <option id="{{id}}" value="{{id}}">{{name}}</option>
+                {{/reportTypes}}
+            </select>
+            {{#reportTypeError}}<div class="invalid-feedback">{{{.}}}</div>{{/reportTypeError}}
+        </div>
+        <div  class="form-group">
+            <button id="report-select-submit" type="submit" class="btn btn-primary">{{submitButtonLabel}}</button>
+        </div>
+    </form>
+</div>
+{{#scripts}}
+    <script>
+        $("#report-select-submit").click(function(e) {
+            // disable button
+            $(this).prop("disabled", true);
+            // add spinner to button
+            $(this).html(
+                '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{loadingButtonLabel}}'
+            );
+            $('#inventory-report-form').submit()
+        });
+    </script>
+
+{{/scripts}}
+
+{{/layout}}

@@ -146,8 +146,7 @@ class RoomEditController {
         return "redirect:/room"
     }
     @PostMapping("/ajax")
-    @ResponseBody
-    fun postModal(@ModelAttribute @Valid roomForm: RoomForm, bindingResult: BindingResult) : FormResponse {
+    @ResponseBody fun postModal(@ModelAttribute @Valid roomForm: RoomForm, bindingResult: BindingResult) : FormResponse {
         if (bindingResult.hasErrors()) {
             val errors = bindingResult.fieldErrors.stream()
                 .collect(
@@ -168,17 +167,18 @@ class RoomEditController {
             roomForm.roomName.trim(),
             DataState.ACTIVE
         )
-        try {
-            roomRepository.saveAndFlush(newRoom)
-        } catch (e: DataIntegrityViolationException){
-            if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_room_name_per_user"){
-                val errorMessage = messageSource.getMessage("nameUniqueness.error.message", null, locale)
-                return FormResponse(roomForm.roomName, false, mapOf(Pair("roomName",errorMessage)))
-            } else {
-                throw e
+        val savedRecord =
+            try {
+                roomRepository.saveAndFlush(newRoom)
+            } catch (e: DataIntegrityViolationException){
+                if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_room_name_per_user"){
+                    val errorMessage = messageSource.getMessage("nameUniqueness.error.message", null, locale)
+                    return FormResponse(roomForm.roomName, false, mapOf(Pair("roomName",errorMessage)))
+                } else {
+                    throw e
+                }
             }
-        }
-        return FormResponse(roomForm.roomName, true, null)
+        return FormResponse(savedRecord.id.toString(), true, null)
 
 
     }

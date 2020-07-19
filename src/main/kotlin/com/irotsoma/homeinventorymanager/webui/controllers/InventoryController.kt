@@ -70,6 +70,7 @@ class InventoryController {
         model.addAttribute("addNewLabel", messageSource.getMessage("addNew.button.label",null, locale))
         model.addAttribute("tableTitle", messageSource.getMessage("inventory.label", null, locale))
         model.addAttribute("roomLabel", messageSource.getMessage("room.label", null, locale))
+        model.addAttribute("propertyLabel", messageSource.getMessage("property.label", null, locale))
         model.addAttribute("categoryLabel", messageSource.getMessage("category.label", null, locale))
         model.addAttribute("deleteConfirmationMessage", messageSource.getMessage("deleteConfirmation.message", null, locale))
     }

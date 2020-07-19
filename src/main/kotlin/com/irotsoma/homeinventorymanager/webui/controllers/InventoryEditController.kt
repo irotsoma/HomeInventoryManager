@@ -63,6 +63,7 @@ class InventoryEditController {
     @GetMapping
     fun new(model: Model) : String{
         addStaticAttributes(model)
+        model.addAttribute("hideAttachments", true)
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id ?: return "inventoryedit"
         val properties = ArrayList<Option>()
@@ -106,8 +107,6 @@ class InventoryEditController {
     @PostMapping
     fun post(@Valid inventoryItemForm: InventoryItemForm, bindingResult: BindingResult, model: Model): String{
         val locale: Locale = LocaleContextHolder.getLocale()
-
-
 
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByUsername(authentication.name)

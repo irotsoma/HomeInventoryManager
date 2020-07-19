@@ -24,7 +24,7 @@ import javax.persistence.Table
  */
 @Entity
 @Table(name = "user")
-@SQLDelete(sql = "UPDATE user SET state = 'DELETED', name = (SELECT CONCAT(name, '--DELETED--', CURRENT_TIMESTAMP)) WHERE id = ?", check = ResultCheckStyle.COUNT)
+@SQLDelete(sql = "UPDATE username SET state = 'DELETED', username = (SELECT CONCAT(username, '--DELETED--', CURRENT_TIMESTAMP)) WHERE id = ?", check = ResultCheckStyle.COUNT)
 @Where(clause = "state = 'ACTIVE'")
 class User(@Column(name = "username", nullable = false, updatable = false, unique = true) val username: String,
            password: String,

@@ -1,0 +1,29 @@
+{{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
+{{#stylesheets}}
+    <link href="webjars/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="webjars/datatables/css/dataTables.bootstrap4.css">
+{{/stylesheets}}
+<div class = "container">
+    <div class = "row mt-2">
+        <div class = "col-4">
+            {{estimatedValueLabel}}
+        </div>
+        <div class = "col-2">
+            {{estimatedValueAmount}}
+        </div>
+    </div>
+    <div class = "row mt-2">
+        <div class = "col-4">
+            {{estimatedReplacementValueLabel}}
+        </div>
+        <div class = "col-2">
+            {{estimatedReplacementValueAmount}}
+        </div>
+    </div>
+    <div class="ml-2 mt-2">
+        <p class="font-weight-light">
+            {{disclaimerText}}
+        </p>
+    </div>
+</div>
+{{/layout}}

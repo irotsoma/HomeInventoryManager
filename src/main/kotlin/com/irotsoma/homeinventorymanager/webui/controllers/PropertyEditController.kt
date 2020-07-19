@@ -182,17 +182,18 @@ class PropertyEditController {
             if (propertyForm.country.isNullOrBlank()) null else propertyForm.country!!.trim(),
             DataState.ACTIVE
         )
-        try {
-            propertyRepository.saveAndFlush(newProperty)
-        } catch (e: DataIntegrityViolationException){
-            if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_property_name_per_user"){
-                val errorMessage = messageSource.getMessage("nameUniqueness.error.message", null, locale)
-                return FormResponse(propertyForm.propertyName, false, mapOf(Pair("propertyName",errorMessage)))
-            } else {
-                throw e
+        val savedRecord =
+            try {
+                propertyRepository.saveAndFlush(newProperty)
+            } catch (e: DataIntegrityViolationException){
+                if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_property_name_per_user"){
+                    val errorMessage = messageSource.getMessage("nameUniqueness.error.message", null, locale)
+                    return FormResponse(propertyForm.propertyName, false, mapOf(Pair("propertyName",errorMessage)))
+                } else {
+                    throw e
+                }
             }
-        }
-        return FormResponse(propertyForm.propertyName, true, null)
+        return FormResponse(savedRecord.id.toString(), true, null)
     }
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()

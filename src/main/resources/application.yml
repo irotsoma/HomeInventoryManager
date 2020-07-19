@@ -42,12 +42,12 @@ webui.menus:
             - ROLE_ADMIN
     - nameProperty: reports.menu.label
       menuItems:
-        - nameProperty: value.report.menu.label
+        - nameProperty: value.report.label
           path: /valuereport
           validUserRoles:
             - ROLE_USER
             - ROLE_ADMIN
-        - nameProperty: inventory.report.menu.label
+        - nameProperty: inventory.report.label
           path: /inventoryreport
           validUserRoles:
             - ROLE_USER

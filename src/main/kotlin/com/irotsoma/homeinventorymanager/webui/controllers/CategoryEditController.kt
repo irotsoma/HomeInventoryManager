@@ -130,17 +130,18 @@ class CategoryEditController {
             categoryForm.categoryName.trim(),
             DataState.ACTIVE
         )
-        try {
-            categoryRepository.saveAndFlush(newCategory)
-        } catch (e: DataIntegrityViolationException){
-            if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_category_name_per_user"){
-                val errorMessage = messageSource.getMessage("nameUniqueness.error.message", null, locale)
-                return FormResponse(categoryForm.categoryName, false, mapOf(Pair("categoryName",errorMessage)))
-            } else {
-                throw e
+        val savedRecord =
+            try {
+                categoryRepository.saveAndFlush(newCategory)
+            } catch (e: DataIntegrityViolationException){
+                if (e.cause is ConstraintViolationException && (e.cause as ConstraintViolationException).constraintName == "unique_category_name_per_user"){
+                    val errorMessage = messageSource.getMessage("nameUniqueness.error.message", null, locale)
+                    return FormResponse(categoryForm.categoryName, false, mapOf(Pair("categoryName",errorMessage)))
+                } else {
+                    throw e
+                }
             }
-        }
-        return FormResponse(categoryForm.categoryName, true, null)
+        return FormResponse(savedRecord.id.toString(), true, null)
     }
 
     @PostMapping("/{id}")

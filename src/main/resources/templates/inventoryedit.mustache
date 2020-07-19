@@ -86,19 +86,21 @@
                         <input type="text" id="street" name="street" class="form-control"/>
                     </div>
                     <div class="form-row">
-                        <div  class="form-group col-md-5">
+                        <div  class="form-group col-md-8">
                             <label for="city">{{cityLabel}}</label>
                             <input type="text" id="city" name="city" class="form-control"/>
                         </div>
-                        <div  class="form-group col-md-3">
+                        <div  class="form-group col-md-4">
                             <label for="state">{{stateLabel}}</label>
                             <input type="text" id="state" name="state" class="form-control"/>
                         </div>
-                        <div  class="form-group col-md-2">
+                    </div>
+                    <div class="form-row">
+                        <div  class="form-group col-md-4">
                             <label for="postal-code">{{postalCodeLabel}}</label>
                             <input type="text" id="postal-code" name="postal-code" class="form-control"/>
                         </div>
-                        <div  class="form-group col-md-2">
+                        <div  class="form-group col-md-8">
                             <label for="country">{{countryLabel}}</label>
                             <input type="text" id="country" name="country" class="form-control"/>
                         </div>
@@ -239,6 +241,7 @@
                 {{#serialNumberError}}<div class="invalid-feedback">{{{.}}}</div>{{/serialNumberError}}
             </div>
         </div>
+        {{^hideAttachments}}
         <div  class="row mb-1">
             <div class="col-4">
                 <label for="attachments">{{attachmentsLabel}}</label>
@@ -247,14 +250,6 @@
                 <button id="add-attachment-btn" class="btn btn-info float-right" type="button"><span class="oi oi-plus" aria-hidden="true"></span> {{addNewLabel}}</button>
             </div>
         </div>
-
-
-
-
-
-
-
-
         <table id="attachment-table" class="table">
             <thead class="thead-light">
             <tr>
@@ -298,14 +293,7 @@
             </tr>
             </tfoot>
         </table>
-
-
-
-
-
-
-
-
+        {{/hideAttachments}}
 
         <div  class="form-group">
             <button id="room-edit-submit" type="submit" class="btn btn-primary">{{submitButtonLabel}}</button>
@@ -323,7 +311,7 @@
             $('[data-toggle="tooltip"]').tooltip();
             //run format currency on load
             $.each($("input[data-type='currency']"), function(){
-                formatCurrency($(this), "blur");
+                formatCurrency($(this));
             })
         })
 
@@ -438,17 +426,18 @@
 
         $('#new-category-submit').click(function(e){
             e.preventDefault();
-            //let form = $('#category-form-modal');
-            //form.find('div.invalid-feedback').remove();
-            //form.find('.form-control').removeClass('is-invalid');
+            let form = $('#category-form-modal');
+            form.find('div.invalid-feedback').remove();
+            form.find('.form-control').removeClass('is-invalid');
             $.ajax({
                 type: 'POST',
                 url : '/categoryedit/ajax',
                 data : $('#new-category-form').serialize(),
                 success: function(response) {
                     if (response.validated) {
+                        $('#categories').find('option').removeAttr('selected');
                         let newOption = $('#categoryName').val();
-                        $('#categories').append('<option value="' + newOption + '" selected>' + newOption + '</option>');
+                        $('#categories').append('<option value="' + response.name + '" selected>' + newOption + '</option>');
                         $('#category-form-modal').modal('hide');
                     } else {
                         //Set error messages
@@ -466,17 +455,18 @@
         });
         $('#new-property-submit').click(function(e){
             e.preventDefault();
-            //let form = $('#category-form-modal');
-            //form.find('div.invalid-feedback').remove();
-            //form.find('.form-control').removeClass('is-invalid');
+            let form = $('#property-form-modal');
+            form.find('div.invalid-feedback').remove();
+            form.find('.form-control').removeClass('is-invalid');
             $.ajax({
                 type: 'POST',
                 url : '/propertyedit/ajax',
-                data : $('#new-category-form').serialize(),
+                data : $('#new-property-form').serialize(),
                 success: function(response) {
                     if (response.validated) {
+                        $('#properties').find('option').removeAttr('selected');
                         let newOption = $('#propertyName').val();
-                        $('#properties').append('<option value="' + newOption + '" selected>' + newOption + '</option>');
+                        $('#properties').append('<option value="' + response.name + '" selected>' + newOption + '</option>');
                         $('#property-form-modal').modal('hide');
                     } else {
                         //Set error messages
@@ -494,17 +484,18 @@
         });
         $('#new-room-submit').click(function(e){
             e.preventDefault();
-            //let form = $('#category-form-modal');
-            //form.find('div.invalid-feedback').remove();
-            //form.find('.form-control').removeClass('is-invalid');
+            let form = $('#room-form-modal');
+            form.find('div.invalid-feedback').remove();
+            form.find('.form-control').removeClass('is-invalid');
             $.ajax({
                 type: 'POST',
                 url : '/roomedit/ajax',
-                data : $('#new-category-form').serialize(),
+                data : $('#new-room-form').serialize(),
                 success: function(response) {
                     if (response.validated) {
+                        $('#rooms').find('option').removeAttr('selected');
                         let newOption = $('#roomName').val();
-                        $('#rooms').append('<option value="' + newOption + '" selected>' + newOption + '</option>');
+                        $('#rooms').append('<option value="' + response.name + '" selected>' + newOption + '</option>');
                         $('#room-form-modal').modal('hide');
                     } else {
                         //Set error messages

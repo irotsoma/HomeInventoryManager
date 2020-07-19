@@ -22,6 +22,9 @@
                 {{nameLabel}}
             </th>
             <th>
+                {{propertyLabel}}
+            </th>
+            <th>
                 {{categoryLabel}}
             </th>
             <th>
@@ -37,6 +40,9 @@
             <tr>
                 <td>
                     {{name}}
+                </td>
+                <td>
+                    {{#property}}{{.}}{{/property}}
                 </td>
                 <td>
                     {{#category}}{{.}}{{/category}}

@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface InventoryItemRepository : JpaRepository<InventoryItem, Int> {
-    fun findByUserId(id: Int): List<InventoryItem>?
+    fun findByUserId(userId: Int): List<InventoryItem>?
 }
