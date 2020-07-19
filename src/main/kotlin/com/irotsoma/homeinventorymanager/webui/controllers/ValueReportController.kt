@@ -59,11 +59,14 @@ class ValueReportController {
                 estimatedValue += it.purchasePrice!!
             }
             //for estimated replacement value it adds up all purchase prices and if blank or 0 it uses estimated value
+            var greaterValue = BigDecimal.valueOf(0.00)
             if (it.purchasePrice != null && it.purchasePrice != BigDecimal.valueOf(0.00)){
-                estimatedReplacementValue += it.purchasePrice!!
-            } else if (it.estimatedValue != null) {
-                estimatedReplacementValue += it.estimatedValue!!
+                greaterValue = it.purchasePrice!!
             }
+            if (it.estimatedValue != null && it.estimatedValue!! > it.purchasePrice) {
+                greaterValue = it.estimatedValue!!
+            }
+            estimatedReplacementValue += greaterValue
         }
         val currencyFormatter: NumberFormat = NumberFormat.getCurrencyInstance(locale)
         model.addAttribute("estimatedValueAmount",  currencyFormatter.format(estimatedValue))

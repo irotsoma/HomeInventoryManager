@@ -116,8 +116,20 @@ class InventoryEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
-        val value = inventoryItemForm.estimatedValue?.replace(",","")
-        val purchasePrice = inventoryItemForm.purchasePrice?.replace(",", "")
+        val errors = hashMapOf<String, String?>()
+        //if value or purchase price are not valid numbers set null and add an error
+        var value = inventoryItemForm.estimatedValue?.replace(",","")
+        try {
+            BigDecimal(value)
+        } catch (e:NumberFormatException) {
+            value = null
+        }
+        var purchasePrice = inventoryItemForm.purchasePrice?.replace(",", "")
+        try {
+            BigDecimal(purchasePrice)
+        } catch (e:NumberFormatException) {
+            purchasePrice = null
+        }
         val newInventoryItem = InventoryItem(
             inventoryItemForm.name.trim(),
             inventoryItemForm.description?.trim(),
@@ -138,11 +150,12 @@ class InventoryEditController {
         if (inventoryItemForm.categories != null) {
             newInventoryItem.category = categoryRepository.findByNameAndUserId(inventoryItemForm.categories!!, user.id)
         }
-        if (bindingResult.hasErrors()) {
-            val errors = bindingResult.fieldErrors.stream()
+        if (bindingResult.hasErrors() || errors.isNotEmpty()) {
+            errors.putAll(bindingResult.fieldErrors.stream()
                 .collect(
                     Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
                 )
+            )
             addStaticAttributes(model)
             model.addAllAttributes(errors)
             model.addAttribute("inventoryitem", newInventoryItem)
