@@ -34,4 +34,8 @@ data class AttachmentEntity(internal val attachment: Attachment, internal val mo
             }
 
         }
+    val originalFileExtension: String
+        get() {
+            return attachment.originalFileExtension
+        }
 }

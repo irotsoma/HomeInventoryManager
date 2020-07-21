@@ -38,6 +38,15 @@
                 {{/menus}}
                 </ul>
             </div>
+            <ul class="navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Change Locale <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a class="locale-change dropdown-item" style="cursor: pointer;" onclick="changeLocale('en_US')">US English</a></li>
+                        <li><a class="locale-change dropdown-item" style="cursor: pointer;"onclick="changeLocale('zh_CN')">Chinese (simplified)</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </nav>
     {{^disableJumbotron}}
@@ -57,6 +66,19 @@
     <!-- Scripts -->
     <script type="text/javascript" src="webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="webjars/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        function changeLocale(newLocale){
+            let currentSearch = location.search
+            let newValue = '?locale=' + newLocale
+            if (currentSearch.includes('locale')) {
+                newValue = currentSearch.replace(/locale=[^&$]*/i, 'locale=' + newLocale);
+            } else if (currentSearch.includes('?') && currentSearch.length > 1){
+                newValue = currentSearch + '&locale=' + newLocale
+            }
+            location.search = newValue;
+            return false
+        }
+    </script>
     {{{layout.scripts}}}
 </body>
 </html>

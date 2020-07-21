@@ -231,6 +231,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: original_file_extension
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
                   name: data_type
                   type: nvarchar(255)
                   constraints:

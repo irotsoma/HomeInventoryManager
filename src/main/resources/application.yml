@@ -1,10 +1,26 @@
+debug: true
+
 spring:
   mustache:
     expose-request-attributes: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
+
+server.tomcat:
+  max-swallow-size: 100MB
+  max-http-form-post-size: 100MB
 
 # Main menu items
 webui.menus:
   menuLayout:
+    - nameProperty: inventory.label
+      path: /inventory
+      validUserRoles:
+        - ROLE_USER
+        - ROLE_ADMIN
     - nameProperty: users.menu.label
       menuItems:
         - nameProperty: logIn.label
@@ -52,3 +68,10 @@ webui.menus:
           validUserRoles:
             - ROLE_USER
             - ROLE_ADMIN
+logging:
+  level:
+    root: DEBUG
+    com.irotsoma: DEBUG
+    org.springframework: DEBUG
+  file:
+    path: ./logs

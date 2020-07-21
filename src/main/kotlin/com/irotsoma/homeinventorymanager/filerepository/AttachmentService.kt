@@ -10,6 +10,7 @@ import org.springframework.http.InvalidMediaTypeException
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.io.File
 
 @Service
 class AttachmentService {
@@ -32,7 +33,7 @@ class AttachmentService {
                 //ignore and default to octet stream
             }
         }
-        val attachment = Attachment(mongoAttachmentId, name, fileType.toString(), userId, DataState.ACTIVE)
+        val attachment = Attachment(mongoAttachmentId, name, File(fileInfo.originalFilename ?:"").extension, fileType.toString(),  userId, DataState.ACTIVE)
         val savedAttachment = attachmentRepository.save(attachment)
         return AttachmentEntity(savedAttachment, mongoAttachmentService.getAttachment(mongoAttachmentId)!!)
     }
@@ -63,5 +64,17 @@ class AttachmentService {
         val link = InventoryItemAttachmentLink(inventoryItemId, attachmentId)
         val savedLink = inventoryItemAttachmentLinkRepository.save(link)
         return savedLink.id!!
+    }
+
+    fun detachFromInventoryItem(attachmentId: Int, inventoryItemId: Int){
+        val link = inventoryItemAttachmentLinkRepository.findByInventoryItemIdAndAttachmentId(inventoryItemId,attachmentId)
+        if (link != null) {
+            inventoryItemAttachmentLinkRepository.delete(link)
+        }
+        //if no inventory items are using this attachment, delete it
+        //TODO: when implementing future functionality to allow user to maintain attachment repository remove this
+        if (inventoryItemAttachmentLinkRepository.findByAttachmentId(attachmentId).isEmpty()){
+            deleteAttachment(attachmentRepository.findById(attachmentId).get())
+        }
     }
 }

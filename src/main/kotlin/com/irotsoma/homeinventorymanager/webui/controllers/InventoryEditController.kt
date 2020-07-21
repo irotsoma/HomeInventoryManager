@@ -25,12 +25,12 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.multipart.MultipartHttpServletRequest
 import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.stream.Collectors
-import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 
@@ -68,12 +68,15 @@ class InventoryEditController {
         val userId = userRepository.findByUsername(authentication.name)?.id ?: return "inventoryedit"
         val properties = ArrayList<Option>()
         propertyRepository.findByUserId(userId)?.forEach{ properties.add(Option(it.id.toString(), it.name, false)) }
+        properties[0].selected = "selected"
         model.addAttribute("properties", properties)
         val rooms = ArrayList<Option>()
         roomRepository.findByUserId(userId)?.forEach{ rooms.add(Option(it.id.toString(), it.name, false)) }
+        rooms[0].selected = "selected"
         model.addAttribute("rooms", rooms)
         val categories = ArrayList<Option>()
         categoryRepository.findByUserId(userId)?.forEach{ categories.add(Option(it.id.toString(), it.name, false))}
+        categories[0].selected = "selected"
         model.addAttribute("categories", categories)
         return "inventoryedit"
     }
@@ -142,13 +145,19 @@ class InventoryEditController {
         )
         newInventoryItem.user = user
         if (inventoryItemForm.properties != null) {
-            newInventoryItem.property = propertyRepository.findByNameAndUserId(inventoryItemForm.properties!!, user.id)
+            newInventoryItem.property = try { propertyRepository.findById(inventoryItemForm.properties!!.toInt()).get() }
+                                        catch(e: NumberFormatException) { null }
+                                        catch (e: NoSuchElementException) { null }
         }
         if (inventoryItemForm.rooms != null) {
-            newInventoryItem.room = roomRepository.findByNameAndUserId(inventoryItemForm.rooms!!, user.id)
+            newInventoryItem.room = try { roomRepository.findById(inventoryItemForm.rooms!!.toInt()).get() }
+                                    catch(e: NumberFormatException) { null }
+                                    catch (e: NoSuchElementException) { null }
         }
         if (inventoryItemForm.categories != null) {
-            newInventoryItem.category = categoryRepository.findByNameAndUserId(inventoryItemForm.categories!!, user.id)
+            newInventoryItem.category = try { categoryRepository.findById(inventoryItemForm.categories!!.toInt()).get() }
+                                        catch(e: NumberFormatException) { null }
+                                        catch (e: NoSuchElementException) { null }
         }
         if (bindingResult.hasErrors() || errors.isNotEmpty()) {
             errors.putAll(bindingResult.fieldErrors.stream()
@@ -180,12 +189,21 @@ class InventoryEditController {
                 model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 val properties = ArrayList<Option>()
                 propertyRepository.findByUserId(user.id)?.forEach{ if (inventoryItemForm.properties == it.name) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
+                if (inventoryItemForm.properties == null) {
+                    properties[0].selected = "selected"
+                }
                 model.addAttribute("properties", properties)
                 val rooms = ArrayList<Option>()
                 roomRepository.findByUserId(user.id)?.forEach{ if (inventoryItemForm.rooms == it.name) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
+                if (inventoryItemForm.rooms == null) {
+                    rooms[0].selected = "selected"
+                }
                 model.addAttribute("rooms", rooms)
                 val categories = ArrayList<Option>()
                 categoryRepository.findByUserId(user.id)?.forEach{ if (inventoryItemForm.categories == it.name) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
+                if (inventoryItemForm.categories == null) {
+                    categories[0].selected = "selected"
+                }
                 model.addAttribute("categories", categories)
                 return "inventoryedit"
             } else {
@@ -234,9 +252,9 @@ class InventoryEditController {
                 try {
                     this.room = roomRepository.findById(inventoryItemForm.rooms!!.toInt()).get()
                 } catch (e: NumberFormatException) {
-                    this.property = null
+                    this.room = null
                 } catch (e: NoSuchElementException) {
-                    this.property = null
+                    this.room = null
                 }
             } else {
                 this.room = null
@@ -245,9 +263,9 @@ class InventoryEditController {
                 try {
                     this.category = categoryRepository.findById(inventoryItemForm.categories!!.toInt()).get()
                 } catch (e: NumberFormatException) {
-                    this.property = null
+                    this.category = null
                 } catch (e: NoSuchElementException) {
-                    this.property = null
+                    this.category = null
                 }
             } else {
                 this.category = null
@@ -303,20 +321,20 @@ class InventoryEditController {
         val locale: Locale = LocaleContextHolder.getLocale()
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
-        val inventoryItem = inventoryItemRepository.findById(attachmentId)
-        val link = inventoryItemAttachmentLinkRepository.findByInventoryItemIdAndAttachmentId(id,attachmentId)
-        if (userId == null || link == null || inventoryItem.isEmpty || inventoryItem.get().user?.id != userId){
+        val inventoryItem = inventoryItemRepository.findById(id)
+        if (userId == null || inventoryItem.isEmpty || inventoryItem.get().user?.id != userId || inventoryItem.get().id == null){
             val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
             logger.warn {errorMessage}
             return ResponseEntity.notFound().build()
         }
-        inventoryItemAttachmentLinkRepository.delete(link)
+        attachmentService.detachFromInventoryItem(attachmentId, inventoryItem.get().id!!)
         return ResponseEntity.ok().build()
     }
 
-    @PostMapping("/{id}/add-new-attachment/ajax")
-    @ResponseBody fun post(@PathVariable id: Int, @RequestParam("attachmentFile") file: MultipartFile?, @RequestParam("attachmentName") attachmentName: String?, request: HttpServletRequest): FormResponse {
+    @PostMapping("/{id}/add-new-attachment/ajax", consumes = ["multipart/form-data"])
+    @ResponseBody fun post(@PathVariable id: Int, @RequestParam("attachmentFile") file: MultipartFile?, @RequestParam("attachmentName") attachmentName: String?, request: MultipartHttpServletRequest): FormResponse {
         val authentication = SecurityContextHolder.getContext().authentication
+        logger.debug {"Description: ${file?.resource?.description}"}
         val userId = userRepository.findByUsername(authentication.name)?.id ?: throw UsernameNotFoundException("Unable to load user.")
         val locale: Locale = LocaleContextHolder.getLocale()
         if (file == null || file.isEmpty) {
@@ -369,9 +387,10 @@ class InventoryEditController {
         model.addAttribute("newRoomModalTitle", messageSource.getMessage("newRoom.title.label", null, locale))
         model.addAttribute("newPropertyModalTitle", messageSource.getMessage("newProperty.title.label", null, locale))
         model.addAttribute("newAttachmentModalTitle", messageSource.getMessage("newAttachment.title.label", null, locale))
-
+        model.addAttribute("deleteConfirmationMessage", messageSource.getMessage("deleteConfirmation.message", null, locale))
         model.addAttribute("fileLabel", messageSource.getMessage("file.label", null, locale))
         model.addAttribute("accessErrorMessage", messageSource.getMessage("dataAccess.error.message", null, locale))
         model.addAttribute("attachmentUnsupportedMessage", messageSource.getMessage("attachment.unsupportedFormat.error.message", null, locale))
+        model.addAttribute("maximumFileSizeMessage", messageSource.getMessage("maximumFileSize.message", null, locale))
     }
 }

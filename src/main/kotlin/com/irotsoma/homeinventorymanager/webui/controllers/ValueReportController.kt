@@ -63,7 +63,7 @@ class ValueReportController {
             if (it.purchasePrice != null && it.purchasePrice != BigDecimal.valueOf(0.00)){
                 greaterValue = it.purchasePrice!!
             }
-            if (it.estimatedValue != null && it.estimatedValue!! > it.purchasePrice) {
+            if (it.estimatedValue != null && it.estimatedValue!! > (it.purchasePrice ?: BigDecimal.valueOf(0.00))) {
                 greaterValue = it.estimatedValue!!
             }
             estimatedReplacementValue += greaterValue

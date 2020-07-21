@@ -64,12 +64,17 @@ class AttachmentController {
         if (attachment.userId != userId) {
             return ResponseEntity(HttpStatus.UNAUTHORIZED)
         }
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${attachment.name}\"")
+        val extension = if (attachment.originalFileExtension.isNotBlank()){
+                                    ".${attachment.originalFileExtension}"
+                                } else {
+                                    ""
+                                }
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${attachment.name}${extension}\"")
             .contentType(attachment.dataType).body(InputStreamResource(attachment.inputStream))
     }
 
     @PostMapping("/ajax")
-    @ResponseBody fun post(@RequestParam("attachmentFile") file: MultipartFile?, @RequestParam("attachmentName") attachmentName: String?): FormResponse {
+    @ResponseBody fun post(@RequestPart("attachmentFile") file: MultipartFile?, @RequestParam("attachmentName") attachmentName: String?): FormResponse {
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id ?: throw UsernameNotFoundException("Unable to load user.")
         val locale: Locale = LocaleContextHolder.getLocale()

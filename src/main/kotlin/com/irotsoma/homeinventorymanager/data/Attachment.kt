@@ -17,6 +17,7 @@ import javax.persistence.Table
 @Where(clause = "state = 'ACTIVE'")
 class Attachment (@Column(name = "mongo_id", nullable = false) val mongoId: String,
                   @Column(name = "name", nullable = false) val name: String,
+                  @Column(name = "original_file_extension", nullable = false) val originalFileExtension: String,
                   @Column(name = "data_type", nullable = false) val dataType: String,
                   @Column(name = "user_id", nullable = false) val userId: Int,
                   @Column(name = "state", nullable = false) @Enumerated(EnumType.STRING) var state: DataState

@@ -77,6 +77,7 @@ class InventoryReportController {
             headers.set("Content-Disposition", "inline;filename=report_${report}_${timeStamp}.pdf")
             ResponseEntity(outputFile.readBytes(), headers, HttpStatus.OK)
         } catch (e:Exception) {
+            logger.warn { "Error building report. ${e.message}"}
             ResponseEntity.notFound().build()
         }
     }
@@ -86,7 +87,7 @@ class InventoryReportController {
         model.addAttribute("pageTitle", messageSource.getMessage("inventory.report.label", null, locale))
         model.addAttribute("reportTypeLabel", messageSource.getMessage("reportType.label", null, locale))
         model.addAttribute("submitButtonLabel", messageSource.getMessage("submit.label", null, locale))
-        model.addAttribute("loadingButtonLabel", messageSource.getMessage("loading.button.label", null, locale))
+        model.addAttribute("loadingLabel", messageSource.getMessage("loading.button.label", null, locale))
     }
 }
 

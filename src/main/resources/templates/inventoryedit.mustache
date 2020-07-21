@@ -129,7 +129,7 @@
                         <input type="text" id="attachmentName" name="attachmentName" class="form-control" required />
                     </div>
                     <div  class="form-group">
-                        <label for="attachmentFile">{{fileLabel}}</label>
+                        <label for="attachmentFile">{{fileLabel}} <span data-toggle="tooltip" title="{{maximumFileSizeMessage}}">&#128712;</span></label>
                         <input type="file" id="attachmentFile" name="attachmentFile" class="form-control border-0" required />
                     </div>
                     <div  class="modal-footer">
@@ -166,16 +166,16 @@
         </div>
         <div class = "form-group row">
             <div class="col-xs-12 col-md-4">
-                <label for="properties">{{propertyLabel}}</label>
+                <label for="categories">{{categoryLabel}}</label>
                 <div class = "input-group">
-                    <select type="text" id="properties" name="properties" class = "form-control{{#propertiesError}} is-invalid{{/propertiesError}}" required>
-                        {{#properties}}
+                    <select type="text" id="categories" name="categories" class = "form-control{{#categoriesError}} is-invalid{{/categoriesError}}">
+                        {{#categories}}
                             <option id="{{id}}" value="{{id}}" {{selected}}>{{name}}</option>
-                        {{/properties}}
+                        {{/categories}}
                     </select>
-                    <button id="add-property-btn" class="btn btn-info" type="button" data-toggle="tooltip" title="{{addNewLabel}}"><span class="oi oi-plus" aria-hidden="true"></span></button>
+                    <button id="add-category-btn" class="btn btn-info" type="button" data-toggle="tooltip" title="{{addNewLabel}}"><span class="oi oi-plus" aria-hidden="true"></span></button>
                 </div>
-                {{#propertiesError}}<div class="invalid-feedback">{{{.}}}</div>{{/propertiesError}}
+                {{#categoriesError}}<div class="invalid-feedback">{{{.}}}</div>{{/categoriesError}}
             </div>
             <div class="col-xs-12 col-md-4">
                 <label for="rooms">{{roomLabel}}</label>
@@ -190,16 +190,16 @@
                 {{#roomsError}}<div class="invalid-feedback">{{{.}}}</div>{{/roomsError}}
             </div>
             <div class="col-xs-12 col-md-4">
-                <label for="categories">{{categoryLabel}}</label>
+                <label for="properties">{{propertyLabel}}</label>
                 <div class = "input-group">
-                    <select type="text" id="categories" name="categories" class = "form-control{{#categoriesError}} is-invalid{{/categoriesError}}">
-                        {{#categories}}
+                    <select type="text" id="properties" name="properties" class = "form-control{{#propertiesError}} is-invalid{{/propertiesError}}" required>
+                        {{#properties}}
                             <option id="{{id}}" value="{{id}}" {{selected}}>{{name}}</option>
-                        {{/categories}}
+                        {{/properties}}
                     </select>
-                    <button id="add-category-btn" class="btn btn-info" type="button" data-toggle="tooltip" title="{{addNewLabel}}"><span class="oi oi-plus" aria-hidden="true"></span></button>
+                    <button id="add-property-btn" class="btn btn-info" type="button" data-toggle="tooltip" title="{{addNewLabel}}"><span class="oi oi-plus" aria-hidden="true"></span></button>
                 </div>
-                {{#categoriesError}}<div class="invalid-feedback">{{{.}}}</div>{{/categoriesError}}
+                {{#propertiesError}}<div class="invalid-feedback">{{{.}}}</div>{{/propertiesError}}
             </div>
         </div>
         <div class = "form-group row">
@@ -278,7 +278,7 @@
                                 <button class="btn btn-secondary" type="button" onclick="window.open('/attachment/{{id}}')">{{downloadLabel}}</button>
                             </div>
                             <div class="col-auto">
-                                <form action="/inventoryedit/{{#inventoryItem}}{{id}}{{/inventoryItem}}/remove-attachment/{{id}}" method="post">
+                                <form class="delete-form" action="/inventoryedit/{{#inventoryItem}}{{id}}{{/inventoryItem}}/remove-attachment/{{id}}" method="post">
                                     <button class="btn btn-secondary" type="button" onclick="removeAttachment('{{id}}')" >{{deleteLabel}}</button>
                                 </form>
                             </div>
@@ -302,6 +302,10 @@
 </div>
 {{#scripts}}
     <script>
+        //confirmation popup
+        $("form.delete-form").submit(function(){
+            return confirm("{{deleteConfirmationMessage}}");
+        });
         //stop enter from being detected in forms which tends to close the form modals
         $(document).on("keydown", "form", function(event) {
             return event.key !== "Enter";
@@ -449,7 +453,7 @@
                     }
                 },
                 error: function(e){
-                    alert('Error: ' + e.message);
+                    alert('Status:'+e.status+': '+e.statusText+'\nError: ' + e.message);
                 }
             });
         });
@@ -478,7 +482,7 @@
                     }
                 },
                 error: function(e){
-                    alert('Error: ' + e.message);
+                    alert('Status:'+e.status+': '+e.statusText+'\nError: ' + e.message);
                 }
             });
         });
@@ -507,7 +511,7 @@
                     }
                 },
                 error: function(e){
-                    alert('Error: ' + e.message);
+                    alert('Status:'+e.status+': '+e.statusText+'\nError: ' + e.message);
                 }
             });
         });
@@ -537,7 +541,7 @@
                     }
                 },
                 error: function(e){
-                    alert('Error: ' + e.message);
+                    alert('Status:'+e.status+': '+e.statusText+'\nError: ' + e.message);
                 }
             });
         });
@@ -546,6 +550,9 @@
             $('#preview-modal').modal('show');
         }
         function removeAttachment(attachmentId){
+            if (!confirm("{{deleteConfirmationMessage}}")) {
+                return false
+            }
             $.ajax({
                 type: 'POST',
                 url : '/inventoryedit/{{#inventoryItem}}{{id}}{{/inventoryItem}}/remove-attachment/'+attachmentId,

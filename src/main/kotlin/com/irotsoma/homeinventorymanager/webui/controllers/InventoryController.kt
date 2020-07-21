@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
+import java.text.DecimalFormat
 import java.util.*
 import javax.servlet.http.HttpSession
 
@@ -61,6 +62,7 @@ class InventoryController {
 
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
+        val decimalFormat= DecimalFormat.getInstance(locale) as DecimalFormat
         model.addAttribute("pageTitle", messageSource.getMessage("inventory.label", null, locale))
         model.addAttribute("pageSubTitle", messageSource.getMessage("inventory.subTitle", null, locale))
         model.addAttribute("nameLabel", messageSource.getMessage("name.label", null, locale))
@@ -73,5 +75,18 @@ class InventoryController {
         model.addAttribute("propertyLabel", messageSource.getMessage("property.label", null, locale))
         model.addAttribute("categoryLabel", messageSource.getMessage("category.label", null, locale))
         model.addAttribute("deleteConfirmationMessage", messageSource.getMessage("deleteConfirmation.message", null, locale))
+        model.addAttribute("searchLabel", messageSource.getMessage("search.label", null, locale))
+        model.addAttribute("currencySymbol", decimalFormat.decimalFormatSymbols.currencySymbol)
+        model.addAttribute("decimalSeparator", decimalFormat.decimalFormatSymbols.decimalSeparator)
+        model.addAttribute("thousandsSeparator", decimalFormat.decimalFormatSymbols.groupingSeparator)
+        model.addAttribute("previousLabel", messageSource.getMessage("previous.label", null, locale))
+        model.addAttribute("nextLabel", messageSource.getMessage("next.label", null, locale))
+        model.addAttribute("paginationInfoMessage", messageSource.getMessage("paginationInfo.message", null, locale))
+        model.addAttribute("paginationInfoFilteredMessage", messageSource.getMessage("paginationInfoFiltered.message", null, locale))
+        model.addAttribute("lengthMenuMessage", messageSource.getMessage("lengthMenu.message", null, locale))
+        model.addAttribute("loadingLabel", messageSource.getMessage("loading.button.label", null, locale))
+        model.addAttribute("emptyTableMessage", messageSource.getMessage("emptyTable.message", null, locale))
+        model.addAttribute("zeroRecordsMessage", messageSource.getMessage("zeroRecords.message", null, locale))
+
     }
 }

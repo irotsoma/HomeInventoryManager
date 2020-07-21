@@ -21,14 +21,15 @@
             <th>
                 {{nameLabel}}
             </th>
-            <th>
-                {{propertyLabel}}
-            </th>
+
             <th>
                 {{categoryLabel}}
             </th>
             <th>
                 {{roomLabel}}
+            </th>
+            <th>
+                {{propertyLabel}}
             </th>
             <th class="nosort nosearch">
                 <span class="float-right">{{actionsLabel}}</span>
@@ -41,14 +42,15 @@
                 <td>
                     {{name}}
                 </td>
-                <td>
-                    {{#property}}{{.}}{{/property}}
-                </td>
+
                 <td>
                     {{#category}}{{.}}{{/category}}
                 </td>
                 <td>
                     {{#room}}{{.}}{{/room}}
+                </td>
+                <td>
+                    {{#property}}{{.}}{{/property}}
                 </td>
                 <td class="pr-1">
                     <div class="row float-right">
@@ -66,7 +68,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="4" class="p-1"></td>
+                <td colspan="5" class="p-1"></td>
             </tr>
         </tfoot>
     </table>
@@ -79,7 +81,6 @@
         $("form.delete-form").submit(function(){
             return confirm("{{deleteConfirmationMessage}}");
         });
-
         //Enable DataTables
         $(document).ready( function () {
             $('#inventory-table').DataTable({
@@ -90,7 +91,22 @@
                 }, {
                     targets: 'nosearch',
                     searchable: false
-                }]
+                }],
+                language: {
+                    search: '{{searchLabel}}',
+                    paginate: {
+                        previous : '{{previousLabel}}',
+                        next: '{{nextLabel}}',
+                        thousands: '{{thousandsSeparator}}',
+                        decimal: '{{decimalSeparator}}',
+                        info: '{{paginationInfoMessage}}',
+                        infoFiltered: '{{paginationInfoFilteredMessage}}',
+                        lengthMenu: '{{lengthMenuMessage}}',
+                        loadingRecords: '{{loadingLabel}}',
+                        emptyTable: '{{emptyTableMessage}}',
+                        zeroRecords: '{{zeroRecordsMessage}}'
+                    }
+                }
             });
         } );
     </script>
