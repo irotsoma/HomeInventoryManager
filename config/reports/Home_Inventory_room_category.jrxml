@@ -60,10 +60,10 @@
 		<property name="com.jaspersoft.studio.field.label" value="name"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="categoryName"/>
 	</field>
-	<sortField name="propertyName"/>
+	<sortField name="roomName"/>
 	<sortField name="categoryName"/>
 	<group name="Group1">
-		<groupExpression><![CDATA[$F{propertyName}]]></groupExpression>
+		<groupExpression><![CDATA[$F{roomName}]]></groupExpression>
 		<groupHeader>
 			<band height="27">
 				<frame>
@@ -73,7 +73,7 @@
 						<textElement>
 							<font size="16" isBold="false"/>
 						</textElement>
-						<textFieldExpression><![CDATA[$F{propertyName} == null ? "None" : $F{propertyName}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[$F{roomName} == null ? "None" : $F{roomName}]]></textFieldExpression>
 					</textField>
 				</frame>
 			</band>
@@ -83,7 +83,7 @@
 		</groupFooter>
 	</group>
 	<group name="Group2">
-		<groupExpression><![CDATA[$F{roomName}]]></groupExpression>
+		<groupExpression><![CDATA[$F{categoryName}]]></groupExpression>
 		<groupHeader>
 			<band height="30">
 				<textField isBlankWhenNull="false">
@@ -91,7 +91,7 @@
 					<textElement>
 						<font fontName="Times New Roman" size="16" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{roomName} == null ? "None" : $F{roomName}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{categoryName} == null ? "None" : $F{categoryName}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>

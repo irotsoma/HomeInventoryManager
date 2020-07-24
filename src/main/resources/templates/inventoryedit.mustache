@@ -331,8 +331,12 @@
         });
 
         function formatNumber(n) {
-            // format number 1000000 to 1,234,567
-            return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "{{thousandsSeparator}}")
+            // format number grouping based on locale, for example 1000000 to 1,234,567
+
+
+            let groupingSize = {{numberGroupingSize}};
+            let regex = new RegExp('\\B(?=(\\d{'+groupingSize+'})+(?!\\d))', 'g');
+            return n.replace(/\D/g, "").replace(regex, "{{numberGroupingSeparator}}")
         }
         function formatCurrency(input, blur) {
             // validates decimal side and puts cursor back in right position.

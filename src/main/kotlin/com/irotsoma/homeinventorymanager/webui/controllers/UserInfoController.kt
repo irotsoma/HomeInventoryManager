@@ -25,6 +25,7 @@ import javax.validation.Valid
 @Lazy
 @RequestMapping("/userinfo")
 class UserInfoController {
+    //TODO: add ability for admin to disable users
     /** kotlin-logging implementation*/
     private companion object: KLogging()
     @Autowired
@@ -38,7 +39,6 @@ class UserInfoController {
         addStaticAttributes(model)
         model.addAttribute("username",authentication.name ?:"")
         model.addAttribute("userRoles",authentication.authorities?.map { it } ?: emptyList<String>())
-
         return "userinfo"
     }
 

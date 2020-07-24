@@ -37,6 +37,7 @@ import javax.validation.Valid
 @RequestMapping("/inventoryedit")
 @Secured("ROLE_USER")
 class InventoryEditController {
+    //TODO: add formatting information for the purchase date field based on locale
     /** kotlin-logging implementation*/
     private companion object: KLogging()
     @Autowired
@@ -108,7 +109,7 @@ class InventoryEditController {
     @PostMapping
     fun post(@Valid inventoryItemForm: InventoryItemForm, bindingResult: BindingResult, model: Model): String{
         val locale: Locale = LocaleContextHolder.getLocale()
-
+        val decimalFormat= DecimalFormat.getInstance(locale) as DecimalFormat
         val authentication = SecurityContextHolder.getContext().authentication
         val user = userRepository.findByUsername(authentication.name)
         if (user == null){
@@ -118,13 +119,13 @@ class InventoryEditController {
             return "error"
         }
         //if value or purchase price are not valid numbers set null and add an error
-        var value = inventoryItemForm.estimatedValue?.replace(",","")
+        var value = inventoryItemForm.estimatedValue?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")
         try {
             BigDecimal(value)
         } catch (e:NumberFormatException) {
             value = null
         }
-        var purchasePrice = inventoryItemForm.purchasePrice?.replace(",", "")
+        var purchasePrice = inventoryItemForm.purchasePrice?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(), "")
         try {
             BigDecimal(purchasePrice)
         } catch (e:NumberFormatException) {
@@ -222,7 +223,7 @@ class InventoryEditController {
     @PostMapping("/{id}")
     fun put(@Valid inventoryItemForm: InventoryItemForm, bindingResult: BindingResult, model: Model, @PathVariable id: Int): String{
         val locale: Locale = LocaleContextHolder.getLocale()
-
+        val decimalFormat= DecimalFormat.getInstance(locale) as DecimalFormat
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
         val inventoryItem = inventoryItemRepository.findById(id)
@@ -235,10 +236,10 @@ class InventoryEditController {
         val updatedInventoryItem = inventoryItem.get().apply {
             this.name = inventoryItemForm.name.trim()
             this.description = inventoryItemForm.description?.trim()
-            val value = inventoryItemForm.estimatedValue?.replace(",","")
+            val value = inventoryItemForm.estimatedValue?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")
             this.estimatedValue = if (value.isNullOrBlank()) null else BigDecimal(value)
             this.purchaseDate = if (inventoryItemForm.purchaseDate.isNullOrBlank()) null else SimpleDateFormat("yyyy-MM-dd").parse(inventoryItemForm.purchaseDate)
-            val purchasePrice = inventoryItemForm.purchasePrice?.replace(",","")
+            val purchasePrice = inventoryItemForm.purchasePrice?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")
             this.purchasePrice = if (purchasePrice.isNullOrBlank()) null else BigDecimal(purchasePrice)
             this.manufacturer = inventoryItemForm.manufacturer
             this.serialNumber = inventoryItemForm.serialNumber
@@ -367,7 +368,8 @@ class InventoryEditController {
 
         model.addAttribute("currencySymbol", decimalFormat.decimalFormatSymbols.currencySymbol)
         model.addAttribute("decimalSeparator", decimalFormat.decimalFormatSymbols.decimalSeparator)
-        model.addAttribute("thousandsSeparator", decimalFormat.decimalFormatSymbols.groupingSeparator)
+        model.addAttribute("numberGroupingSeparator", decimalFormat.decimalFormatSymbols.groupingSeparator)
+        model.addAttribute("numberGroupingSize", decimalFormat.decimalFormatSymbols.toString())
         model.addAttribute("pageTitle", messageSource.getMessage("editInventoryItem.label", null, locale))
         model.addAttribute("nameLabel", messageSource.getMessage("name.label", null, locale))
         model.addAttribute("descriptionLabel", messageSource.getMessage("description.label", null, locale))

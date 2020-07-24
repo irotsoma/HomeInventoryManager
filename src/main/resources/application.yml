@@ -3,7 +3,7 @@
 spring:
   mustache:
     expose-request-attributes: true
-
+  messages.basename: messages
 
 
 # Main menu items
@@ -61,10 +61,3 @@ webui.menus:
           validUserRoles:
             - ROLE_USER
             - ROLE_ADMIN
-logging:
-  level:
-    root: DEBUG
-    com.irotsoma: DEBUG
-    org.springframework: DEBUG
-  file:
-    path: ./logs
