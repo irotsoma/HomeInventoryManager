@@ -85,13 +85,10 @@ class CategoryEditController {
                     DataState.ACTIVE
                 )
         if (bindingResult.hasErrors()) {
-            val errors = bindingResult.fieldErrors.stream()
-                .collect(
-                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
-                )
+            val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
             addStaticAttributes(model)
             model.addAllAttributes(errors)
-            model.addAttribute(newCategory)
+            model.addAttribute("category", newCategory)
             return "categoryedit"
         }
         try {
@@ -110,6 +107,11 @@ class CategoryEditController {
     }
     @PostMapping("/ajax")
     @ResponseBody fun postModal(@ModelAttribute @Valid categoryForm: CategoryForm, bindingResult: BindingResult) : FormResponse {
+        val locale: Locale = LocaleContextHolder.getLocale()
+        if (bindingResult.hasErrors()) {
+            val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
+            return FormResponse(categoryForm.categoryName, false, errors)
+        }
         if (bindingResult.hasErrors()) {
             val errors = bindingResult.fieldErrors.stream()
                 .collect(
@@ -117,7 +119,6 @@ class CategoryEditController {
                 )
             return FormResponse(categoryForm.categoryName, false, errors)
         }
-        val locale: Locale = LocaleContextHolder.getLocale()
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
         if (userId == null) {
@@ -158,10 +159,7 @@ class CategoryEditController {
         }
         val updatedCategory = category.get().apply { this.name = categoryForm.categoryName.trim() }
         if (bindingResult.hasErrors()) {
-            val errors = bindingResult.fieldErrors.stream()
-                .collect(
-                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
-                )
+            val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
             addStaticAttributes(model)
             model.addAllAttributes(errors)
             model.addAttribute("category", updatedCategory)

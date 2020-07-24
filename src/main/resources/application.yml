@@ -1,17 +1,10 @@
-debug: true
+#debug: true
 
 spring:
   mustache:
     expose-request-attributes: true
-  servlet:
-    multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
-      enabled: true
 
-server.tomcat:
-  max-swallow-size: 100MB
-  max-http-form-post-size: 100MB
+
 
 # Main menu items
 webui.menus:

@@ -6,16 +6,18 @@ spring:
     username: homeinventory
     password: insecurepassword
   data.mongodb:
+    authentication-database: admin
     host: localhost
     port: 27017
-  database: homeinventory
+    database: homeinventory
   servlet.multipart:
-    max-file-size: 256MB
-    max-request-size: 256MB
+    max-file-size: 100MB
+    max-request-size: 100MB
     enabled: true
   jpa:
     show-sql: true
     properties.hibernate.format_sql: true
+  messages.basename: messages
 
 security.rememberme.key: mdnumBcFXfwCxTIF16qo
 

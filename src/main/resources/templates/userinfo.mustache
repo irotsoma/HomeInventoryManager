@@ -1,5 +1,37 @@
 {{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
 <div class="container">
+    <!-- change password modal -->
+    <div id="change-password-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">{{changePasswordLabel}}</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="container form-group">
+                    <form id="change-password-form">
+                        <div  class="form-group">
+                            <label for="password">{{passwordLabel}}</label>
+                            <input type="password" id="password" name="password" class="form-control" required />
+                        </div>
+                        <div  class="form-group">
+                            <label for="confirmPassword">{{confirmPasswordLabel}}</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required />
+                        </div>
+                        <div  class="modal-footer">
+                            <button id="change-password-submit" type="button" class="btn btn-primary">{{submitButtonLabel}}</button>
+                            <button type="button" class="btn" data-dismiss="modal">{{cancelLabel}}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!--body-->
     <table class="table">
         <thead  class="thead-light">
             <tr>
@@ -13,6 +45,14 @@
                 </td>
                 <td>
                     {{username}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{passwordLabel}}
+                </td>
+                <td>
+                    <a id="changePasswordLink" href="#">{{changePasswordLabel}}</a>
                 </td>
             </tr>
         </tbody>
@@ -32,4 +72,53 @@
         </tbody>
     </table>
 </div>
+{{#scripts}}
+<script>
+    $('#changePasswordLink').click(function (e){
+        e.preventDefault()
+        let form = $('#change-password-modal');
+        form.find('div.invalid-feedback').remove();
+        form.find('.form-control').removeClass('is-invalid');
+        form.modal('show');
+        return false;
+    });
+    $('#change-password-submit').click(function(e){
+        e.preventDefault();
+        let form = $('#change-password-form');
+        form.find('div.invalid-feedback').remove();
+        form.find('.form-control').removeClass('is-invalid');
+        $.ajax({
+            type: 'POST',
+            url : '/userinfo/ajax',
+            data : $('#change-password-form').serialize(),
+            success: function(response) {
+                if (response.validated) {
+                    let modal = $('#change-password-modal');
+                    modal.find('input').empty();
+                    modal.modal('hide');
+                    location.reload();
+                    alert("{{passwordChangeSuccessMessage}}")
+                } else {
+                    //Set error messages
+                    $.each(response.errorMessages, function (key, value) {
+                        let selector = $('#' + key);
+                        selector.addClass('is-invalid');
+                        selector.after('<div class="invalid-feedback">' + value + '</div>');
+                    });
+                }
+            },
+            error: function(e){
+                alert('Status:'+e.status+': '+e.statusText+'\nError: ' + e.message);
+            }
+        });
+    });
+
+
+
+</script>
+{{/scripts}}
+
+
+
+
 {{/layout}}

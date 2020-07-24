@@ -18,10 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
-import org.springframework.validation.FieldError
 import org.springframework.web.bind.annotation.*
 import java.util.*
-import java.util.stream.Collectors
 import javax.validation.Valid
 
 @Controller
@@ -79,10 +77,7 @@ class RoomEditController {
             DataState.ACTIVE
         )
         if (bindingResult.hasErrors()) {
-            val errors = bindingResult.fieldErrors.stream()
-                .collect(
-                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
-                )
+            val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
             addStaticAttributes(model)
             model.addAllAttributes(errors)
             model.addAttribute("room", newRoom)
@@ -121,10 +116,7 @@ class RoomEditController {
                 this.name = roomForm.roomName.trim()
             }
         if (bindingResult.hasErrors()) {
-            val errors = bindingResult.fieldErrors.stream()
-                .collect(
-                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
-                )
+            val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
             addStaticAttributes(model)
             model.addAllAttributes(errors)
             model.addAttribute("room", updatedRoom)
@@ -147,14 +139,11 @@ class RoomEditController {
     }
     @PostMapping("/ajax")
     @ResponseBody fun postModal(@ModelAttribute @Valid roomForm: RoomForm, bindingResult: BindingResult) : FormResponse {
+        val locale: Locale = LocaleContextHolder.getLocale()
         if (bindingResult.hasErrors()) {
-            val errors = bindingResult.fieldErrors.stream()
-                .collect(
-                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
-                )
+            val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
             return FormResponse(roomForm.roomName, false, errors)
         }
-        val locale: Locale = LocaleContextHolder.getLocale()
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id
         if (userId == null) {

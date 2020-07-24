@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
-import org.springframework.validation.FieldError
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.multipart.MultipartHttpServletRequest
@@ -30,7 +29,6 @@ import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.stream.Collectors
 import javax.validation.Valid
 
 
@@ -119,7 +117,6 @@ class InventoryEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
-        val errors = hashMapOf<String, String?>()
         //if value or purchase price are not valid numbers set null and add an error
         var value = inventoryItemForm.estimatedValue?.replace(",","")
         try {
@@ -159,15 +156,21 @@ class InventoryEditController {
                                         catch(e: NumberFormatException) { null }
                                         catch (e: NoSuchElementException) { null }
         }
-        if (bindingResult.hasErrors() || errors.isNotEmpty()) {
-            errors.putAll(bindingResult.fieldErrors.stream()
-                .collect(
-                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
-                )
-            )
+        if (bindingResult.hasErrors()) {
+            val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
             addStaticAttributes(model)
             model.addAllAttributes(errors)
-            model.addAttribute("inventoryitem", newInventoryItem)
+            model.addAttribute("inventoryItem", newInventoryItem)
+            val properties = ArrayList<Option>()
+            propertyRepository.findByUserId(user.id)?.forEach{ if (newInventoryItem.property?.id == it.id) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
+            model.addAttribute("properties", properties)
+            val rooms = ArrayList<Option>()
+            roomRepository.findByUserId(user.id)?.forEach{ if (newInventoryItem.room?.id == it.id) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
+            model.addAttribute("rooms", rooms)
+            val categories = ArrayList<Option>()
+            categoryRepository.findByUserId(user.id)?.forEach{ if (newInventoryItem.category?.id == it.id) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
+            model.addAttribute("categories", categories)
+            model.addAttribute("hideAttachments", true)
             return "inventoryedit"
         }
         val attachmentSet = hashSetOf<Attachment>()
@@ -205,6 +208,8 @@ class InventoryEditController {
                     categories[0].selected = "selected"
                 }
                 model.addAttribute("categories", categories)
+                model.addAttribute("hideAttachments", true)
+
                 return "inventoryedit"
             } else {
                 throw e
@@ -282,13 +287,19 @@ class InventoryEditController {
             updatedInventoryItem.attachments = attachmentSet
         }
         if (bindingResult.hasErrors()) {
-            val errors = bindingResult.fieldErrors.stream()
-                .collect(
-                    Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage)
-                )
+            val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
             addStaticAttributes(model)
             model.addAllAttributes(errors)
-            model.addAttribute("inventoryitem", updatedInventoryItem)
+            model.addAttribute("inventoryItem", updatedInventoryItem)
+            val properties = ArrayList<Option>()
+            propertyRepository.findByUserId(userId)?.forEach{ if (updatedInventoryItem.property?.id == it.id) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
+            model.addAttribute("properties", properties)
+            val rooms = ArrayList<Option>()
+            roomRepository.findByUserId(userId)?.forEach{ if (updatedInventoryItem.room?.id == it.id) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
+            model.addAttribute("rooms", rooms)
+            val categories = ArrayList<Option>()
+            categoryRepository.findByUserId(userId)?.forEach{ if (updatedInventoryItem.category?.id == it.id) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
+            model.addAttribute("categories", categories)
             return "inventoryedit"
         }
         try {

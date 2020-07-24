@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import javax.validation.constraints.NotBlank
 
 @Component
-@OneNotBlank(fields=["purchasePrice", "estimatedValue"], message = "\${inventoryEditForm.atLeastOneError.message}") //TODO: figure out why this isn't working
+@OneNotBlank(fields=["purchasePrice", "estimatedValue"], message = "At least one of Estimated Value or Purchase Price must be populated.")
 class InventoryItemForm {
     @NotBlank
     var name: String = ""

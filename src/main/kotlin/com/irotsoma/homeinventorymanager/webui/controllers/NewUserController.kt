@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import java.util.*
-import java.util.regex.Pattern
 import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
@@ -47,25 +46,8 @@ class NewUserController {
     fun createUser(@Valid newUserForm: NewUserForm, bindingResult: BindingResult, model: Model, session: HttpSession): String {
         val locale: Locale = LocaleContextHolder.getLocale()
         if (bindingResult.hasErrors()) {
-            val processedMessages = ArrayList<String>()
-            for (error in bindingResult.fieldErrors){
-                if (error.field == "password"){
-                    if (error.defaultMessage?.contains(Pattern.compile("([A-Z]|_)*:\\{").toRegex()) == true) {
-                        for (message in error.defaultMessage!!.split("\u001E")) {
-                            val parsedMessage = message.split(":")
-                            processedMessages.add("<div data-toggle=\"tooltip\" data-placement=\"top\" title=\"${parsedMessage[1].replace("\"", "&quot;", false)}\">${parsedMessage[0]}</div>")
-                            val messageString = processedMessages.joinToString(separator = "")
-                            model.addAttribute("passwordError", messageString)
-                        }
-                    }
-                    else {
-                        model.addAttribute("${error.field}Error", error.defaultMessage)
-                    }
-                }
-                else {
-                    model.addAttribute("${error.field}Error", error.defaultMessage)
-                }
-            }
+            val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
+            model.addAllAttributes(errors)
             //Send back previous values for fields
             if (newUserForm.username != null) {
                 model.addAttribute("username1", newUserForm.username)
