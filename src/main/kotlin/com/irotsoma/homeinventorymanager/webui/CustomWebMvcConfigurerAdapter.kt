@@ -32,12 +32,13 @@ import java.util.*
 /**
  * Configuration to allow for the application to use a session based locale resolver
  */
-
 @Configuration
 class CustomWebMvcConfigurerAdapter : WebMvcConfigurer {
 
     /**
-     * Resolves the current locale defaulting to US
+     * Defines a singleton that resolves the current locale using session information, defaulting to US
+     *
+     * @return An instance of SessionLocaleResolver with default set to en_US
      */
     @Bean
     fun localeResolver(): LocaleResolver {
@@ -49,6 +50,8 @@ class CustomWebMvcConfigurerAdapter : WebMvcConfigurer {
 
     /**
      * Adds a locale change interceptor to the registry
+     *
+     * @param registry The locale change interceptor registry
      */
     override fun addInterceptors(registry: InterceptorRegistry?) {
         registry?.addInterceptor(localeChangeInterceptor())
@@ -57,11 +60,22 @@ class CustomWebMvcConfigurerAdapter : WebMvcConfigurer {
         }
     }
 
+    /**
+     * creates a singleton instance of LocaleChangeInterceptor for the addInterceptors method
+     *
+     * @return a default instance of LocaleChangeInterceptor.
+     */
     @Bean
     fun localeChangeInterceptor(): LocaleChangeInterceptor {
         return LocaleChangeInterceptor()
     }
 
+    /**
+     * Creates a singleton instance of MessageSource setting the appropriate file name and setting encoding to UTF-8
+     * so that non-ASCII characters can be used.
+     *
+     * @return An instance of ResourceBundleMessageSource
+     */
     @Bean
     fun messageSource(): MessageSource {
         val source = ResourceBundleMessageSource()

@@ -16,17 +16,28 @@
  *
  */
 
-/*
- * Created by irotsoma on 7/7/2020.
- */
 package com.irotsoma.homeinventorymanager.webui.models
 
 import com.irotsoma.web.validation.OneNotBlank
-import org.springframework.stereotype.Component
 import javax.validation.constraints.NotBlank
 
-@Component
-@OneNotBlank(fields=["purchasePrice", "estimatedValue"], message = "At least one of Estimated Value or Purchase Price must be populated.")
+/**
+ * Used to hold values and set validation rules using annotations for an HTML form for inventory Items
+ *
+ * @author Justin Zak
+ * @property name The name of the item
+ * @property description A description of the item
+ * @property estimatedValue An formatted version of the estimated value. Must be parsed into a decimal value.
+ * @property purchasePrice The purchase price of the item
+ * @property purchaseDate The purchase date of the item
+ * @property manufacturer The manufacturer of the item
+ * @property serialNumber The serial number of the item
+ * @property properties The property the item is stored at.
+ * @property rooms The room the property is stored in.
+ * @property category The category the item belongs to.
+ * @property attachments A list of attachment IDs associated with the item
+ */
+@OneNotBlank(fields=["purchasePrice", "estimatedValue"], message = "At least one of Estimated Value or Purchase Price must be populated.") //TODO: change once validation library allows for translation
 class InventoryItemForm {
     @NotBlank
     var name: String = ""

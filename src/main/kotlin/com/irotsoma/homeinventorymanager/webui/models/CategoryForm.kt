@@ -16,13 +16,16 @@
  *
  */
 
-/*
- * Created by irotsoma on 7/7/2020.
- */
 package com.irotsoma.homeinventorymanager.webui.models
 
 import javax.validation.constraints.NotBlank
 
+/**
+ * Used to hold values and set validation rules using annotations for an HTML form for categories
+ *
+ * @author Justin Zak
+ * @property categoryName The name of the category
+ */
 class CategoryForm {
     @NotBlank
     var categoryName: String = ""

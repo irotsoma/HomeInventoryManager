@@ -16,16 +16,19 @@
  *
  */
 
-/*
- * Created by irotsoma on 7/23/2020.
- */
 package com.irotsoma.homeinventorymanager.webui.models
 
 import com.irotsoma.web.validation.FieldMatch
 import com.irotsoma.web.validation.ValidPassword
 import javax.validation.constraints.NotBlank
-
-@FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match")
+/**
+ * Used to hold values and set validation rules using annotations for an HTML form for changing a password
+ *
+ * @author Justin Zak
+ * @property password The new password.
+ * @property confirmPassword The confirmation field for the new password.
+ */
+@FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match") //TODO: change once validation library allows for translation
 class ChangePasswordForm {
     @NotBlank
     @ValidPassword

@@ -47,7 +47,14 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-
+/**
+ * Rest Controller for accessing the inventory reports
+ *
+ * @author Justin Zak
+ * @property messageSource MessageSource instance for internationalization of messages.
+ * @property userRepository Autowired instance of the user JPA repository.
+ * @property jasperReportService Autowired instance of the service for generating Jasper Reports
+ */
 @Controller
 @Lazy
 @RequestMapping("/inventoryreport")
@@ -64,7 +71,12 @@ class InventoryReportController {
 
     @Autowired
     private lateinit var userRepository: UserRepository
-
+    /**
+     * Called when loading the grouping selection page
+     *
+     * @param model The Model holding attributes for the mustache templates.
+     * @return The name of the mustache template to load.
+     */
     @GetMapping
     fun get(model: Model): String{
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -82,7 +94,14 @@ class InventoryReportController {
 
         return "inventoryreport"
     }
-
+    /**
+     * Called to get a report
+     *
+     * @param reportType The type of report to produce sent as part of the URL. Should be the string equivalent of a JasperReportItem enum value
+     * @param reportTypeParam The type of report to produce sent as a URL parameter. Only used if /inventoryreport/report URL was used. Should be the string equivalent of a JasperReportItem enum value
+     * @param timeZone Returns the time zone of the requester.
+     * @return A ByteArray containing the pdf version of the report with Content-Disposition set to inline.
+     */
     @GetMapping(value = ["/report","/{reportType}"], produces = ["application/pdf"])
     fun getReport(@PathVariable reportType: String?, @RequestParam("reportType") reportTypeParam: String?, timeZone: TimeZone): ResponseEntity<ByteArray> {
         val authentication = SecurityContextHolder.getContext().authentication
@@ -104,7 +123,11 @@ class InventoryReportController {
             ResponseEntity.notFound().build()
         }
     }
-
+    /**
+     * Adds a series of model attributes that are required for all GETs
+     *
+     * @param model The Model object to add the attributes to.
+     */
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("inventory.report.label", null, locale))

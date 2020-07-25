@@ -21,10 +21,16 @@ package com.irotsoma.homeinventorymanager.webui.models
 import com.irotsoma.web.validation.FieldMatch
 import com.irotsoma.web.validation.ValidPassword
 import javax.validation.constraints.NotBlank
-
-@FieldMatch.List([
-    FieldMatch(first = "password", second = "passwordConfirm", message = "The password fields must match")
-])
+/**
+ * Used to hold values and set validation rules using annotations for an HTML form for creating new users
+ *
+ * @author Justin Zak
+ * @property username The username of the new user
+ * @property password The password for the new user
+ * @property passwordConfirm The confirmation field of the password for the new user
+ * @property roles The roles associated with the new user.
+ */
+@FieldMatch(first = "password", second = "passwordConfirm", message = "The password fields must match")//TODO: change once validation library allows for translation
 class NewUserForm {
     @NotBlank
     var username: String? = null

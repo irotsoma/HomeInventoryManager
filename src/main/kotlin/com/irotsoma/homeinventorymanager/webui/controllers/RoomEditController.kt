@@ -53,13 +53,24 @@ class RoomEditController {
     private lateinit var roomRepository: RoomRepository
     @Autowired
     private lateinit var userRepository: UserRepository
-
+    /**
+     * Gets an empty copy of the edit screen for adding a new record
+     *
+     * @param model The Model holding attributes for the mustache templates.
+     * @returns The template name to load
+     */
     @GetMapping
     fun new(model: Model) : String{
         addStaticAttributes(model)
         return "roomedit"
     }
-
+    /**
+     * Gets a copy of the edit screen with a record already populated for editing
+     *
+     * @param id The ID of the record to edit
+     * @param model The Model holding attributes for the mustache templates.
+     * @returns The template name to load or the name of the error template
+     */
     @GetMapping("/{id}")
     fun get(@PathVariable id: Int, model: Model) : String {
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -76,7 +87,14 @@ class RoomEditController {
         model.addAttribute("room", room.get())
         return "roomedit"
     }
-
+    /**
+     * Saves a new record
+     *
+     * @param roomForm A validated model of the form containing the record.
+     * @param bindingResult Validation results for the form data.
+     * @param model The Model holding attributes for the mustache templates.
+     * @return A redirect back to the list page, an updated instance of the current record with validation errors, or the name of the error template
+     */
     @PostMapping
     fun post(@Valid roomForm: RoomForm, bindingResult: BindingResult, model: Model): String{
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -116,7 +134,15 @@ class RoomEditController {
 
         return "redirect:/room"
     }
-
+    /**
+     * Saves an existing record being edited
+     *
+     * @param roomForm A validated model of the form containing the record.
+     * @param bindingResult Validation results for the form data.
+     * @param model The Model holding attributes for the mustache templates.
+     * @param id The id of the record to update.
+     * @return A redirect back to the list page, an updated instance of the current record with validation errors, or the name of the error template
+     */
     @PostMapping("/{id}")
     fun put(@Valid roomForm: RoomForm, bindingResult: BindingResult, model: Model, @PathVariable id: Int): String{
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -155,6 +181,13 @@ class RoomEditController {
 
         return "redirect:/room"
     }
+    /**
+     * Creates a new record from an ajax popup
+     *
+     * @param roomForm A validated model of the form containing the record.
+     * @param bindingResult Validation results for the form data.
+     * @return A FormResponse that contains a boolean parameter "validated" which is true if the add was successful or false if errors, and a map of field name to message for any errors.
+     */
     @PostMapping("/ajax")
     @ResponseBody fun postModal(@ModelAttribute @Valid roomForm: RoomForm, bindingResult: BindingResult) : FormResponse {
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -189,11 +222,15 @@ class RoomEditController {
 
 
     }
+    /**
+     * Adds a series of model attributes that are required for all GETs
+     *
+     * @param model The Model object to add the attributes to.
+     */
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("editRoom.label", null, locale))
         model.addAttribute("nameLabel", messageSource.getMessage("name.label", null, locale))
-        //model.addAttribute("disableJumbotron", "disable")
         model.addAttribute("submitButtonLabel", messageSource.getMessage("submit.label", null, locale))
     }
 }

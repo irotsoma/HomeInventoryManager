@@ -22,6 +22,13 @@ package com.irotsoma.homeinventorymanager.webui
  * Object representing a top level Menu
  *
  * @author Justin Zak
+ * @property nameProperty The name of the message entry to use for translating the menu name to the proper language
+ * @property name The name of the menu
+ * @property path The path that will be accessed when clicking this menu. (not used if the menu contains dropdown items)
+ * @property containsMenuItems False to show if this menu should navigate when clicked on, True to show that the menu should drop down items when clicked on.
+ * @property disabled True if the menu item should be disabled for the current circumstances.
+ * @property menuItems A list of [MenuItem] objects for dropdown menus (not used if the menu is meant to navigate on click)
+ * @property validUserRoles A list of user roles for which the menu should be enabled.
  */
 class Menu() {
     var nameProperty: String = ""
@@ -31,6 +38,17 @@ class Menu() {
     var menuItems:ArrayList<MenuItem> = ArrayList()
     var containsMenuItems = false
     var disabled = true
+
+    /**
+     * Secondary constructor that sets the properties
+     *
+     * @param nameProperty The name of the message entry to use for translating the menu name to the proper language
+     * @param name The name of the menu
+     * @param path The path that will be accessed when clicking this menu. (not used if the menu contains dropdown items)
+     * @param menuItems A list of [MenuItem] objects for dropdown menus (not used if the menu is meant to navigate on click)
+     * @param validUserRoles A list of user roles for which the menu should be enabled.
+     * @param disabled True if the menu item should be disabled for the current circumstances. (defaults to true)
+     */
     constructor(nameProperty:String, name:String, path:String?, validUserRoles: ArrayList<String>, menuItems:ArrayList<MenuItem>, disabled:Boolean = true): this() {
         this.nameProperty=nameProperty
         this.name = name

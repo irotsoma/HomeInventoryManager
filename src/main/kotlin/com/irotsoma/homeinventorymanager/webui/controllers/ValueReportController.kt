@@ -16,11 +16,9 @@
  *
  */
 
-/*
- * Created by irotsoma on 7/18/2020.
- */
 package com.irotsoma.homeinventorymanager.webui.controllers
 
+import com.irotsoma.homeinventorymanager.data.InventoryItem
 import com.irotsoma.homeinventorymanager.data.InventoryItemRepository
 import com.irotsoma.homeinventorymanager.data.UserRepository
 import mu.KLogging
@@ -38,7 +36,14 @@ import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
 
-
+/**
+ * Rest Controller for accessing the estimated value report
+ *
+ * @author Justin Zak
+ * @property messageSource MessageSource instance for internationalization of messages.
+ * @property userRepository Autowired instance of the user JPA repository.
+ * @property userRepository Autowired instance of the [InventoryItem] JPA repository.
+ */
 @Controller
 @Lazy
 @RequestMapping("/valuereport")
@@ -52,7 +57,12 @@ class ValueReportController {
     private lateinit var userRepository: UserRepository
     @Autowired
     private lateinit var inventoryItemRepository: InventoryItemRepository
-
+    /**
+     * Called when loading the report
+     *
+     * @param model The Model holding attributes for the mustache templates.
+     * @return The name of the mustache template to load.
+     */
     @GetMapping
     fun get(model: Model): String {
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -91,9 +101,11 @@ class ValueReportController {
         model.addAttribute("estimatedReplacementValueAmount", currencyFormatter.format(estimatedReplacementValue))
         return "valuereport"
     }
-
-
-
+    /**
+     * Adds a series of model attributes that are required for all GETs
+     *
+     * @param model The Model object to add the attributes to.
+     */
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("value.report.label", null, locale))

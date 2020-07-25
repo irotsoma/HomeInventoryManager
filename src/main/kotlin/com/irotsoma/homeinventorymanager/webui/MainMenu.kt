@@ -34,6 +34,10 @@ import java.util.*
  * Builds the main menu for the web ui
  *
  * @author Justin Zak
+ * @property messageSource MessageSource instance for internationalization of menus.
+ * @property menuLayout An array of Menu objects that hold the unprocessed menus from the configuration file
+ * @property _menus Private property that holds the actual values for the processed menus
+ * @property menus Read only property that triggers the populateValues method before returning the processed menus
  */
 @Component
 @ConfigurationProperties(prefix="webui.menus")

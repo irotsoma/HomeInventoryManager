@@ -20,6 +20,17 @@ package com.irotsoma.homeinventorymanager.webui.models
 
 import javax.validation.constraints.NotBlank
 
+/**
+ * Used to hold values and set validation rules using annotations for an HTML form for properties
+ *
+ * @author Justin Zak
+ * @property propertyName The name of the property
+ * @property street The address street.
+ * @property city The address city.
+ * @property state The address state or province.
+ * @property postalCode The address postal code.
+ * @property country The address country.
+ */
 class PropertyForm {
     @NotBlank
     var propertyName: String = ""

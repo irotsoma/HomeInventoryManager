@@ -27,13 +27,25 @@ import org.springframework.validation.BindingResult
 import java.util.*
 import java.util.regex.Pattern
 
-
+/**
+ * Singleton for parsing errors returned by form validation
+ */
 object ParseBindingResultErrors {
-    fun parseBindingResultErrors(bindingResult: BindingResult, messageSource: MessageSource, locale: Locale) : Map<String,String> {
+    /**
+     * Parses errors from a binding result and allows for setting up internationalization strings to translate errors
+     * that are not translated by the validation library
+     *
+     * @param bindingResult Validation results for the form data.
+     * @param messageSource MessageSource instance for internationalization of messages.
+     * @param locale The locale to use for translation.
+     * @return A map of key value pairs of field name to message.
+     */
+    fun parseBindingResultErrors(bindingResult: BindingResult, messageSource: MessageSource?, locale: Locale?) : Map<String,String> {
         if (bindingResult.hasErrors()) {
             val errors: HashMap<String, String> = hashMapOf()
             for (error in bindingResult.fieldErrors) {
                 val processedMessages = ArrayList<String>()
+                //if the value is in the format usually returned by hibernate validation parse and make the detail message a tooltip
                 if (error.defaultMessage?.contains(Pattern.compile("([A-Z]|_)*:\\{").toRegex()) == true) {
                     for (message in error.defaultMessage!!.split("\u001E")) {
                         val parsedMessage = message.split(":").toMutableList()
@@ -45,11 +57,14 @@ object ParseBindingResultErrors {
                         errors["${error.field}Error"] = messageString
                     }
                 } else {
+                    //otherwise translate the message if available or just add the message directly
                     var messageString = error.defaultMessage ?: ""
-                    try {
-                        messageString = messageSource.getMessage("$messageString.error.message", null, locale)
-                    } catch (e: NoSuchMessageException) {
-                        //ignore
+                    if (messageSource != null && locale != null) {
+                        try {
+                            messageString = messageSource.getMessage("$messageString.error.message", null, locale)
+                        } catch (e: NoSuchMessageException) {
+                            //ignore
+                        }
                     }
                     errors["${error.field}Error"] = messageString
                 }

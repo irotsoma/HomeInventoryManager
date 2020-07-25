@@ -36,12 +36,19 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import java.util.*
-import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
+/**
+ * Rest Controller for accessing properties
+ *
+ * @author Justin Zak
+ * @property messageSource MessageSource instance for internationalization of messages.
+ * @property userRepository Autowired instance of the user JPA repository.
+ */
 @Controller
 @Lazy
 @RequestMapping("/userinfo")
+@Secured(value = ["ROLE_USER","ROLE_ADMIN"])
 class UserInfoController {
     //TODO: add ability for admin to disable users
     /** kotlin-logging implementation*/
@@ -50,18 +57,29 @@ class UserInfoController {
     private lateinit var messageSource: MessageSource
     @Autowired
     private lateinit var userRepository: UserRepository
+
+    /**
+     * Called when loading the details screen
+     *
+     * @param model The Model holding attributes for the mustache templates.
+     * @return The name of the mustache template to load.
+     */
     @GetMapping
-    @Secured("ROLE_USER")
-    fun get(model: Model,session: HttpSession): String {
+    fun get(model: Model): String {
         val authentication = SecurityContextHolder.getContext().authentication
         addStaticAttributes(model)
         model.addAttribute("username",authentication.name ?:"")
         model.addAttribute("userRoles",authentication.authorities?.map { it } ?: emptyList<String>())
         return "userinfo"
     }
-
+    /**
+     * Used to change a password using an ajax method
+     *
+     * @param changePasswordForm A validated model of the form containing the record.
+     * @param bindingResult Validation results for the form data.
+     * @return A FormResponse that contains a boolean parameter "validated" which is true if the add was successful or false if errors, and a map of field name to message for any errors.
+     */
     @PostMapping("/ajax")
-    @Secured("ROLE_ADMIN")
     @ResponseBody
     fun post(@Valid changePasswordForm: ChangePasswordForm, bindingResult: BindingResult): FormResponse {
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -82,7 +100,11 @@ class UserInfoController {
         userRepository.saveAndFlush(user)
         return FormResponse("password changed", true, null)
     }
-
+    /**
+     * Adds a series of model attributes that are required for all GETs
+     *
+     * @param model The Model object to add the attributes to.
+     */
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("userDetails.label", null, locale))

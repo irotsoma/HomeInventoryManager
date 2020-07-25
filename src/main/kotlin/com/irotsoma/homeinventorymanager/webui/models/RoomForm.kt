@@ -16,14 +16,16 @@
  *
  */
 
-/*
- * Created by irotsoma on 7/6/2020.
- */
 package com.irotsoma.homeinventorymanager.webui.models
 
 import javax.validation.constraints.NotBlank
 
-
+/**
+ * Used to hold values and set validation rules using annotations for an HTML form for rooms
+ *
+ * @author Justin Zak
+ * @property roomName The name of the room.
+ */
 class RoomForm {
     @NotBlank
     var roomName: String = ""

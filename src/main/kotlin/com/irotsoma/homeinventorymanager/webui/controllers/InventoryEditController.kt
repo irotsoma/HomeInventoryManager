@@ -138,13 +138,13 @@ class InventoryEditController {
         addStaticAttributes(model)
         model.addAttribute("inventoryItem", inventoryItem.get())
         val properties = ArrayList<Option>()
-        propertyRepository.findByUserId(userId)?.forEach{ if (inventoryItem.get().property?.id == it.id) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
+        propertyRepository.findByUserId(userId).forEach{ if (inventoryItem.get().property?.id == it.id) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
         model.addAttribute("properties", properties)
         val rooms = ArrayList<Option>()
-        roomRepository.findByUserId(userId)?.forEach{ if (inventoryItem.get().room?.id == it.id) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
+        roomRepository.findByUserId(userId).forEach{ if (inventoryItem.get().room?.id == it.id) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
         model.addAttribute("rooms", rooms)
         val categories = ArrayList<Option>()
-        categoryRepository.findByUserId(userId)?.forEach{ if (inventoryItem.get().category?.id == it.id) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
+        categoryRepository.findByUserId(userId).forEach{ if (inventoryItem.get().category?.id == it.id) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
         model.addAttribute("categories", categories)
         return "inventoryedit"
     }
@@ -170,13 +170,13 @@ class InventoryEditController {
             return "error"
         }
         //if value or purchase price are not valid numbers set null and add an error
-        var value = inventoryItemForm.estimatedValue?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")
+        var value = inventoryItemForm.estimatedValue?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")?.replace(decimalFormat.decimalFormatSymbols.decimalSeparator.toString(),".")
         try {
             BigDecimal(value)
         } catch (e:NumberFormatException) {
             value = null
         }
-        var purchasePrice = inventoryItemForm.purchasePrice?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(), "")
+        var purchasePrice = inventoryItemForm.purchasePrice?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(), "")?.replace(decimalFormat.decimalFormatSymbols.decimalSeparator.toString(),".")
         try {
             BigDecimal(purchasePrice)
         } catch (e:NumberFormatException) {
@@ -214,13 +214,13 @@ class InventoryEditController {
             model.addAllAttributes(errors)
             model.addAttribute("inventoryItem", newInventoryItem)
             val properties = ArrayList<Option>()
-            propertyRepository.findByUserId(user.id)?.forEach{ if (newInventoryItem.property?.id == it.id) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
+            propertyRepository.findByUserId(user.id).forEach{ if (newInventoryItem.property?.id == it.id) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
             model.addAttribute("properties", properties)
             val rooms = ArrayList<Option>()
-            roomRepository.findByUserId(user.id)?.forEach{ if (newInventoryItem.room?.id == it.id) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
+            roomRepository.findByUserId(user.id).forEach{ if (newInventoryItem.room?.id == it.id) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
             model.addAttribute("rooms", rooms)
             val categories = ArrayList<Option>()
-            categoryRepository.findByUserId(user.id)?.forEach{ if (newInventoryItem.category?.id == it.id) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
+            categoryRepository.findByUserId(user.id).forEach{ if (newInventoryItem.category?.id == it.id) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
             model.addAttribute("categories", categories)
             model.addAttribute("hideAttachments", true)
             return "inventoryedit"
@@ -295,10 +295,10 @@ class InventoryEditController {
         val updatedInventoryItem = inventoryItem.get().apply {
             this.name = inventoryItemForm.name.trim()
             this.description = inventoryItemForm.description?.trim()
-            val value = inventoryItemForm.estimatedValue?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")
+            val value = inventoryItemForm.estimatedValue?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")?.replace(decimalFormat.decimalFormatSymbols.decimalSeparator.toString(),".")
             this.estimatedValue = if (value.isNullOrBlank()) null else BigDecimal(value)
             this.purchaseDate = if (inventoryItemForm.purchaseDate.isNullOrBlank()) null else SimpleDateFormat("yyyy-MM-dd").parse(inventoryItemForm.purchaseDate)
-            val purchasePrice = inventoryItemForm.purchasePrice?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")
+            val purchasePrice = inventoryItemForm.purchasePrice?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")?.replace(decimalFormat.decimalFormatSymbols.decimalSeparator.toString(),".")
             this.purchasePrice = if (purchasePrice.isNullOrBlank()) null else BigDecimal(purchasePrice)
             this.manufacturer = inventoryItemForm.manufacturer
             this.serialNumber = inventoryItemForm.serialNumber

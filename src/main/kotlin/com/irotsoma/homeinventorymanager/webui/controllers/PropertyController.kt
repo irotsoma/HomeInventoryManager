@@ -18,6 +18,7 @@
 
 package com.irotsoma.homeinventorymanager.webui.controllers
 
+import com.irotsoma.homeinventorymanager.data.Property
 import com.irotsoma.homeinventorymanager.data.PropertyRepository
 import com.irotsoma.homeinventorymanager.data.UserRepository
 import mu.KLogging
@@ -31,8 +32,15 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import java.util.*
-import javax.servlet.http.HttpSession
 
+/**
+ * Rest Controller for accessing properties
+ *
+ * @author Justin Zak
+ * @property messageSource MessageSource instance for internationalization of messages.
+ * @property userRepository Autowired instance of the user JPA repository.
+ * @property propertyRepository Autowired instance of the [Property] JPA repository
+ */
 @Controller
 @Lazy
 @RequestMapping("/property")
@@ -46,9 +54,14 @@ class PropertyController {
     private lateinit var propertyRepository: PropertyRepository
     @Autowired
     private lateinit var userRepository: UserRepository
-
+    /**
+     * Called when loading the list page
+     *
+     * @param model The Model holding attributes for the mustache templates.
+     * @return The name of the mustache template to load.
+     */
     @GetMapping
-    fun getList(model: Model, session: HttpSession): String {
+    fun getList(model: Model): String {
         addStaticAttributes(model)
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id ?: return "property"
@@ -56,7 +69,13 @@ class PropertyController {
         model.addAttribute("property", properties)
         return "property"
     }
-
+    /**
+     * Called when deleting a record
+     *
+     * @param id The ID of the record to delete.
+     * @param action A parameter to explicitly verify that deleting is requested.
+     * @return A redirect to reload the list page or an error page
+     */
     @PostMapping("/{id}")
     fun delete(@PathVariable id: Int, @RequestParam("action") action: String, model: Model): String{
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -72,7 +91,11 @@ class PropertyController {
         propertyRepository.delete(property.get())
         return "redirect:/property"
     }
-
+    /**
+     * Adds a series of model attributes that are required for all GETs
+     *
+     * @param model The Model object to add the attributes to.
+     */
     fun addStaticAttributes(model:Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("propertyList.label", null, locale))

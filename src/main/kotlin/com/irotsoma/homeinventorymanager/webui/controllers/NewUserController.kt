@@ -37,9 +37,15 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import java.util.*
-import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
+/**
+ * Rest Controller for creating a new user
+ *
+ * @author Justin Zak
+ * @property messageSource MessageSource instance for internationalization of messages.
+ * @property userRepository Autowired instance of the user JPA repository.
+ */
 @Controller
 @Lazy
 @RequestMapping("/newuser")
@@ -51,17 +57,30 @@ class NewUserController {
     private lateinit var messageSource: MessageSource
     @Autowired
     private lateinit var userRepository: UserRepository
-
+    /**
+     * Gets an the page for creating a new user.
+     *
+     * @param model The Model holding attributes for the mustache templates.
+     * @returns The template name to load
+     */
     @GetMapping
-    fun get(model: Model, session: HttpSession): String {
+    fun get(model: Model): String {
         addStaticAttributes(model)
         val roles = ArrayList<Option>()
         UserRoles.values().forEach{ roles.add(Option(it.value, false)) }
         model.addAttribute("roles", roles)
         return "newuser"
     }
+    /**
+     * Saves a new user
+     *
+     * @param newUserForm A validated model of the form containing the record.
+     * @param bindingResult Validation results for the form data.
+     * @param model The Model holding attributes for the mustache templates.
+     * @return A redirect back to the list page, an updated instance of the current record with validation errors, or the name of the error template
+     */
     @PostMapping
-    fun createUser(@Valid newUserForm: NewUserForm, bindingResult: BindingResult, model: Model, session: HttpSession): String {
+    fun createUser(@Valid newUserForm: NewUserForm, bindingResult: BindingResult, model: Model): String {
         val locale: Locale = LocaleContextHolder.getLocale()
         if (bindingResult.hasErrors()) {
             val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
@@ -87,6 +106,11 @@ class NewUserController {
         model.addAttribute("location", "/")
         return "redirect"
     }
+    /**
+     * Adds a series of model attributes that are required for all GETs
+     *
+     * @param model The Model object to add the attributes to.
+     */
     fun addStaticAttributes(model:Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
         model.addAttribute("pageTitle", messageSource.getMessage("newUser.label", null, locale))
