@@ -1,4 +1,22 @@
 /*
+ *  Copyright (C) 2020  Justin Zak
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
+ */
+
+/*
  * Created by irotsoma on 7/7/2020.
  */
 package com.irotsoma.homeinventorymanager.webui.controllers
@@ -24,14 +42,26 @@ import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import org.springframework.web.multipart.MultipartHttpServletRequest
 import java.math.BigDecimal
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.validation.Valid
 
-
+/**
+ * Rest Controller for adding or editing inventory items
+ *
+ * @author Justin Zak
+ * @property messageSource MessageSource instance for internationalization of messages.
+ * @property userRepository Autowired instance of the user JPA repository.
+ * @property categoryRepository Autowired instance of the [Category] JPA repository.
+ * @property inventoryItemRepository Autowired instance of the [InventoryItem] JPA repository.
+ * @property attachmentRepository Autowired instance of the [Attachment] JPA repository.
+ * @property propertyRepository Autowired instance of the [Property] JPA repository.
+ * @property roomRepository Autowired instance of the [Room] JPA repository.
+ * @property inventoryItemAttachmentLinkRepository Autowired instance of the [InventoryItemAttachmentLink] JPA repository.
+ * @property attachmentService Autowired instance of the service for manipulating attachments.
+ */
 @Controller
 @Lazy
 @RequestMapping("/inventoryedit")
@@ -59,6 +89,12 @@ class InventoryEditController {
     @Autowired
     private lateinit var attachmentService: AttachmentService
 
+    /**
+     * Gets an empty copy of the edit screen for adding a new record
+     *
+     * @param model The Model holding attributes for the mustache templates.
+     * @returns The template name to load
+     */
     @GetMapping
     fun new(model: Model) : String{
         addStaticAttributes(model)
@@ -80,6 +116,13 @@ class InventoryEditController {
         return "inventoryedit"
     }
 
+    /**
+     * Gets a copy of the edit screen with a record already populated for editing
+     *
+     * @param id The ID of the record to edit
+     * @param model The Model holding attributes for the mustache templates.
+     * @returns The template name to load or the name of the error template
+     */
     @GetMapping("/{id}")
     fun get(@PathVariable id: Int, model: Model) : String {
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -106,6 +149,14 @@ class InventoryEditController {
         return "inventoryedit"
     }
 
+    /**
+     * Saves a new record
+     *
+     * @param inventoryItemForm A validated model of the form containing the record.
+     * @param bindingResult Validation results for the form data.
+     * @param model The Model holding attributes for the mustache templates.
+     * @return A redirect back to the list page, an updated instance of the current record with validation errors, or the name of the error template
+     */
     @PostMapping
     fun post(@Valid inventoryItemForm: InventoryItemForm, bindingResult: BindingResult, model: Model): String{
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -219,7 +270,15 @@ class InventoryEditController {
 
         return "redirect:/inventory"
     }
-
+    /**
+     * Saves an existing record being edited
+     *
+     * @param inventoryItemForm A validated model of the form containing the record.
+     * @param bindingResult Validation results for the form data.
+     * @param model The Model holding attributes for the mustache templates.
+     * @param id The id of the record to update.
+     * @return A redirect back to the list page, an updated instance of the current record with validation errors, or the name of the error template
+     */
     @PostMapping("/{id}")
     fun put(@Valid inventoryItemForm: InventoryItemForm, bindingResult: BindingResult, model: Model, @PathVariable id: Int): String{
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -328,6 +387,14 @@ class InventoryEditController {
         return "redirect:/inventory"
     }
 
+    /**
+     * Called to remove an attachment from an inventory item.
+     *
+     * @param id ID of the inventory item
+     * @param attachmentId ID of the attachment
+     * @param model The Model holding attributes for the mustache templates.
+     * @return OK response if successful or the attachment was already not linked, not found response if item was not found or is not associated with the logged in user
+     */
     @PostMapping("/{id}/remove-attachment/{attachmentId}")
     fun delete(@PathVariable id: Int, @PathVariable attachmentId: Int, model: Model): ResponseEntity<Any> {
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -343,24 +410,36 @@ class InventoryEditController {
         return ResponseEntity.ok().build()
     }
 
+    /**
+     * Called to add an attachment and attach it to an inventory item with an ajax call.
+     *
+     * @param id ID of the inventory item
+     * @param attachmentFile The MultipartFile sent as "attachmentFile" parameter
+     * @param attachmentName The Name of the attachment sent as "attachmentName" parameter
+     * @return A FormResponse that contains a boolean parameter "validated" which is true if the add was successful or false if errors, and a map of field name to message for any errors.
+     */
     @PostMapping("/{id}/add-new-attachment/ajax", consumes = ["multipart/form-data"])
-    @ResponseBody fun post(@PathVariable id: Int, @RequestParam("attachmentFile") file: MultipartFile?, @RequestParam("attachmentName") attachmentName: String?, request: MultipartHttpServletRequest): FormResponse {
+    @ResponseBody fun post(@PathVariable id: Int, @RequestParam("attachmentFile") attachmentFile: MultipartFile?, @RequestParam("attachmentName") attachmentName: String?): FormResponse {
         val authentication = SecurityContextHolder.getContext().authentication
-        logger.debug {"Description: ${file?.resource?.description}"}
+        logger.debug {"Description: ${attachmentFile?.resource?.description}"}
         val userId = userRepository.findByUsername(authentication.name)?.id ?: throw UsernameNotFoundException("Unable to load user.")
         val locale: Locale = LocaleContextHolder.getLocale()
-        if (file == null || file.isEmpty) {
+        if (attachmentFile == null || attachmentFile.isEmpty) {
             return FormResponse("attachmentFile", false, mapOf(Pair("attachmentFile", messageSource.getMessage("fileMissing.error.message", null, locale))))
         }
         if (attachmentName.isNullOrBlank()) {
             return FormResponse("attachmentName", false, mapOf(Pair("attachmentName", messageSource.getMessage("nameMissing.error.message", null, locale))))
         }
-        val attachment = attachmentService.addAttachment(attachmentName, userId, file)
+        val attachment = attachmentService.addAttachment(attachmentName, userId, attachmentFile)
         attachmentService.attachToInventoryItem(attachment.id, id)
         return FormResponse("attachment", true, null)
     }
 
-
+    /**
+     * Adds a series of model attributes that are required for all GETs
+     *
+     * @param model The Model object to add the attributes to.
+     */
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
 

@@ -10,8 +10,6 @@ spring:
     host: localhost
     port: 27017
     database: homeinventory
-    username: homeinventory
-    password: insecurepassword
   servlet.multipart:
     max-file-size: 100MB
     max-request-size: 100MB

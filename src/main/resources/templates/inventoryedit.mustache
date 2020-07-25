@@ -318,7 +318,21 @@
                 formatCurrency($(this));
             })
         })
-
+        //Enable DataTables
+        $(document).ready( function () {
+            $('#attachment-table').DataTable({
+                paging: false,
+                stateSave: true,
+                info: false,
+                columnDefs: [ {
+                    targets: 'nosort',
+                    orderable: false
+                }, {
+                    targets: 'nosearch',
+                    searchable: false
+                }]
+            });
+        } );
         //currency formatting function from https://codepen.io/559wade/pen/LRzEjj
         // with dollar sign removed and added locale based formatting
         $("input[data-type='currency']").on({

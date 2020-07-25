@@ -16,28 +16,13 @@
  *
  */
 
-/*
- * Created by irotsoma on 7/7/2020.
- */
 package com.irotsoma.homeinventorymanager.webui.models
 
-import com.irotsoma.web.validation.OneNotBlank
-import org.springframework.stereotype.Component
-import javax.validation.constraints.NotBlank
-
-@Component
-@OneNotBlank(fields=["purchasePrice", "estimatedValue"], message = "At least one of Estimated Value or Purchase Price must be populated.")
-class InventoryItemForm {
-    @NotBlank
-    var name: String = ""
-    var description: String? = null
-    var estimatedValue: String? = null
-    var purchaseDate: String? = null
-    var purchasePrice: String? = null
-    var manufacturer: String? = null
-    var serialNumber: String? = null
-    var properties: String? = null
-    var rooms: String? = null
-    var categories: String? = null
-    var attachments: Set<Int> = hashSetOf()
-}
+/**
+ * Data class to hold a list of report types for the web UI
+ *
+ * @author Justin Zak
+ * @property id Unique identifier to be returned by the web form for the selected report type. Typically the string representation of a JasperReportItem instance
+ * @property name The name to display to the user for this report type. To be pulled from internationalization files.
+ */
+data class ReportType(var id: String, var name: String)

@@ -1,8 +1,24 @@
 /*
- * Created by irotsoma on 7/7/2020.
+ *  Copyright (C) 2020  Justin Zak
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
  */
+
 package com.irotsoma.homeinventorymanager.webui.controllers
 
+import com.irotsoma.homeinventorymanager.data.InventoryItem
 import com.irotsoma.homeinventorymanager.data.InventoryItemRepository
 import com.irotsoma.homeinventorymanager.data.UserRepository
 import mu.KLogging
@@ -17,9 +33,15 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import java.text.DecimalFormat
 import java.util.*
-import javax.servlet.http.HttpSession
 
-
+/**
+ * Rest Controller for accessing the inventory
+ *
+ * @author Justin Zak
+ * @property messageSource MessageSource instance for internationalization of messages.
+ * @property userRepository Autowired instance of the user JPA repository.
+ * @property inventoryItemRepository Autowired instance of the [InventoryItem] JPA repository
+ */
 @Controller
 @Lazy
 @RequestMapping("/inventory")
@@ -34,8 +56,14 @@ class InventoryController {
     @Autowired
     private lateinit var userRepository: UserRepository
 
+    /**
+     * Called when loading the list page
+     *
+     * @param model The Model holding attributes for the mustache templates.
+     * @return The name of the mustache template to load.
+     */
     @GetMapping
-    fun getList(model: Model, session: HttpSession): String {
+    fun getList(model: Model): String {
         addStaticAttributes(model)
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id ?: return "inventory"
@@ -43,7 +71,14 @@ class InventoryController {
         model.addAttribute("inventoryItem", inventoryItem)
         return "inventory"
     }
-
+    /**
+     * Called when deleting a record
+     *
+     * @param id The ID of the category to delete.
+     * @param action A parameter to explicitly verify that deleting is requested.
+     * @param model The Model holding attributes for the mustache templates.
+     * @return A redirect to reload the list page or an error page
+     */
     @PostMapping("/{id}")
     fun delete(@PathVariable id: Int, @RequestParam("action") action: String, model: Model): String{
         val locale: Locale = LocaleContextHolder.getLocale()
@@ -59,7 +94,11 @@ class InventoryController {
         inventoryItemRepository.delete(inventoryItem.get())
         return "redirect:/inventory"
     }
-
+    /**
+     * Adds a series of model attributes that are required for all GETs
+     *
+     * @param model The Model object to add the attributes to.
+     */
     fun addStaticAttributes(model: Model) {
         val locale: Locale = LocaleContextHolder.getLocale()
         val decimalFormat= DecimalFormat.getInstance(locale) as DecimalFormat
