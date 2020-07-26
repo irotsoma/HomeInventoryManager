@@ -102,15 +102,15 @@ class InventoryEditController {
         val authentication = SecurityContextHolder.getContext().authentication
         val userId = userRepository.findByUsername(authentication.name)?.id ?: return "inventoryedit"
         val properties = ArrayList<Option>()
-        propertyRepository.findByUserId(userId)?.forEach{ properties.add(Option(it.id.toString(), it.name, false)) }
+        propertyRepository.findByUserId(userId).forEach{ properties.add(Option(it.id.toString(), it.name, false)) }
         properties[0].selected = "selected"
         model.addAttribute("properties", properties)
         val rooms = ArrayList<Option>()
-        roomRepository.findByUserId(userId)?.forEach{ rooms.add(Option(it.id.toString(), it.name, false)) }
+        roomRepository.findByUserId(userId).forEach{ rooms.add(Option(it.id.toString(), it.name, false)) }
         rooms[0].selected = "selected"
         model.addAttribute("rooms", rooms)
         val categories = ArrayList<Option>()
-        categoryRepository.findByUserId(userId)?.forEach{ categories.add(Option(it.id.toString(), it.name, false))}
+        categoryRepository.findByUserId(userId).forEach{ categories.add(Option(it.id.toString(), it.name, false))}
         categories[0].selected = "selected"
         model.addAttribute("categories", categories)
         return "inventoryedit"
@@ -243,19 +243,19 @@ class InventoryEditController {
                 model.addAttribute("inventoryItem", newInventoryItem)
                 model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 val properties = ArrayList<Option>()
-                propertyRepository.findByUserId(user.id)?.forEach{ if (inventoryItemForm.properties == it.name) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
+                propertyRepository.findByUserId(user.id).forEach{ if (inventoryItemForm.properties == it.name) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
                 if (inventoryItemForm.properties == null) {
                     properties[0].selected = "selected"
                 }
                 model.addAttribute("properties", properties)
                 val rooms = ArrayList<Option>()
-                roomRepository.findByUserId(user.id)?.forEach{ if (inventoryItemForm.rooms == it.name) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
+                roomRepository.findByUserId(user.id).forEach{ if (inventoryItemForm.rooms == it.name) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
                 if (inventoryItemForm.rooms == null) {
                     rooms[0].selected = "selected"
                 }
                 model.addAttribute("rooms", rooms)
                 val categories = ArrayList<Option>()
-                categoryRepository.findByUserId(user.id)?.forEach{ if (inventoryItemForm.categories == it.name) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
+                categoryRepository.findByUserId(user.id).forEach{ if (inventoryItemForm.categories == it.name) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
                 if (inventoryItemForm.categories == null) {
                     categories[0].selected = "selected"
                 }
@@ -352,13 +352,13 @@ class InventoryEditController {
             model.addAllAttributes(errors)
             model.addAttribute("inventoryItem", updatedInventoryItem)
             val properties = ArrayList<Option>()
-            propertyRepository.findByUserId(userId)?.forEach{ if (updatedInventoryItem.property?.id == it.id) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
+            propertyRepository.findByUserId(userId).forEach{ if (updatedInventoryItem.property?.id == it.id) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
             model.addAttribute("properties", properties)
             val rooms = ArrayList<Option>()
-            roomRepository.findByUserId(userId)?.forEach{ if (updatedInventoryItem.room?.id == it.id) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
+            roomRepository.findByUserId(userId).forEach{ if (updatedInventoryItem.room?.id == it.id) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
             model.addAttribute("rooms", rooms)
             val categories = ArrayList<Option>()
-            categoryRepository.findByUserId(userId)?.forEach{ if (updatedInventoryItem.category?.id == it.id) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
+            categoryRepository.findByUserId(userId).forEach{ if (updatedInventoryItem.category?.id == it.id) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
             model.addAttribute("categories", categories)
             return "inventoryedit"
         }
@@ -370,13 +370,13 @@ class InventoryEditController {
                 model.addAttribute("inventoryItem", updatedInventoryItem)
                 model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
                 val properties = ArrayList<Option>()
-                propertyRepository.findByUserId(userId)?.forEach{ if (inventoryItemForm.properties == it.name) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
+                propertyRepository.findByUserId(userId).forEach{ if (inventoryItemForm.properties == it.name) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
                 model.addAttribute("properties", properties)
                 val rooms = ArrayList<Option>()
-                roomRepository.findByUserId(userId)?.forEach{ if (inventoryItemForm.rooms == it.name) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
+                roomRepository.findByUserId(userId).forEach{ if (inventoryItemForm.rooms == it.name) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
                 model.addAttribute("rooms", rooms)
                 val categories = ArrayList<Option>()
-                categoryRepository.findByUserId(userId)?.forEach{ if (inventoryItemForm.categories == it.name) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
+                categoryRepository.findByUserId(userId).forEach{ if (inventoryItemForm.categories == it.name) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
                 model.addAttribute("categories", categories)
                 return "inventoryedit"
             } else {
@@ -448,7 +448,7 @@ class InventoryEditController {
         model.addAttribute("currencySymbol", decimalFormat.decimalFormatSymbols.currencySymbol)
         model.addAttribute("decimalSeparator", decimalFormat.decimalFormatSymbols.decimalSeparator)
         model.addAttribute("numberGroupingSeparator", decimalFormat.decimalFormatSymbols.groupingSeparator)
-        model.addAttribute("numberGroupingSize", decimalFormat.decimalFormatSymbols.toString())
+        model.addAttribute("numberGroupingSize", decimalFormat.groupingSize.toString())
         model.addAttribute("pageTitle", messageSource.getMessage("editInventoryItem.label", null, locale))
         model.addAttribute("nameLabel", messageSource.getMessage("name.label", null, locale))
         model.addAttribute("descriptionLabel", messageSource.getMessage("description.label", null, locale))
@@ -484,5 +484,7 @@ class InventoryEditController {
         model.addAttribute("accessErrorMessage", messageSource.getMessage("dataAccess.error.message", null, locale))
         model.addAttribute("attachmentUnsupportedMessage", messageSource.getMessage("attachment.unsupportedFormat.error.message", null, locale))
         model.addAttribute("maximumFileSizeMessage", messageSource.getMessage("maximumFileSize.message", null, locale))
+        model.addAttribute("searchLabel", messageSource.getMessage("search.label", null, locale))
+
     }
 }

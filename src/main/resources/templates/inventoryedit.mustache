@@ -1,6 +1,7 @@
 {{#layout}}{{#title}}{{pageTitle}}{{/title}}{{#subTitle}}{{#pageSubTitle}}{{.}}{{/pageSubTitle}}{{/subTitle}}
 {{#stylesheets}}
     <link href="webjars/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="webjars/datatables/css/dataTables.bootstrap4.css">
 {{/stylesheets}}
 <!-- Modals -->
 <div id="preview-modal" class="modal fade" role="dialog">
@@ -144,7 +145,7 @@
 
 
 <!--body-->
-<div class="container form-group">
+<div class="container">
     <form id="edit-room-form" method="POST" action="/inventoryedit{{#inventoryItem}}{{#id}}/{{.}}{{/id}}{{/inventoryItem}}">
         {{#formError}}
             <div class="form-group alert alert-danger alert-dismissible fade show">
@@ -242,13 +243,14 @@
             </div>
         </div>
         {{^hideAttachments}}
-        <div  class="row mb-1">
+        <div  class="row pt-2">
             <div class="col-4">
-                <label for="attachments">{{attachmentsLabel}}</label>
+                <h5><label for="attachments">{{attachmentsLabel}}</label></h5>
             </div>
             <div class="col-8">
                 <button id="add-attachment-btn" class="btn btn-info float-right" type="button"><span class="oi oi-plus" aria-hidden="true"></span> {{addNewLabel}}</button>
             </div>
+            <hr class="mt-1">
         </div>
         <table id="attachment-table" class="table">
             <thead class="thead-light">
@@ -301,6 +303,8 @@
     </form>
 </div>
 {{#scripts}}
+    <script type="text/javascript" src="webjars/datatables/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="webjars/datatables/js/dataTables.bootstrap4.min.js"></script>
     <script>
         //confirmation popup
         $("form.delete-form").submit(function(){
@@ -330,7 +334,10 @@
                 }, {
                     targets: 'nosearch',
                     searchable: false
-                }]
+                }],
+                language: {
+                    search: '{{searchLabel}}'
+                }
             });
         } );
         //currency formatting function from https://codepen.io/559wade/pen/LRzEjj
@@ -347,8 +354,7 @@
         function formatNumber(n) {
             // format number grouping based on locale, for example 1000000 to 1,234,567
 
-
-            let groupingSize = {{numberGroupingSize}};
+            let groupingSize = '{{numberGroupingSize}}';
             let regex = new RegExp('\\B(?=(\\d{'+groupingSize+'})+(?!\\d))', 'g');
             return n.replace(/\D/g, "").replace(regex, "{{numberGroupingSeparator}}")
         }
