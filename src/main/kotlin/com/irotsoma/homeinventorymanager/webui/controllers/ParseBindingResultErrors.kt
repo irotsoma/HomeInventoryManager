@@ -16,9 +16,6 @@
  *
  */
 
-/*
- * Created by irotsoma on 7/23/2020.
- */
 package com.irotsoma.homeinventorymanager.webui.controllers
 
 import org.springframework.context.MessageSource
@@ -58,15 +55,17 @@ object ParseBindingResultErrors {
                     }
                 } else {
                     //otherwise translate the message if available or just add the message directly
-                    var messageString = error.defaultMessage ?: ""
-                    if (messageSource != null && locale != null) {
-                        try {
-                            messageString = messageSource.getMessage("$messageString.error.message", null, locale)
-                        } catch (e: NoSuchMessageException) {
-                            //ignore
+                    for (message in error.defaultMessage!!.split("\u001E")) {
+                        var messageString = message
+                        if (messageSource != null && locale != null) {
+                            try {
+                                messageString = messageSource.getMessage("$messageString.error.message", null, locale)
+                            } catch (e: NoSuchMessageException) {
+                                //ignore
+                            }
                         }
+                        errors["${error.field}Error"] = (errors["${error.field}Error"]?:"") + messageString + "<br>"
                     }
-                    errors["${error.field}Error"] = messageString
                 }
             }
             return errors
