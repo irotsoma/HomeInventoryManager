@@ -121,7 +121,6 @@ class InventoryItem(@Column(name = "name", nullable = false) var name: String,
 
     @Column(name="purchase_date", insertable = false, updatable=false)
     var purchaseDateFormatted: String? = null
-        private set
 
     /**
      * If the room, category, or property associated with the record do not have a name, sets the appropriate name to "None".

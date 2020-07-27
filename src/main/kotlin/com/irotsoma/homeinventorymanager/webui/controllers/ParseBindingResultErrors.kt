@@ -37,7 +37,7 @@ object ParseBindingResultErrors {
      * @param locale The locale to use for translation.
      * @return A map of key value pairs of field name to message.
      */
-    fun parseBindingResultErrors(bindingResult: BindingResult, messageSource: MessageSource?, locale: Locale?) : Map<String,String> {
+    fun parseBindingResultErrors(bindingResult: BindingResult, messageSource: MessageSource?, locale: Locale?) : MutableMap<String,String> {
         if (bindingResult.hasErrors()) {
             val errors: HashMap<String, String> = hashMapOf()
             for (error in bindingResult.fieldErrors) {

@@ -28,11 +28,13 @@ import com.irotsoma.homeinventorymanager.webui.models.InventoryItemForm
 import com.irotsoma.homeinventorymanager.webui.models.Option
 import mu.KLogging
 import org.hibernate.exception.ConstraintViolationException
+import org.hibernate.exception.SQLGrammarException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Lazy
 import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.InvalidDataAccessResourceUsageException
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.core.context.SecurityContextHolder
@@ -44,6 +46,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.math.BigDecimal
 import java.text.DecimalFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.validation.Valid
@@ -188,16 +191,27 @@ class InventoryEditController {
         } catch (e:NumberFormatException) {
             purchasePrice = null
         }
+        var dateError = false
         val newInventoryItem = InventoryItem(
             inventoryItemForm.name.trim(),
             inventoryItemForm.description?.trim(),
             if (value.isNullOrBlank()) null else BigDecimal(value),
-            if (inventoryItemForm.purchaseDate.isNullOrBlank()) null else SimpleDateFormat("yyyy-MM-dd").parse(inventoryItemForm.purchaseDate),
+            if (inventoryItemForm.purchaseDate.isNullOrBlank()) {
+                null
+            } else {
+                try {
+                    SimpleDateFormat("yyyy-MM-dd").parse(inventoryItemForm.purchaseDate)
+                } catch (e: ParseException) {
+                    dateError = true
+                    null
+                }
+            },
             if (purchasePrice.isNullOrBlank()) null else BigDecimal(purchasePrice),
             inventoryItemForm.manufacturer,
             inventoryItemForm.serialNumber,
             DataState.ACTIVE
         )
+        newInventoryItem.purchaseDateFormatted = inventoryItemForm.purchaseDate
         newInventoryItem.user = user
         if (inventoryItemForm.properties != null) {
             newInventoryItem.property = try { propertyRepository.findById(inventoryItemForm.properties!!.toInt()).get() }
@@ -216,6 +230,9 @@ class InventoryEditController {
         }
         if (bindingResult.hasErrors()) {
             val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
+            if (dateError){
+                errors["purchaseDate"] = (if (errors["purchaseDate"].isNullOrBlank()) "" else errors["purchaseDate"] +"<br>") + messageSource.getMessage("invalidDate.error.message", null, locale)
+            }
             addStaticAttributes(model)
             model.addAllAttributes(errors)
             model.addAttribute("inventoryItem", newInventoryItem)
@@ -272,6 +289,35 @@ class InventoryEditController {
             } else {
                 throw e
             }
+        } catch (e: InvalidDataAccessResourceUsageException) {
+            if (e.cause is SQLGrammarException && (e.cause as SQLGrammarException).sqlException.toString().contains("Incorrect date value")) {
+                addStaticAttributes(model)
+                newInventoryItem.purchaseDateFormatted = inventoryItemForm.purchaseDate
+                model.addAttribute("inventoryItem", newInventoryItem)
+                model.addAttribute("purchaseDateError", messageSource.getMessage("invalidDate.error.message", null, locale))
+                val properties = ArrayList<Option>()
+                propertyRepository.findByUserId(user.id).forEach{ if (inventoryItemForm.properties == it.name) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
+                if (inventoryItemForm.properties == null) {
+                    properties[0].selected = "selected"
+                }
+                model.addAttribute("properties", properties)
+                val rooms = ArrayList<Option>()
+                roomRepository.findByUserId(user.id).forEach{ if (inventoryItemForm.rooms == it.name) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
+                if (inventoryItemForm.rooms == null) {
+                    rooms[0].selected = "selected"
+                }
+                model.addAttribute("rooms", rooms)
+                val categories = ArrayList<Option>()
+                categoryRepository.findByUserId(user.id).forEach{ if (inventoryItemForm.categories == it.name) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
+                if (inventoryItemForm.categories == null) {
+                    categories[0].selected = "selected"
+                }
+                model.addAttribute("categories", categories)
+                model.addAttribute("hideAttachments", true)
+                return "inventoryedit"
+            } else {
+                throw e
+            }
         }
 
         return "redirect:/inventory"
@@ -298,12 +344,23 @@ class InventoryEditController {
             model.addAttribute("error", errorMessage)
             return "error"
         }
+        var dateError = false
         val updatedInventoryItem = inventoryItem.get().apply {
             this.name = inventoryItemForm.name.trim()
             this.description = inventoryItemForm.description?.trim()
             val value = inventoryItemForm.estimatedValue?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")?.replace(decimalFormat.decimalFormatSymbols.decimalSeparator.toString(),".")
             this.estimatedValue = if (value.isNullOrBlank()) null else BigDecimal(value)
-            this.purchaseDate = if (inventoryItemForm.purchaseDate.isNullOrBlank()) null else SimpleDateFormat("yyyy-MM-dd").parse(inventoryItemForm.purchaseDate)
+            this.purchaseDate = if (inventoryItemForm.purchaseDate.isNullOrBlank()) {
+                null
+            } else {
+                try {
+                    SimpleDateFormat("yyyy-MM-dd").parse(inventoryItemForm.purchaseDate)
+                } catch (e: ParseException) {
+                    dateError = true
+                    null
+                }
+            }
+            this.purchaseDateFormatted = inventoryItemForm.purchaseDate
             val purchasePrice = inventoryItemForm.purchasePrice?.replace(decimalFormat.decimalFormatSymbols.groupingSeparator.toString(),"")?.replace(decimalFormat.decimalFormatSymbols.decimalSeparator.toString(),".")
             this.purchasePrice = if (purchasePrice.isNullOrBlank()) null else BigDecimal(purchasePrice)
             this.manufacturer = inventoryItemForm.manufacturer
@@ -352,8 +409,11 @@ class InventoryEditController {
         if (attachmentSet.isNotEmpty()){
             updatedInventoryItem.attachments = attachmentSet
         }
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors() || dateError) {
             val errors = ParseBindingResultErrors.parseBindingResultErrors(bindingResult, messageSource, locale)
+            if (dateError){
+                errors["purchaseDateError"] = (if (errors["purchaseDateError"].isNullOrBlank()) "" else errors["purchaseDateError"] +"<br>") + messageSource.getMessage("invalidDate.error.message", null, locale)
+            }
             addStaticAttributes(model)
             model.addAllAttributes(errors)
             model.addAttribute("inventoryItem", updatedInventoryItem)
@@ -375,6 +435,25 @@ class InventoryEditController {
                 addStaticAttributes(model)
                 model.addAttribute("inventoryItem", updatedInventoryItem)
                 model.addAttribute("nameError", messageSource.getMessage("nameUniqueness.error.message", null, locale))
+                val properties = ArrayList<Option>()
+                propertyRepository.findByUserId(userId).forEach{ if (inventoryItemForm.properties == it.name) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
+                model.addAttribute("properties", properties)
+                val rooms = ArrayList<Option>()
+                roomRepository.findByUserId(userId).forEach{ if (inventoryItemForm.rooms == it.name) {rooms.add(Option(it.id.toString(), it.name, true))} else {rooms.add(Option(it.id.toString(), it.name,false)) }}
+                model.addAttribute("rooms", rooms)
+                val categories = ArrayList<Option>()
+                categoryRepository.findByUserId(userId).forEach{ if (inventoryItemForm.categories == it.name) {categories.add(Option(it.id.toString(), it.name, true))} else {categories.add(Option(it.id.toString(), it.name,false)) }}
+                model.addAttribute("categories", categories)
+                return "inventoryedit"
+            } else {
+                throw e
+            }
+        } catch (e: InvalidDataAccessResourceUsageException) {
+            if (e.cause is SQLGrammarException && (e.cause as SQLGrammarException).sqlException.toString().contains("Incorrect date value")){
+                addStaticAttributes(model)
+                updatedInventoryItem.purchaseDateFormatted = inventoryItemForm.purchaseDate
+                model.addAttribute("inventoryItem", updatedInventoryItem)
+                model.addAttribute("purchaseDateError", messageSource.getMessage("invalidDate.error.message", null, locale))
                 val properties = ArrayList<Option>()
                 propertyRepository.findByUserId(userId).forEach{ if (inventoryItemForm.properties == it.name) {properties.add(Option(it.id.toString(), it.name, true))} else {properties.add(Option(it.id.toString(), it.name,false)) }}
                 model.addAttribute("properties", properties)
