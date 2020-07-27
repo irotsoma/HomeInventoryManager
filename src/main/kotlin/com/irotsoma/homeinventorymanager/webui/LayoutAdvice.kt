@@ -18,8 +18,11 @@
 
 package com.irotsoma.homeinventorymanager.webui
 
+import com.irotsoma.homeinventorymanager.webui.models.Locale
 import com.samskivert.mustache.Mustache
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.MessageSource
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ModelAttribute
 
@@ -27,11 +30,14 @@ import org.springframework.web.bind.annotation.ModelAttribute
  * Controller advice object to allow for layout abstraction in mustache templates
  *
  * @author Justin Zak
+ * @property messageSource MessageSource instance for internationalization of messages.
  * @property compiler Autowired instance of a mustache compiler
  * @property mainMenu Autowired instance of the MainMenu object used to construct the main menu for a nav bar
  */
 @ControllerAdvice
 class LayoutAdvice {
+    @Autowired
+    private lateinit var messageSource: MessageSource
 
     @Autowired
     private lateinit var compiler: Mustache.Compiler
@@ -69,9 +75,9 @@ class LayoutAdvice {
     }
 
     /**
-     * Menu lambda method
+     * Menu mustache method
      *
-     * @return a mustache lambda that processes the main menu and adds it to the appropriate section of the layout template
+     * @return main menus
      */
     @ModelAttribute("menus")
     fun menus(): Iterable<Menu> {
@@ -89,9 +95,9 @@ class LayoutAdvice {
     }
 
     /**
-     * application title lambda method
+     * application title mustache method
      *
-     * @return a mustache lambda that processes the application title and adds it to the appropriate section of the layout template
+     * @return the application title
      */
     @ModelAttribute("applicationTitle")
     fun applicationTitle(@ModelAttribute layout: Layout): String {
@@ -106,5 +112,39 @@ class LayoutAdvice {
     @ModelAttribute("stylesheets")
     fun stylesheets(@ModelAttribute layout: Layout): Mustache.Lambda {
         return Mustache.Lambda { frag, _ -> layout.stylesheets = frag.execute() }
+    }
+
+    /**
+     * locale mustache method
+     *
+     * @return a map of locales and their names translated from messages keys to current language
+     */
+    @ModelAttribute("locales")
+    fun locales(@ModelAttribute layout: Layout): Set<Locale> {
+        val locale = LocaleContextHolder.getLocale()
+        layout.locales.forEach { entry -> entry.name = messageSource.getMessage(entry.name,null, locale) }
+        return layout.locales
+    }
+
+    /**
+     * Change Locale menu label mustache method
+     *
+     * @return the translated label for the change locale menu label
+     */
+    @ModelAttribute("localesLabel")
+    fun localesLabel(@ModelAttribute layout: Layout): String {
+        val locale= LocaleContextHolder.getLocale()
+        return messageSource.getMessage("changeLocale.label",null, locale)
+    }
+
+    /**
+     * Copyright label mustache method
+     *
+     * @return the translated label for the change locale menu label
+     */
+    @ModelAttribute("copyrightLabel")
+    fun copyrightLabel(@ModelAttribute layout: Layout): String {
+        val locale= LocaleContextHolder.getLocale()
+        return messageSource.getMessage("copyright.label",null, locale)
     }
 }

@@ -40,10 +40,11 @@
             </div>
             <ul class="navbar-nav navbar-right">
                 <li class="dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Change Locale <span class="caret"></span></a>
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{localesLabel}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a class="locale-change dropdown-item" style="cursor: pointer;" onclick="changeLocale('en_US')">US English</a></li>
-                        <li><a class="locale-change dropdown-item" style="cursor: pointer;"onclick="changeLocale('zh_CN')">Chinese (simplified)</a></li>
+                        {{#locales}}
+                            <li><a class="locale-change dropdown-item" style="cursor: pointer;" onclick="changeLocale('{{locale}}')">{{name}}</a></li>
+                        {{/locales}}
                     </ul>
                 </li>
             </ul>
@@ -61,7 +62,7 @@
     {{{layout.body}}}
 
     <footer class="footer mt-3">
-        <div class="bg-light footer-copyright py-3 text-center text-muted">Copyright © 2020</div>
+        <div class="bg-light footer-copyright py-3 text-center text-muted">{{copyrightLabel}} © 2020</div>
     </footer>
     <!-- Scripts -->
     <script type="text/javascript" src="webjars/jquery/jquery.min.js"></script>

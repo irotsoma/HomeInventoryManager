@@ -103,15 +103,21 @@ class InventoryEditController {
         val userId = userRepository.findByUsername(authentication.name)?.id ?: return "inventoryedit"
         val properties = ArrayList<Option>()
         propertyRepository.findByUserId(userId).forEach{ properties.add(Option(it.id.toString(), it.name, false)) }
-        properties[0].selected = "selected"
+        if (properties.size > 0) {
+            properties[0].selected = "selected"
+        }
         model.addAttribute("properties", properties)
         val rooms = ArrayList<Option>()
         roomRepository.findByUserId(userId).forEach{ rooms.add(Option(it.id.toString(), it.name, false)) }
-        rooms[0].selected = "selected"
+        if (rooms.size > 0) {
+            rooms[0].selected = "selected"
+        }
         model.addAttribute("rooms", rooms)
         val categories = ArrayList<Option>()
         categoryRepository.findByUserId(userId).forEach{ categories.add(Option(it.id.toString(), it.name, false))}
-        categories[0].selected = "selected"
+        if (categories.size > 0) {
+            categories[0].selected = "selected"
+        }
         model.addAttribute("categories", categories)
         return "inventoryedit"
     }
@@ -485,6 +491,16 @@ class InventoryEditController {
         model.addAttribute("attachmentUnsupportedMessage", messageSource.getMessage("attachment.unsupportedFormat.error.message", null, locale))
         model.addAttribute("maximumFileSizeMessage", messageSource.getMessage("maximumFileSize.message", null, locale))
         model.addAttribute("searchLabel", messageSource.getMessage("search.label", null, locale))
-
+        model.addAttribute("currencySymbol", decimalFormat.decimalFormatSymbols.currencySymbol)
+        model.addAttribute("decimalSeparator", decimalFormat.decimalFormatSymbols.decimalSeparator)
+        model.addAttribute("thousandsSeparator", decimalFormat.decimalFormatSymbols.groupingSeparator)
+        model.addAttribute("previousLabel", messageSource.getMessage("previous.label", null, locale))
+        model.addAttribute("nextLabel", messageSource.getMessage("next.label", null, locale))
+        model.addAttribute("paginationInfoMessage", messageSource.getMessage("paginationInfo.message", null, locale))
+        model.addAttribute("paginationInfoFilteredMessage", messageSource.getMessage("paginationInfoFiltered.message", null, locale))
+        model.addAttribute("lengthMenuMessage", messageSource.getMessage("lengthMenu.message", null, locale))
+        model.addAttribute("loadingLabel", messageSource.getMessage("loading.button.label", null, locale))
+        model.addAttribute("emptyTableMessage", messageSource.getMessage("emptyTable.message", null, locale))
+        model.addAttribute("zeroRecordsMessage", messageSource.getMessage("zeroRecords.message", null, locale))
     }
 }

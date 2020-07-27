@@ -4,7 +4,7 @@
         <script>window.location.replace("/inventory");</script>
     {{/isLoggedIn}}
     {{^isLoggedIn}}
-        Please <a href="/login">login</a> to continue
+        <a href="/login">{{loginMessage}}</a>
     {{/isLoggedIn}}
 
 </div>

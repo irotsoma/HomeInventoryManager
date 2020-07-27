@@ -18,6 +18,7 @@
 
 package com.irotsoma.homeinventorymanager.webui
 
+import com.irotsoma.homeinventorymanager.webui.models.Locale
 import com.samskivert.mustache.Mustache
 import com.samskivert.mustache.Template.Fragment
 import java.io.Writer
@@ -34,6 +35,7 @@ import java.io.Writer
  * @property subTitle The page subtitle.
  * @property scripts holder for any page specific scripts which will be added to the bottom of the page
  * @property stylesheets holder for any page specific stylesheets which will be added to the head of the page
+ * @property locales holder for a map of locale codes to messages key, keys are translated in LayoutAdvice
  * @author Justin Zak
  */
 class Layout(private val compiler: Mustache.Compiler) : Mustache.Lambda {
@@ -49,6 +51,8 @@ class Layout(private val compiler: Mustache.Compiler) : Mustache.Lambda {
     var scripts: String = ""
 
     var stylesheets: String = ""
+
+    var locales = setOf(Locale("en_US", "us.english.locale.label"),Locale("zh_CN", "chinese.simplified.locale.label"))
 
     /**
      * override of the execute method which removes the need for the explicit {{>layout}}

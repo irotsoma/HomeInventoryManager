@@ -250,8 +250,9 @@
             <div class="col-8">
                 <button id="add-attachment-btn" class="btn btn-info float-right" type="button"><span class="oi oi-plus" aria-hidden="true"></span> {{addNewLabel}}</button>
             </div>
-            <hr class="mt-1">
+
         </div>
+        <hr class="mt-1">
         <table id="attachment-table" class="table">
             <thead class="thead-light">
             <tr>
@@ -336,7 +337,19 @@
                     searchable: false
                 }],
                 language: {
-                    search: '{{searchLabel}}'
+                    search: '{{searchLabel}}',
+                    thousands: '{{thousandsSeparator}}',
+                    decimal: '{{decimalSeparator}}',
+                    info: '{{paginationInfoMessage}}',
+                    infoFiltered: '{{paginationInfoFilteredMessage}}',
+                    lengthMenu: '{{lengthMenuMessage}}',
+                    loadingRecords: '{{loadingLabel}}',
+                    emptyTable: '{{emptyTableMessage}}',
+                    zeroRecords: '{{zeroRecordsMessage}}',
+                    paginate: {
+                        previous : '{{previousLabel}}',
+                        next: '{{nextLabel}}'
+                    }
                 }
             });
         } );
