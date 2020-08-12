@@ -1,5 +1,5 @@
 group = "com.irotsoma.homeinventorymanager"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 val kotlinLoggingVersion = "1.8.0.1"
 val springContentVersion="1.1.0.M2"
@@ -23,7 +23,6 @@ plugins {
     val dokkaVersion = "0.10.1"
     val springDependencyManagementVersion = "1.0.9.RELEASE"
     java
-    signing
     id("io.spring.dependency-management") version springDependencyManagementVersion
     kotlin("jvm") version kotlinVersion
     kotlin("kapt") version kotlinVersion
@@ -40,7 +39,6 @@ repositories {
     mavenCentral()
     jcenter()
     gradlePluginPortal()
-    mavenLocal()
 }
 
 
