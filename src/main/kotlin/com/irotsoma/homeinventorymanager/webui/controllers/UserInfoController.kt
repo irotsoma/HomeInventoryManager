@@ -94,7 +94,7 @@ class UserInfoController {
         if (user == null){
             val errorMessage = messageSource.getMessage("dataAccess.error.message", null, locale)
             logger.warn { errorMessage }
-            return FormResponse("password error", false, mapOf(Pair("propertyName", errorMessage)))
+            return FormResponse("password error", false, mapOf(Pair("password", errorMessage)))
         }
         user.password = changePasswordForm.password
         userRepository.saveAndFlush(user)
