@@ -1,0 +1,5 @@
+language: java
+services:
+  - mongodb
+addons:
+  mariadb: '10.5'
