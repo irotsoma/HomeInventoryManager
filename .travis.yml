@@ -3,6 +3,8 @@ services:
   - mongodb
 addons:
   mariadb: '10.5'
+install:
+  - apt-get install ttf-mscorefonts-installer
 script:
   - ./gradlew test -Ptest_h2
   - ./gradlew test -Ptest_mariadb
