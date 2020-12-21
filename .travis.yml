@@ -4,6 +4,7 @@ services:
 addons:
   mariadb: '10.5'
 before_install:
+  - echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
   - sudo apt-get install ttf-mscorefonts-installer
 script:
   - ./gradlew test -Ptest_h2
