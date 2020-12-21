@@ -32,6 +32,7 @@ import java.io.File
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@ActiveProfiles("test")
 class AttachmentServiceTest {
     @Autowired
     lateinit var attachmentService: AttachmentService
@@ -42,7 +43,8 @@ class AttachmentServiceTest {
         val inputHash = Utilities.hashFile(filestream)
         filestream = file.inputStream()
         val attachment = attachmentService.addAttachment("test", 1, MockMultipartFile("test",filestream))
-        val outputAttachment = attachmentService.getAttachment(attachment.id)
+        assert (attachment != null)
+        val outputAttachment = attachmentService.getAttachment(attachment!!.id)
         assert(outputAttachment != null)
         val outputFile =  File.createTempFile("out",".tmp")
         outputAttachment!!.inputStream.transferTo(outputFile.outputStream())

@@ -60,6 +60,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     //mariaDb
     implementation( "org.mariadb.jdbc:mariadb-java-client")
+    //H2 DB
+    implementation("com.h2database:h2")
     //liquibase
     implementation( "org.liquibase:liquibase-core")
     //tika

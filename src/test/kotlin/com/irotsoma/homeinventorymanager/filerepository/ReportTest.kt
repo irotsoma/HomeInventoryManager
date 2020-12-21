@@ -21,8 +21,8 @@
  */
 package com.irotsoma.homeinventorymanager.filerepository
 
-import com.irotsoma.homeinventorymanager.reporting.JasperReportItem
-import com.irotsoma.homeinventorymanager.reporting.JasperReportService
+import com.irotsoma.homeinventorymanager.reporting.jasper.JasperReportItem
+import com.irotsoma.homeinventorymanager.reporting.jasper.JasperReportService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,6 +31,7 @@ import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@ActiveProfiles("test")
 class ReportTest {
     @Autowired
     private lateinit var jasperReportService: JasperReportService

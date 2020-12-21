@@ -16,17 +16,21 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.reporting
+/*
+ * Created by irotsoma on 7/2/2020.
+ */
+package com.irotsoma.homeinventorymanager.filerepository
+
+import java.io.InputStream
 
 /**
- * An enum listing the various jasper reports available
+ * A data class to hold an instance of an attachment stored in MongoDB
  *
- * @property value A string representation of the enum entry.
+ * @property attachmentId The unique ID of the attachment in MongoDB
+ * @property name The name of the attachment in MongoDB
+ * @property inputStream An input stream for retrieving the attachment file from MongoDB
  */
-enum class JasperReportItem (val value: String){
-    CATEGORY("CATEGORY"),
-    ROOM("ROOM"),
-    ROOM_CATEGORY("ROOM_CATEGORY"),
-    PROPERTY_CATEGORY("PROPERTY_CATEGORY"),
-    PROPERTY_ROOM("PROPERTY_ROOM")
-}
+data class AttachmentDocument (
+    var attachmentId: String,
+    var name: String,
+    var inputStream: InputStream)

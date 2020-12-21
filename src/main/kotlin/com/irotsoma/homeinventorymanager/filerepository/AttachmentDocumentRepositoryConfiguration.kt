@@ -17,20 +17,21 @@
  */
 
 /*
- * Created by irotsoma on 7/2/2020.
+ * Created by irotsoma on 12/21/2020.
  */
 package com.irotsoma.homeinventorymanager.filerepository
 
-import java.io.InputStream
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Configuration
 
 /**
- * A data class to hold an instance of an attachment stored in MongoDB
+ * Configuration for the attachment document repository
  *
- * @property mongoId The unique ID of the attachment in MongoDB
- * @property name The name of the attachment in MongoDB
- * @property inputStream An input stream for retrieving the attachment file from MongoDB
+ * @property type The type of repository in use (e.g. mongodb)
+ * @author Justin Zak
  */
-data class MongoAttachment (
-    var mongoId: String,
-    var name: String,
-    var inputStream: InputStream)
+@Configuration
+@ConfigurationProperties("attachment-document-repository")
+class AttachmentDocumentRepositoryConfiguration {
+    var type: String? = null
+}

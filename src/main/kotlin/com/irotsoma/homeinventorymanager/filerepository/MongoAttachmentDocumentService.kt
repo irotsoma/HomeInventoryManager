@@ -35,9 +35,15 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 
-
+/**
+ * Implementation of [BaseAttachmentDocumentService] for MongoDb
+ *
+ * @property gridFsTemplate An autowired instance of GridFsTemplate associated with the configured MongoDb
+ * @property operations An autowired instance of GridFsOperations associated with the configured MongoDb
+ * @author Justin Zak
+ */
 @Service
-class MongoAttachmentService {
+class MongoAttachmentDocumentService: BaseAttachmentDocumentService {
     /** kotlin-logging implementation */
     companion object : KLogging()
     @Autowired
@@ -46,7 +52,7 @@ class MongoAttachmentService {
     @Autowired
     lateinit var operations: GridFsOperations
 
-    fun addAttachment(name: String, fileInfo: MultipartFile): String {
+    override fun addAttachment(name: String, fileInfo: MultipartFile): String {
         val metadata = BasicDBObject()
         metadata["name"] = name
         val config = TikaConfig.getDefaultConfig()
@@ -60,12 +66,12 @@ class MongoAttachmentService {
         return id.toString()
     }
 
-    fun getAttachment(id: String): MongoAttachment? {
+    override fun getAttachment(id: String): AttachmentDocument? {
         val file: GridFSFile = gridFsTemplate.findOne(Query(Criteria.where("_id").`is`(id))) ?: return null
-        return MongoAttachment(id, file.metadata!!["name"].toString(), operations.getResource(file).inputStream)
+        return AttachmentDocument(id, file.metadata!!["name"].toString(), operations.getResource(file).inputStream)
     }
 
-    fun deleteAttachment(id: String) {
+    override fun deleteAttachment(id: String) {
         gridFsTemplate.delete(Query(Criteria.where("_id").`is`(id)))
     }
 }

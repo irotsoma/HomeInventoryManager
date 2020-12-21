@@ -16,7 +16,7 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.reporting
+package com.irotsoma.homeinventorymanager.reporting.jasper
 
 import com.irotsoma.homeinventorymanager.data.InventoryItemRepository
 import net.sf.jasperreports.engine.JasperCompileManager

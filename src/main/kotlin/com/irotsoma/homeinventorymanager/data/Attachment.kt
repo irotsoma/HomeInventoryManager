@@ -32,7 +32,7 @@ import javax.persistence.Table
  *
  * @author Justin Zak
  * @property id Database-generated ID for the record.
- * @property mongoId Unique ID for the file in the mongoDB collection.
+ * @property documentId Unique ID for the file in the mongoDB collection.
  * @property name Name of the attachment.
  * @property originalFileExtension The original file extension to be added back when downloading an attachment.
  * @property dataType The data Type of the file.
@@ -46,7 +46,7 @@ import javax.persistence.Table
 @Table(name = "attachment")
 @SQLDelete(sql = "UPDATE attachment SET state = 'DELETED', name = (SELECT CONCAT(name, '--DELETED--', CURRENT_TIMESTAMP)) WHERE id = ?", check = ResultCheckStyle.COUNT)
 @Where(clause = "state = 'ACTIVE'")
-class Attachment (@Column(name = "mongo_id", nullable = false) val mongoId: String,
+class Attachment (@Column(name = "document_id", nullable = false) val documentId: String,
                   @Column(name = "name", nullable = false) val name: String,
                   @Column(name = "original_file_extension", nullable = false) val originalFileExtension: String,
                   @Column(name = "data_type", nullable = false) val dataType: String,

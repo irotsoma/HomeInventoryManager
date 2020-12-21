@@ -16,7 +16,7 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.reporting
+package com.irotsoma.homeinventorymanager.reporting.jasper
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
@@ -34,7 +34,7 @@ import java.io.File
  * @property groupByCategoryReportPath Path to the report grouped by category.
  */
 @Configuration
-@ConfigurationProperties(prefix="jasper.reporting")
+@ConfigurationProperties(prefix="reporting.jasper")
 class JasperReportConfig {
     var groupByRoomCategoryReportPath = ""
 

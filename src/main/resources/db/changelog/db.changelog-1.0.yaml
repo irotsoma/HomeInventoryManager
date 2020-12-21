@@ -40,6 +40,7 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
         - createTable:
             tableName: user_roles
             columns:
@@ -100,6 +101,7 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
         - addUniqueConstraint:
             constraintName: unique_category_name_per_user
             tableName: category
@@ -142,6 +144,7 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
         - addUniqueConstraint:
             constraintName: unique_room_name_per_user
             tableName: room
@@ -199,6 +202,7 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
         - addUniqueConstraint:
             constraintName: unique_property_name_per_user
             tableName: property
@@ -221,7 +225,7 @@ databaseChangeLog:
                     foreignKeyName: fk_attachment_user
                     references: user(id)
               - column:
-                  name: mongo_id
+                  name: document_id
                   type: nvarchar(255)
                   constraints:
                     nullable: false
@@ -256,6 +260,7 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
         - createTable:
             tableName: inventory_item
             columns:
@@ -330,6 +335,7 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
+                  defaultValueComputed: CURRENT_TIMESTAMP
         - addUniqueConstraint:
             constraintName: unique_inventory_item_name_per_user
             tableName: inventory_item

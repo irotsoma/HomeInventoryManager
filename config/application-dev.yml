@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost/homeinventory
+    username: homeinventory
+    password: insecurepassword
+  data.mongodb:
+    host: localhost
+    port: 27017
+    database: homeinventory
+  jpa:
+    show-sql: true
+    properties.hibernate.format_sql: true

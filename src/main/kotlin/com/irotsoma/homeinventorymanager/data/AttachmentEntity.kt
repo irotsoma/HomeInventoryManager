@@ -18,7 +18,7 @@
 
 package com.irotsoma.homeinventorymanager.data
 
-import com.irotsoma.homeinventorymanager.filerepository.MongoAttachment
+import com.irotsoma.homeinventorymanager.filerepository.AttachmentDocument
 import org.springframework.http.InvalidMediaTypeException
 import org.springframework.http.MediaType
 import java.io.InputStream
@@ -30,7 +30,7 @@ import java.io.InputStream
  *
  * @author Justin Zak
  * @property attachment internal read only instance of the JPA attachment object.
- * @property mongoAttachment internal read only instance of the MongoAttachment object.
+ * @property attachmentDocument internal read only instance of the MongoAttachment object.
  * @property inputStream Returns the input stream associated with the MongoAttachment object (read-only)
  * @property name Returns the name of the attachment. (read-only)
  * @property id Returns the relational database unique ID of the Attachment object. (read-only)
@@ -38,10 +38,10 @@ import java.io.InputStream
  * @property dataType Returns the data type as a spring MediaType class. (read-only)
  * @property originalFileExtension Returns the original file extension of the attachment when it was uploaded. (read-only)
  */
-data class AttachmentEntity(internal val attachment: Attachment, internal val mongoAttachment: MongoAttachment) {
+data class AttachmentEntity(internal val attachment: Attachment, internal val attachmentDocument: AttachmentDocument) {
     val inputStream: InputStream
         get() {
-            return mongoAttachment.inputStream
+            return attachmentDocument.inputStream
         }
     val name: String
         get() {

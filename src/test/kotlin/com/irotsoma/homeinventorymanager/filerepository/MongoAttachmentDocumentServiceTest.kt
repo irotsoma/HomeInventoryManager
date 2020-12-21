@@ -31,11 +31,12 @@ import java.io.File
 
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
-class MongoAttachmentServiceTest {
+//@ActiveProfiles("test")
+class MongoAttachmentDocumentServiceTest {
     /** kotlin-logging implementation*/
     private companion object: KLogging()
     @Autowired
-    lateinit var mongoAttachmentService: MongoAttachmentService
+    lateinit var mongoAttachmentDocumentService: MongoAttachmentDocumentService
     @Test
     fun mongoAttachments() {
         val file = File(this.javaClass.classLoader.getResource("picture.PNG")!!.file)
@@ -43,17 +44,17 @@ class MongoAttachmentServiceTest {
         val inputHash = Utilities.hashFile(filestream)
         filestream = file.inputStream()
         logger.debug{"Adding file to mongo..."}
-        val attachmentId = mongoAttachmentService.addAttachment("test", MockMultipartFile("test", filestream))
+        val attachmentId = mongoAttachmentDocumentService.addAttachment("test", MockMultipartFile("test", filestream))
         logger.debug{"Retrieving file from mongo..."}
-        val attachmentFile = mongoAttachmentService.getAttachment(attachmentId)
+        val attachmentFile = mongoAttachmentDocumentService.getAttachment(attachmentId)
         assert(attachmentFile != null) {"File could not be retrieved from MongoDB."}
         logger.debug{"File has been successfully retrieved."}
         val outputHash = Utilities.hashFile(attachmentFile!!.inputStream)
         assert(inputHash == outputHash) {"Hash does not match! Previous hash: $inputHash; New hash: $outputHash"}
         logger.debug{"Output file hash matches input file hash."}
         logger.debug{"Deleting file from mongo..."}
-        mongoAttachmentService.deleteAttachment(attachmentId)
-        assert(mongoAttachmentService.getAttachment(attachmentId) == null) {"File is still present in MongoDB!"}
+        mongoAttachmentDocumentService.deleteAttachment(attachmentId)
+        assert(mongoAttachmentDocumentService.getAttachment(attachmentId) == null) {"File is still present in MongoDB!"}
         logger.debug{"File successfully deleted."}
     }
 

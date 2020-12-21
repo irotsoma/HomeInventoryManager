@@ -515,7 +515,7 @@ class InventoryEditController {
         if (attachmentName.isNullOrBlank()) {
             return FormResponse("attachmentName", false, mapOf(Pair("attachmentName", messageSource.getMessage("nameMissing.error.message", null, locale))))
         }
-        val attachment = attachmentService.addAttachment(attachmentName, userId, attachmentFile)
+        val attachment = attachmentService.addAttachment(attachmentName, userId, attachmentFile) ?: throw IllegalStateException(messageSource.getMessage("dataAccess.error.message", null, locale))
         attachmentService.attachToInventoryItem(attachment.id, id)
         return FormResponse("attachment", true, null)
     }
