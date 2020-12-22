@@ -10,6 +10,6 @@ before_script:
   - sudo mysql -e 'create database homeinventory;'
 script:
   - export spring.profiles.active=test_h2
-  - ./gradlew test
+  - ./gradlew clean test
   - export spring.profiles.active=test_mariadb
-  - ./gradlew test
+  - ./gradlew clean test
