@@ -6,6 +6,7 @@ addons:
 before_install:
   - echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
   - sudo apt-get install ttf-mscorefonts-installer
+install: skip
 before_script:
   - sudo mysql -e 'create database homeinventory;'
 script: ./travis-script.sh
