@@ -18,7 +18,5 @@
 #
 #
 
-export spring.profiles.active=test_h2
-./gradlew clean test
-export spring.profiles.active=test_mariadb
-./gradlew clean test
+env spring.profiles.active=test_h2 ./gradlew clean test
+env spring.profiles.active=test_mariadb ./gradlew clean test
