@@ -8,8 +8,4 @@ before_install:
   - sudo apt-get install ttf-mscorefonts-installer
 before_script:
   - sudo mysql -e 'create database homeinventory;'
-script:
-  - export spring.profiles.active=test_h2
-  - ./gradlew clean test
-  - export spring.profiles.active=test_mariadb
-  - ./gradlew clean test
+script: ./travis-script.sh
