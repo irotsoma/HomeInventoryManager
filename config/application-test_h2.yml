@@ -1,5 +1,5 @@
 spring:
-  jpa.hibernate.ddl-auto: none
+  profiles: test_h2
   h2.console.enabled: true
   datasource:
     driver-class-name: org.h2.Driver
@@ -9,6 +9,7 @@ spring:
   jpa:
     show-sql: true
     properties.hibernate.format_sql: true
+    hibernate.ddl-auto: none
   data.mongodb:
     host: localhost
     port: 27017

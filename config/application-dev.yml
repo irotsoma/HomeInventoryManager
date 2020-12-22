@@ -1,4 +1,5 @@
 spring:
+  profiles: dev
   datasource:
     url: jdbc:mariadb://localhost/homeinventory
     username: homeinventory
