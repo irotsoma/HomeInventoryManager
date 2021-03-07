@@ -2,26 +2,26 @@ group = "com.irotsoma.homeinventorymanager"
 version = "1.0"
 
 val kotlinLoggingVersion = "1.8.0.1"
-val springContentVersion="1.1.0.M2"
-val tikaVersion="1.24.1"
+//val springContentVersion="1.1.0.M2"
+val tikaVersion="1.25"
 val webValidationVersion = "1.3"
-val jaxbVersion="2.3.1"
+//val jaxbVersion="2.3.1"
 val bootstrapVersion = "4.5.0"
 val jqueryVersion = "3.5.1"
 val popperVersion = "1.12.9-1"
 val webjarsLocatorVersion = "0.40"
 val javaxValidationVersion = "2.0.1.Final"
-val passayVersion = "1.4.0"
+val passayVersion = "1.6.0"
 val openIconicVersion = "1.1.1"
 val dataTablesVersion = "1.10.21"
-val jasperVersion = "6.13.0"
+val jasperVersion = "6.16.0"
 
 plugins {
-    val kotlinVersion = "1.3.72"
-    val springBootVersion = "2.3.1.RELEASE"
+    val kotlinVersion = "1.4.31"
+    val springBootVersion = "2.4.3"
     val liquibaseGradleVersion = "2.0.4"
-    val dokkaVersion = "0.10.1"
-    val springDependencyManagementVersion = "1.0.9.RELEASE"
+    val dokkaVersion = "1.4.20"
+    val springDependencyManagementVersion = "1.0.11.RELEASE"
     java
     id("io.spring.dependency-management") version springDependencyManagementVersion
     kotlin("jvm") version kotlinVersion
@@ -106,8 +106,13 @@ tasks {
 configurations.all{
     exclude(module = "spring-boot-starter-logging")
     exclude(module = "logback-classic")
+    exclude("junit","junit")
+    exclude("org.junit.vintage","junit-vintage-engine")
 }
 kapt.includeCompileClasspath = false
 tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
     launchScript()
+}
+tasks.test{
+    useJUnitPlatform()
 }

@@ -21,17 +21,13 @@ package com.irotsoma.homeinventorymanager.filerepository
 
 import com.irotsoma.homeinventorymanager.Utilities
 import mu.KLogging
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.test.context.junit4.SpringRunner
 import java.io.File
 
-@RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@ActiveProfiles("test")
 class MongoAttachmentDocumentServiceTest {
     /** kotlin-logging implementation*/
     private companion object: KLogging()

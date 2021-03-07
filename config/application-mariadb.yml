@@ -1,9 +1,9 @@
 spring:
-  profiles: test_mariadb
+  profiles: mariadb
   datasource:
     url: jdbc:mariadb://localhost/homeinventory
-    username: root
-    password:
+    username: homeinventory
+    password: insecurepassword
   data.mongodb:
     host: localhost
     port: 27017
