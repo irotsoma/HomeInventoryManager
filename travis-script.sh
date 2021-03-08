@@ -18,5 +18,5 @@
 #
 #
 
-#./gradlew clean test -Pargs='--spring.profiles.active=test_mariadb'
-./gradlew clean test -Pargs='--spring.profiles.active=test_h2'
+./gradlew clean test -Pargs='--spring.profiles.active=test_mariadb'
+#./gradlew clean test -Pargs='--spring.profiles.active=test_h2'
