@@ -54,10 +54,11 @@ dependencies {
     implementation( "org.springframework.boot:spring-boot-starter-security")
     implementation( "org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-mustache")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-integration")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    //mongodb
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     //mariaDb
     implementation( "org.mariadb.jdbc:mariadb-java-client")
     //H2 DB
@@ -114,5 +115,11 @@ tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar
     launchScript()
 }
 tasks.test{
+    if (project.hasProperty("args")) {
+        project.properties["args"].toString().split(",").forEach{
+            val pair = it.replace("--", "").split("=")
+            systemProperty(pair[0],pair[1])
+        }
+    }
     useJUnitPlatform()
 }
