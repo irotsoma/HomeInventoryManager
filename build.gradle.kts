@@ -105,10 +105,11 @@ tasks {
     }
 }
 
-//exclude spring boot logging as it will conflict with kotlin logging
 configurations.all{
+    //exclude spring boot logging and logback as it will conflict with kotlin logging
     exclude(module = "spring-boot-starter-logging")
     exclude(module = "logback-classic")
+    //exclude junit 4 as it causes conflict with junit 5 in spring boot
     exclude("junit","junit")
     exclude("org.junit.vintage","junit-vintage-engine")
 }
@@ -118,6 +119,7 @@ tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar
 }
 tasks.test{
     if (project.hasProperty("args")) {
+        project.logger.info("Gradle received test args: ${project.properties["args"].toString()}")
         project.properties["args"].toString().split(",").forEach{
             val pair = it.replace("--", "").split("=")
             systemProperty(pair[0],pair[1])
