@@ -19,8 +19,9 @@
 /*
  * Created by irotsoma on 6/30/2020.
  */
-package com.irotsoma.homeinventorymanager.data
+package com.irotsoma.homeinventorymanager.data.rdbms
 
+import com.irotsoma.homeinventorymanager.data.DataState
 import mu.KLogging
 import org.hibernate.annotations.*
 import java.math.BigDecimal

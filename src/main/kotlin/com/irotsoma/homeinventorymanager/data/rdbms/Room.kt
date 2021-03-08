@@ -16,8 +16,9 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.data
+package com.irotsoma.homeinventorymanager.data.rdbms
 
+import com.irotsoma.homeinventorymanager.data.DataState
 import mu.KLogging
 import org.hibernate.annotations.*
 import java.util.*

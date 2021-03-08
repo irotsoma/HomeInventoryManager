@@ -59,6 +59,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     //mongodb
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    //Neo4j
+    implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
     //mariaDb
     implementation( "org.mariadb.jdbc:mariadb-java-client")
     //H2 DB

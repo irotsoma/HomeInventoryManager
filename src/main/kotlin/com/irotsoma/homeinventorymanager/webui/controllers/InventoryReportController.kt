@@ -21,7 +21,7 @@
  */
 package com.irotsoma.homeinventorymanager.webui.controllers
 
-import com.irotsoma.homeinventorymanager.data.UserRepository
+import com.irotsoma.homeinventorymanager.data.rdbms.UserRepository
 import com.irotsoma.homeinventorymanager.reporting.jasper.JasperReportItem
 import com.irotsoma.homeinventorymanager.reporting.jasper.JasperReportService
 import com.irotsoma.homeinventorymanager.webui.models.ReportType

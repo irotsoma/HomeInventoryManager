@@ -16,23 +16,32 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.data
+package com.irotsoma.homeinventorymanager.data.rdbms
 
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-
 /**
- * JPA repository object for storing user accounts
+ * JPA repository object for properties
  *
  * @author Justin Zak
  */
 @Repository
-interface UserRepository : JpaRepository<User, Int> {
+@Lazy
+interface PropertyRepository: JpaRepository<Property, Int> {
     /**
-     * retrieve a record by the username of the user
+     * Retrieve a record all records associated with a user by user ID
      *
-     * @param username The username of the user to retrieve
-     * @returns An instance of [User] representing the database record or null if the username was not found
+     * @param userId The user id of the properties to retrieve
+     * @returns A collection of [Property] representing the database records
      */
-    fun findByUsername(username: String): User?
+    fun findByUserId(userId: Int): Collection<Property>
+    /**
+     * Retrieve a record by name for the given user ID
+     *
+     * @param name The name of the property record to retrieve
+     * @param userId The user id of the property to retrieve
+     * @returns A [Property] representing the database record or null
+     */
+    fun findByNameAndUserId(name: String, userId: Int): Property?
 }

@@ -19,8 +19,10 @@
 /*
  * Created by irotsoma on 7/2/2020.
  */
-package com.irotsoma.homeinventorymanager.filerepository
+package com.irotsoma.homeinventorymanager.filerepository.mongodb
 
+import com.irotsoma.homeinventorymanager.filerepository.AttachmentDocument
+import com.irotsoma.homeinventorymanager.filerepository.BaseAttachmentDocumentService
 import com.mongodb.BasicDBObject
 import com.mongodb.client.gridfs.model.GridFSFile
 import mu.KLogging
@@ -28,6 +30,7 @@ import org.apache.tika.config.TikaConfig
 import org.apache.tika.io.TikaInputStream
 import org.apache.tika.mime.MediaType
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.gridfs.GridFsOperations
@@ -43,6 +46,7 @@ import org.springframework.web.multipart.MultipartFile
  * @author Justin Zak
  */
 @Service
+@Lazy
 class MongoAttachmentDocumentService: BaseAttachmentDocumentService {
     /** kotlin-logging implementation */
     companion object : KLogging()

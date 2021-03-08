@@ -16,7 +16,7 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.data
+package com.irotsoma.homeinventorymanager.data.rdbms
 
 import com.irotsoma.homeinventorymanager.filerepository.AttachmentDocument
 import org.springframework.http.InvalidMediaTypeException

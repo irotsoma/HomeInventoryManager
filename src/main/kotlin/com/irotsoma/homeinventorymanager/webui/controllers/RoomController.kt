@@ -18,9 +18,9 @@
 
 package com.irotsoma.homeinventorymanager.webui.controllers
 
-import com.irotsoma.homeinventorymanager.data.Room
-import com.irotsoma.homeinventorymanager.data.RoomRepository
-import com.irotsoma.homeinventorymanager.data.UserRepository
+import com.irotsoma.homeinventorymanager.data.rdbms.Room
+import com.irotsoma.homeinventorymanager.data.rdbms.RoomRepository
+import com.irotsoma.homeinventorymanager.data.rdbms.UserRepository
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource

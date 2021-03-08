@@ -18,7 +18,7 @@
 
 package com.irotsoma.homeinventorymanager.webui.controllers
 
-import com.irotsoma.homeinventorymanager.data.UserRepository
+import com.irotsoma.homeinventorymanager.data.rdbms.UserRepository
 import com.irotsoma.homeinventorymanager.webui.models.ChangePasswordForm
 import com.irotsoma.homeinventorymanager.webui.models.FormResponse
 import mu.KLogging

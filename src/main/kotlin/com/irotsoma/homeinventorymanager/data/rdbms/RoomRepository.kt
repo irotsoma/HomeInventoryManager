@@ -16,30 +16,32 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.data
+package com.irotsoma.homeinventorymanager.data.rdbms
 
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 /**
- * JPA repository object for properties
+ * JPA repository object for rooms
  *
  * @author Justin Zak
  */
 @Repository
-interface PropertyRepository: JpaRepository<Property, Int> {
+@Lazy
+interface RoomRepository: JpaRepository<Room, Int> {
     /**
      * Retrieve a record all records associated with a user by user ID
      *
-     * @param userId The user id of the properties to retrieve
-     * @returns A collection of [Property] representing the database records
+     * @param userId The user id of the rooms to retrieve
+     * @returns A collection of [Room] representing the database records
      */
-    fun findByUserId(userId: Int): Collection<Property>
+    fun findByUserId(userId: Int): Collection<Room>
     /**
      * Retrieve a record by name for the given user ID
      *
-     * @param name The name of the property record to retrieve
-     * @param userId The user id of the property to retrieve
-     * @returns A [Property] representing the database record or null
+     * @param name The name of the room record to retrieve
+     * @param userId The user id of the room to retrieve
+     * @returns A [Room] representing the database record or null
      */
-    fun findByNameAndUserId(name: String, userId: Int): Property?
+    fun findByNameAndUserId(name: String, userId: Int): Room?
 }

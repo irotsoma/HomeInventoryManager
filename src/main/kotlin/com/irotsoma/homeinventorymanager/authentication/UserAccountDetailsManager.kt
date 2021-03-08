@@ -19,8 +19,8 @@
 package com.irotsoma.homeinventorymanager.authentication
 
 import com.irotsoma.homeinventorymanager.data.DataState
-import com.irotsoma.homeinventorymanager.data.UserRepository
 import com.irotsoma.homeinventorymanager.data.UserRoles
+import com.irotsoma.homeinventorymanager.data.rdbms.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils

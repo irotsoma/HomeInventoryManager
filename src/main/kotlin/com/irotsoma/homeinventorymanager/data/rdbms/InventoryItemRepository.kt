@@ -16,15 +16,23 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.data
+package com.irotsoma.homeinventorymanager.data.rdbms
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 /**
- * JPA repository object for storing attachments
+ * JPA repository object for inventory items
  *
  * @author Justin Zak
  */
 @Repository
-interface AttachmentRepository : JpaRepository<Attachment, Int>
+interface InventoryItemRepository : JpaRepository<InventoryItem, Int> {
+    /**
+     * Finds all inventory items associated with a user by user ID
+     *
+     * @param userId User ID to search for.
+     * @return A collection of [InventoryItem]
+     */
+    fun findByUserId(userId: Int): Collection<InventoryItem>
+}

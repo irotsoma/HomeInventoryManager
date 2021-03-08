@@ -18,7 +18,7 @@
 
 package com.irotsoma.homeinventorymanager.reporting.jasper
 
-import com.irotsoma.homeinventorymanager.data.InventoryItemRepository
+import com.irotsoma.homeinventorymanager.data.rdbms.InventoryItemRepository
 import net.sf.jasperreports.engine.JasperCompileManager
 import net.sf.jasperreports.engine.JasperFillManager
 import net.sf.jasperreports.engine.JasperPrint

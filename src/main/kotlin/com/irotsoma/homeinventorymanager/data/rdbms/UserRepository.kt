@@ -16,30 +16,25 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.data
+package com.irotsoma.homeinventorymanager.data.rdbms
 
+import org.springframework.context.annotation.Lazy
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+
 /**
- * JPA repository object for storing categories
+ * JPA repository object for storing user accounts
  *
  * @author Justin Zak
  */
 @Repository
-interface CategoryRepository: JpaRepository<Category, Int> {
+@Lazy
+interface UserRepository : JpaRepository<User, Int> {
     /**
-     * Retrieve a record all records associated with a user by user ID
+     * retrieve a record by the username of the user
      *
-     * @param userId The user id of the categories to retrieve
-     * @returns A collection of [Category] representing the database records
+     * @param username The username of the user to retrieve
+     * @returns An instance of [User] representing the database record or null if the username was not found
      */
-    fun findByUserId(userId: Int): Collection<Category>
-    /**
-     * Retrieve a record by name for the given user ID
-     *
-     * @param name The name of the category record to retrieve
-     * @param userId The user id of the category to retrieve
-     * @returns A [Category] representing the database record or null
-     */
-    fun findByNameAndUserId(name: String, userId: Int): Category?
+    fun findByUsername(username: String): User?
 }

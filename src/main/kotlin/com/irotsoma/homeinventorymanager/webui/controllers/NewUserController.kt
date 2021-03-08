@@ -19,9 +19,9 @@
 package com.irotsoma.homeinventorymanager.webui.controllers
 
 import com.irotsoma.homeinventorymanager.data.DataState
-import com.irotsoma.homeinventorymanager.data.User
-import com.irotsoma.homeinventorymanager.data.UserRepository
 import com.irotsoma.homeinventorymanager.data.UserRoles
+import com.irotsoma.homeinventorymanager.data.rdbms.User
+import com.irotsoma.homeinventorymanager.data.rdbms.UserRepository
 import com.irotsoma.homeinventorymanager.webui.models.NewUserForm
 import com.irotsoma.homeinventorymanager.webui.models.Option
 import mu.KLogging

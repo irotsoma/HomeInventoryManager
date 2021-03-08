@@ -18,9 +18,12 @@
 
 package com.irotsoma.homeinventorymanager.filerepository
 
-import com.irotsoma.homeinventorymanager.data.*
+import com.irotsoma.homeinventorymanager.data.DataState
+import com.irotsoma.homeinventorymanager.data.rdbms.*
+import com.irotsoma.homeinventorymanager.filerepository.mongodb.MongoAttachmentDocumentService
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Lazy
 import org.springframework.http.InvalidMediaTypeException
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
@@ -37,6 +40,7 @@ import javax.annotation.PostConstruct
  * @property inventoryItemAttachmentLinkRepository Autowired instance of JPA repository for inventory item to attachment links
  */
 @Service
+@Lazy
 class AttachmentService() {
     /** kotlin-logging implementation */
     companion object : KLogging()

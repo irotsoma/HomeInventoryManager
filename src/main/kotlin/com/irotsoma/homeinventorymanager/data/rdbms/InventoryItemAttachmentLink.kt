@@ -16,7 +16,7 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.data
+package com.irotsoma.homeinventorymanager.data.rdbms
 
 import mu.KLogging
 import org.hibernate.annotations.CreationTimestamp

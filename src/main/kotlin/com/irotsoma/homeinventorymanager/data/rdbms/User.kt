@@ -16,9 +16,11 @@
  *
  */
 
-package com.irotsoma.homeinventorymanager.data
+package com.irotsoma.homeinventorymanager.data.rdbms
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.irotsoma.homeinventorymanager.data.DataState
+import com.irotsoma.homeinventorymanager.data.UserRoles
 import mu.KLogging
 import org.hibernate.annotations.*
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
